@@ -14,10 +14,10 @@ wtBr = uiprogressdlg(app.UIFigure, 'Title', 'Please wait', 'Message', 'Isolating
 %% Create mask for each frame
 for f = (1 + app.IgnoreFirstFrameCheckBox.Value):depth
 
-    fprintf(fileID, '%s', '------------------------------');
-    fprintf(fileID, '\n');
-    fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', '------------------------------');
+%     fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
+%     fprintf(fileID, '\n');
     if wtBr.CancelRequested
         break;
     end
@@ -26,33 +26,33 @@ for f = (1 + app.IgnoreFirstFrameCheckBox.Value):depth
     targetImage = inputFrames(:, :, f);
     
     %% Create a mask based on color
-    fprintf(fileID, '%s', "Generating gray mask");
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Generating gray mask");
+%     fprintf(fileID, '\n');
     grayImage = colorMask(targetImage, oldData, fileID);
     if any(any(grayImage))
         grayCC = bwconncomp(grayImage, 8);
         grayStats = regionprops(grayCC, 'Centroid', 'Circularity');
         grayCenter = grayStats.Centroid;
-        fprintf(fileID, '%s', "Gray mask generated");
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '%s', "Gray mask generated");
+%         fprintf(fileID, '\n');
     else
-        fprintf(fileID, '%s', "No gray mask generated for frame " + num2str(f));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '%s', "No gray mask generated for frame " + num2str(f));
+%         fprintf(fileID, '\n');
     end
     
     %% Create a mask based on edges
-    fprintf(fileID, '%s', "Generating edge mask");
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Generating edge mask");
+%     fprintf(fileID, '\n');
     edgeImage = edgeMask(targetImage, oldData, fileID);
     if any(any(edgeImage))
         edgeCC = bwconncomp(edgeImage, 8);
         edgeStats = regionprops(edgeCC, 'Centroid', 'Circularity');
         edgeCenter = edgeStats.Centroid;
-        fprintf(fileID, '%s', "Edge mask generated");
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '%s', "Edge mask generated");
+%         fprintf(fileID, '\n');
     else
-        fprintf(fileID, '%s', "No edge mask generated for frame " + num2str(f));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '%s', "No edge mask generated for frame " + num2str(f));
+%         fprintf(fileID, '\n');
     end
     
     %% Decide which mask/combination of masks to use
@@ -115,8 +115,8 @@ for f = (1 + app.IgnoreFirstFrameCheckBox.Value):depth
     else
         outputMask(:, :, f) = logical(finalImage);
     end
-    fprintf(fileID, '%s', "Final mask assigned for frame " + num2str(f));
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Final mask assigned for frame " + num2str(f));
+%     fprintf(fileID, '\n');
     
     %Update the oldData values as long as the mask isn't empty 
     if any(any(finalImage))
@@ -131,7 +131,7 @@ for f = (1 + app.IgnoreFirstFrameCheckBox.Value):depth
 end
 %Close waitbar
 close(wtBr);
-fclose(fileID);
+% fclose(fileID);
 end
 
 function grayImg = colorMask(targetImage, oldData, fileID)
@@ -145,8 +145,8 @@ grayImg = removeOutliers(grayImg);
 CC = bwconncomp(grayImg, 8);
 %If there is still more than one object, attempt to isolate the most likley
 %object
-fprintf(fileID, '%s', "Number of objects before isolation: " + num2str(CC.NumObjects));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Number of objects before isolation: " + num2str(CC.NumObjects));
+% fprintf(fileID, '\n');
 if CC.NumObjects > 1
     grayImg = isolateObject(grayImg, targetImage, oldData, fileID);
 end
@@ -162,8 +162,8 @@ edgeImage = removeOutliers(edgeImage);
 %Refresh the connected components list
 CC = bwconncomp(edgeImage, 8);
 %If there is still more than one object, attempt to isolate the the object
-fprintf(fileID, '%s', "Number of objects before isolation: " + num2str(CC.NumObjects));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Number of objects before isolation: " + num2str(CC.NumObjects));
+% fprintf(fileID, '\n');
 if CC.NumObjects > 1
     edgeImage = isolateObject(edgeImage, targetImage, oldData, fileID);
 end
@@ -214,8 +214,8 @@ if oldData.Size == 0
 else
     [~, maxSize] = min(abs(sizes - oldData.Size));
 end
-fprintf(fileID, '%s', "Size index: " + num2str(maxSize));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Size index: " + num2str(maxSize));
+% fprintf(fileID, '\n');
 
 %Find the obejct closest to the center of the frame, but not exactly in the center
 distances = zeros(1, CC.NumObjects);
@@ -225,8 +225,8 @@ for i = 1:CC.NumObjects
     distances(i) = sqrt((center(1) - oldCenter(1)).^2 + (center(2) - oldCenter(2)).^2);
 end
 [~, minDist] = min(distances(distances ~= 0));
-fprintf(fileID, '%s', "Closest object index: " + num2str(minDist));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Closest object index: " + num2str(minDist));
+% fprintf(fileID, '\n');
 
 %Find the object with the lowest pixel average
 averages = zeros(1, CC.NumObjects);
@@ -235,14 +235,14 @@ for i = 1:CC.NumObjects
 end
 averages(averages == 0) = 100;
 [~, lowestAvg] = min(averages);
-fprintf(fileID, '%s', "Lowest pixel average object index: " + num2str(lowestAvg));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Lowest pixel average object index: " + num2str(lowestAvg));
+% fprintf(fileID, '\n');
 
 %Calculate the significance value for each object
 significance = distances./sizes.*averages;
 [~, minSig] = min(significance);
-fprintf(fileID, '%s', "Most significant object index: " + num2str(minSig));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Most significant object index: " + num2str(minSig));
+% fprintf(fileID, '\n');
 %Decide which object to keep
 if isequaln(maxSize, minDist, lowestAvg, minSig)
     objIdx = minSig;                            %Ideal case
@@ -255,8 +255,8 @@ elseif isequaln(minDist, maxSize, minSig)
 elseif isequaln(maxSize, lowestAvg, minSig)
     objIdx = maxSize;                           %If the closest object is misleading
 else
-    fprintf(fileID, '%s', "Resorting to fallback: Object Circularity");
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Resorting to fallback: Object Circularity");
+%     fprintf(fileID, '\n');
     circularities = [stats.Circularity];
     interestVector = [maxSize, minDist, lowestAvg, minSig];
     newCircularities = zeros(size(circularities));
@@ -270,8 +270,8 @@ else
     end
     [~, objIdx] = min(mostCircular);
 end
-fprintf(fileID, '%s', "Final object index: " + num2str(objIdx));
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Final object index: " + num2str(objIdx));
+% fprintf(fileID, '\n');
 
 %Get rid of the other objects
 for j = 1:CC.NumObjects

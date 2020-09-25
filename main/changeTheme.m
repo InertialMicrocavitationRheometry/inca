@@ -17,13 +17,6 @@ app.MainPlot.ZColor = app.theme.axisColor;
 app.MainPlot.GridColor = app.theme.axisColor;
 app.MainPlot.Color = app.theme.plotBackground;
 
-app.EvolutionPlot.BackgroundColor = app.theme.backgroundColor;
-app.EvolutionPlot.XColor = app.theme.axisColor;
-app.EvolutionPlot.YColor = app.theme.axisColor;
-app.EvolutionPlot.ZColor = app.theme.axisColor;
-app.EvolutionPlot.GridColor = app.theme.axisColor;
-app.EvolutionPlot.Color = app.theme.plotBackground;
-
 app.AreaLabel.FontColor = app.theme.fontColor;
 app.PerimeterLabel.FontColor = app.theme.fontColor;
 app.AverageRadiusLabel.FontColor = app.theme.fontColor;
@@ -233,14 +226,6 @@ app.CentroidPlot.GridColor = app.theme.axisColor;
 app.CentroidPlot.Color = app.theme.plotBackground;
 
 app.FourierFitDataTab.BackgroundColor = app.theme.backgroundColor;
-
-app.AsphericityPlot.BackgroundColor = app.theme.backgroundColor;
-app.AsphericityPlot.Title.Color = app.theme.fontColor;
-app.AsphericityPlot.XColor = app.theme.axisColor;
-app.AsphericityPlot.YColor = app.theme.axisColor;
-app.AsphericityPlot.ZColor = app.theme.axisColor;
-app.AsphericityPlot.GridColor = app.theme.axisColor;
-app.AsphericityPlot.Color = app.theme.plotBackground;
 
 app.ndTermLabel.BackgroundColor = app.theme.backgroundColor;
 app.ndTermLabel.FontColor = app.theme.fontColor;

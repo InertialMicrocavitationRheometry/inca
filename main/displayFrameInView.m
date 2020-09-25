@@ -33,8 +33,7 @@ if ~isempty(app.maskInformation)
             plot(app.MainPlot, app.maskInformation(app.currentFrame).FourierFitX.a0, app.maskInformation(app.currentFrame).FourierFitY.b0, '-g*', 'MarkerSize', 15, "DisplayName", 'Fourier Fit Centroid')
         end
         
-        l = legend(app.MainPlot);
-        l.Color = app.theme.fontColor;
+        legend(app.MainPlot);
         hold(app.MainPlot, 'off');
         
         %Update labels

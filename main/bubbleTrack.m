@@ -2,7 +2,7 @@ function maskInformation = bubbleTrack(app, mask, arcLength, doFit, numberTerms,
 % A function to generate data about each mask 
 
 %% Set up logging 
-% fileID = generateDiaryFile("BubbleAnalysisLog");
+fileID = generateDiaryFile("BubbleAnalysisLog");
 
 %% Get number of frames
 [~, ~, depth] = size(mask);
@@ -28,8 +28,8 @@ for d = 1:depth
 %     fprintf(fileID, '\n');
     %Skip any frames that are in the ignore list
     if ~isempty(find(ignoreFrames == d, 1))
-        fprintf(fileID, '%s', "Skipping analysis of frame " + num2str(d));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '%s', "Skipping analysis of frame " + num2str(d));
+%         fprintf(fileID, '\n');
         maskInformation(d).Centroid = NaN;
         maskInformation(d).Area = NaN;
         maskInformation(d).Perimeter = NaN;
@@ -55,15 +55,15 @@ for d = 1:depth
         %Assign that data to the output struct
         maskInformation(d).Centroid = targetStats.Centroid;
 %         fprintf(fileID, '%s', "Centroid: " + num2str(targetStats.Centroid));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '\n');
         
         maskInformation(d).Area = targetStats.Area;
 %         fprintf(fileID, '%s', "Area: " + num2str(targetStats.Area));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '\n');
         
         maskInformation(d).Perimeter = targetStats.Perimeter;
 %         fprintf(fileID, '%s', "Perimeter Length: " + num2str(targetStats.Perimeter));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '\n');
         
         maskInformation(d).PerimeterPoints = generatePerimeterPoints(targetMask);
         
@@ -75,7 +75,7 @@ for d = 1:depth
         center = [maskInformation(d).Centroid];
         maskInformation(d).AverageRadius = mean(sqrt( (center(1) - xVals).^2 + (center(2) - yVals).^2 ), 'all');
 %         fprintf(fileID, '%s', "Average Radius: " + num2str(maskInformation(d).AverageRadius));
-        fprintf(fileID, '\n');
+%         fprintf(fileID, '\n');
         
         if doFit
 %             fprintf(fileID, '%s', "Fitting Fourier Series to mask perimeter for frame: " + num2str(d));
@@ -87,34 +87,36 @@ for d = 1:depth
 %             fprintf(fileID, '\n');
             %Actually do the fourier fit and get the coefficients for the
             %equation
-            fprintf(fileID, '%s', "Minimum Arc Length: " + num2str(arcLength));
-            fprintf(fileID, '\n');
-            fprintf(fileID, '%s', "(Max) Number of Terms in Fit: " + num2str(numberTerms));
-            fprintf(fileID, '\n');
-            fprintf(fileID, '%s', "Adaptive Number of Terms (T/F): " + num2str(adaptiveTerms)); 
-            fprintf(fileID, '\n');
-            fprintf(fileID, '%s', "Beginning Fit");
-            fprintf(fileID, '\n');
-            [xFit, yFit] = fourierFit(xVals, yVals, arcLength, numberTerms, adaptiveTerms,fileID);
-            fprintf(fileID, '%s', "Fit complete");
-            fprintf(fileID, '\n');
+%             fprintf(fileID, '%s', "Minimum Arc Length: " + num2str(arcLength));
+%             fprintf(fileID, '\n');
+%             fprintf(fileID, '%s', "(Max) Number of Terms in Fit: " + num2str(numberTerms));
+%             fprintf(fileID, '\n');
+%             fprintf(fileID, '%s', "Adaptive Number of Terms (T/F): " + num2str(adaptiveTerms)); 
+%             fprintf(fileID, '\n');
+%             fprintf(fileID, '%s', "Beginning Fit");
+%             fprintf(fileID, '\n');
+            [xFit, yFit, xData, yData] = fourierFit(xVals, yVals, arcLength, numberTerms, adaptiveTerms,fileID);
+%             fprintf(fileID, '%s', "Fit complete");
+%             fprintf(fileID, '\n');
             maskInformation(d).FourierFitX = xFit;
             maskInformation(d).FourierFitY = yFit;
-            fprintf(fileID, '%s', "Number of plotting points: " + num2str(length(xData)));
-            fprintf(fileID, '\n');
+            maskInformation(d).xData = xData;
+            maskInformation(d).yData = yData;
+%             fprintf(fileID, '%s', "Number of plotting points: " + num2str(length(xData)));
+%             fprintf(fileID, '\n');
         end
     end
-    fprintf(fileID, '%s', "Analysis complete");
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Analysis complete");
+%     fprintf(fileID, '\n');
 end
 %% Close waitbar and the diary
 close(wtBr);
-fclose(fileID);
+% fclose(fileID);
 end
 
 function [xVals, yVals] = angularPerimeter(targetMask, center, noTC, fileID)
-fprintf(fileID, '%s', "Generating " + num2str(noTC) + " periemter points");
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Generating " + num2str(noTC) + " periemter points");
+% fprintf(fileID, '\n');
 tic;
 %Get the perimeter of the mask
 targetPerim = bwmorph(bwperim(targetMask), 'thin', Inf);
@@ -194,8 +196,8 @@ parfor i = 1:rowRad
     yVals(i) = weightedRadius.*sin(lookDirection) + center(2);
 end
 toc;
-fprintf(fileID, '%s', "Perimeter point generation complete");
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Perimeter point generation complete");
+% fprintf(fileID, '\n');
 end
 
 function [xFit, yFit, xData, yData] = fourierFit(xPoints, yPoints, arcLength, numberTerms, adaptiveTerms, fileID)
@@ -223,11 +225,11 @@ if numberTerms > length(xPoints)/2
     numberTerms = floor(length(xPoints)/2);
 end
 if numberTerms == 0
-    fprintf(fileID, '%s', "Not enough perimeter points");
-    fprintf(fileID, '\n');
+%     fprintf(fileID, '%s', "Not enough perimeter points");
+%     fprintf(fileID, '\n');
 end
-fprintf(fileID, '%s', "Creating X and Y Fourier function files with " + num2str(numberTerms) + " number of terms");
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', "Creating X and Y Fourier function files with " + num2str(numberTerms) + " number of terms");
+% fprintf(fileID, '\n');
 [functionNameX, functionNameY] = createFourierFunc(numberTerms);
     
 %Actually fit it for the correct number of terms
@@ -241,8 +243,8 @@ xData = feval(xFit, 0:1/(row*numberTerms):row);
 yData = feval(yFit, 0:1/(row*numberTerms):row);
 
 %Delete the files
-fprintf(fileID, '%s', 'Deleting function files');
-fprintf(fileID, '\n');
+% fprintf(fileID, '%s', 'Deleting function files');
+% fprintf(fileID, '\n');
 delete('main/xFourierFunc.m');
 delete('main/yFourierFunc.m');
 end

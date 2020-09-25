@@ -2,7 +2,7 @@
 %video specified by the file path to the video
 function [frames, vidPath, vidFile] = loadFrames()
 [vidFile, vidPath] = uigetfile('*.avi');
-if isempty(vidPath) || isempty(vidFile) || vidPath == '' || vidFile == ''
+if vidFile == 0 || vidPath == 0
     return;
 end
 vidObj = VideoReader(append(vidPath, vidFile));

@@ -1,30 +1,35 @@
 function plotData(app, radius, area, perimeter, surfaceArea, volume, centroid)
 if ~isempty(radius)
     %Radius Plot
+    app.RadiusPlot.XLim = [1, app.numFrames];
     plot(app.RadiusPlot, 1:app.numFrames, radius ,"--.", "Color", app.theme.plotStyle);
     hold(app.RadiusPlot, 'on');
     plot(app.RadiusPlot, app.currentFrame, radius(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.RadiusPlot, 'off');
     
     %Area Plot
+    app.AreaPlot.XLim = [1, app.numFrames];
     plot(app.AreaPlot, 1:app.numFrames, area, '--.', "Color", app.theme.plotStyle);
     hold(app.AreaPlot, 'on');
     plot(app.AreaPlot, app.currentFrame, area(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.AreaPlot, 'off');
     
     %Perimeter Plot
+    app.PerimeterPlot.XLim = [1, app.numFrames];
     plot(app.PerimeterPlot, 1:app.numFrames, perimeter,'--.', "Color", app.theme.plotStyle);
     hold(app.PerimeterPlot, 'on');
     plot(app.PerimeterPlot, app.currentFrame, perimeter(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.PerimeterPlot, 'off');
     
     %Volume Plot
+    app.VolumePlot.XLim = [1, app.numFrames];
     plot(app.VolumePlot, 1:app.numFrames, volume, '--.', "Color", app.theme.plotStyle);
     hold(app.VolumePlot, 'on');
     plot(app.VolumePlot, app.currentFrame, volume(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.VolumePlot, 'off');
     
     %Surface Area Plot
+    app.SurfaceAreaPlot.XLim = [1, app.numFrames];
     plot(app.SurfaceAreaPlot, 1:app.numFrames, surfaceArea, '--.', "Color", app.theme.plotStyle);
     hold(app.SurfaceAreaPlot, 'on');
     plot(app.SurfaceAreaPlot, app.currentFrame, surfaceArea(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);

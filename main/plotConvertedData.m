@@ -2,30 +2,35 @@ function plotConvertedData(app)
 
 if ~isempty(app.radius)
     %Radius Plot
+    app.RadiusPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
     plot(app.RadiusPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.AverageRadius ,"--.", "Color", app.theme.plotStyle);
     hold(app.RadiusPlot, 'on');
     plot(app.RadiusPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.AverageRadius(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.RadiusPlot, 'off');
     
     %Area Plot
+    app.AreaPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
     plot(app.AreaPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.Area ,"--.", "Color", app.theme.plotStyle);
     hold(app.AreaPlot, 'on');
     plot(app.AreaPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.Area(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.AreaPlot, 'off');
     
     %Perimeter Plot
+    app.PerimeterPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
     plot(app.PerimeterPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.Perimeter ,"--.", "Color", app.theme.plotStyle);
     hold(app.PerimeterPlot, 'on');
     plot(app.PerimeterPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.Perimeter(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.PerimeterPlot, 'off');
     
     %Volume Plot
+    app.VolumePlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
     plot(app.VolumePlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.Volume, '--.', "Color", app.theme.plotStyle);
     hold(app.VolumePlot, 'on');
     plot(app.VolumePlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.Volume(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
     hold(app.VolumePlot, 'off');
     
     %Surface Area Plot
+    app.SurfaceAreaPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
     plot(app.SurfaceAreaPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.SurfaceArea, '--.', "Color", app.theme.plotStyle);
     hold(app.SurfaceAreaPlot, 'on');
     plot(app.SurfaceAreaPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.SurfaceArea(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);

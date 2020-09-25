@@ -3,6 +3,7 @@ yyaxis(app.AsphericityPlot, "left");
 cla(app.AsphericityPlot);
 yyaxis(app.AsphericityPlot, "right");
 cla(app.AsphericityPlot);
+app.AsphericityPlot.XLim = [1, app.numFrames];
 if app.FitFourierSeriestoPointsCheckBox.Value
     %Get the color map set up
     cmap = viridis(app.TermstoPlotEditField.Value - 1);
@@ -45,7 +46,7 @@ if app.FitFourierSeriestoPointsCheckBox.Value
     end
     hold(app.AsphericityPlot, 'off');
     
-    normalizedRadius = noramlizedRadiusPlot(app.maskInformation, app.numFrames, app.ignoreFrames);
+    normalizedRadius = plotting.noramlizedRadiusPlot(app.maskInformation, app.numFrames, app.ignoreFrames);
     
     yyaxis(app.AsphericityPlot, 'right');
     ylabel(app.AsphericityPlot, "R/Rmax");
@@ -53,8 +54,10 @@ if app.FitFourierSeriestoPointsCheckBox.Value
     
     r = plot(app.AsphericityPlot, 1:app.numFrames, normalizedRadius, "LineStyle", "-", "Marker", "none", "Color", [1, 1, 1]);
     
-    legend(app.AsphericityPlot, r, "R/max(R)", "TextColor", app.theme.fontColor);
+    legend(app.AsphericityPlot, r, "R/max(R)", "TextColor", [1, 1 ,1]);
     
     
 end
 end
+
+
