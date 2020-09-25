@@ -1,0 +1,544 @@
+Number of frames: 180
+Generating struct with fields: Centroid, TrackingPoints, AverageRadius, SurfaceArea, Volume, FourierPoints, FourierFitX, FourierFitY, xData, yData, Area, Perimeter, PerimeterPoints
+------------------------------
+Skipping analysis of frame 1
+------------------------------
+Skipping analysis of frame 2
+------------------------------
+Skipping analysis of frame 3
+------------------------------
+Skipping analysis of frame 4
+------------------------------
+Skipping analysis of frame 5
+------------------------------
+Skipping analysis of frame 6
+------------------------------
+Skipping analysis of frame 7
+------------------------------
+Skipping analysis of frame 8
+------------------------------
+Skipping analysis of frame 9
+------------------------------
+Skipping analysis of frame 10
+------------------------------
+Skipping analysis of frame 11
+------------------------------
+Skipping analysis of frame 12
+------------------------------
+Skipping analysis of frame 13
+------------------------------
+Skipping analysis of frame 14
+------------------------------
+Skipping analysis of frame 15
+------------------------------
+Skipping analysis of frame 16
+------------------------------
+Skipping analysis of frame 17
+------------------------------
+Skipping analysis of frame 18
+------------------------------
+Skipping analysis of frame 19
+------------------------------
+Skipping analysis of frame 20
+------------------------------
+Skipping analysis of frame 21
+------------------------------
+Starting analysis of frame 22
+Centroid: 437.1534      379.0092
+Area: 206665
+Perimeter Length: 1814.973
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 255.9993
+Analysis complete
+------------------------------
+Starting analysis of frame 23
+Centroid: 437.2618      378.6471
+Area: 220446
+Perimeter Length: 1882.637
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 264.3974
+Analysis complete
+------------------------------
+Starting analysis of frame 24
+Centroid: 437.0284      378.7084
+Area: 233553
+Perimeter Length: 1971.875
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 272.179
+Analysis complete
+------------------------------
+Starting analysis of frame 25
+Centroid: 437.1386      378.9795
+Area: 244255
+Perimeter Length: 2003.18
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 278.3537
+Analysis complete
+------------------------------
+Starting analysis of frame 26
+Centroid: 436.9273      379.0188
+Area: 253823
+Perimeter Length: 2028.59
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 283.8498
+Analysis complete
+------------------------------
+Starting analysis of frame 27
+Centroid: 436.5066      378.9128
+Area: 264482
+Perimeter Length: 2088.302
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 289.57
+Analysis complete
+------------------------------
+Starting analysis of frame 28
+Centroid: 436.8289      378.9316
+Area: 272084
+Perimeter Length: 2104.446
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 293.7637
+Analysis complete
+------------------------------
+Starting analysis of frame 29
+Centroid: 436.6198      379.1325
+Area: 280060
+Perimeter Length: 2178.593
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 298.1353
+Analysis complete
+------------------------------
+Skipping analysis of frame 30
+------------------------------
+Skipping analysis of frame 31
+------------------------------
+Starting analysis of frame 32
+Centroid: 436.8345      378.9008
+Area: 294270
+Perimeter Length: 2232.443
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 305.4255
+Analysis complete
+------------------------------
+Starting analysis of frame 33
+Centroid: 436.7547      379.1624
+Area: 298115
+Perimeter Length: 2253.696
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 307.5463
+Analysis complete
+------------------------------
+Starting analysis of frame 34
+Centroid: 436.6362      378.9001
+Area: 301438
+Perimeter Length: 2229.91
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 309.3326
+Analysis complete
+------------------------------
+Starting analysis of frame 35
+Centroid: 436.5454      378.8907
+Area: 304219
+Perimeter Length: 2236.71
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 310.8533
+Analysis complete
+------------------------------
+Starting analysis of frame 36
+Centroid: 436.5412      378.9992
+Area: 305963
+Perimeter Length: 2259.712
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 311.5756
+Analysis complete
+------------------------------
+Starting analysis of frame 37
+Centroid: 436.4912      378.9991
+Area: 306743
+Perimeter Length: 2283.821
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 311.9009
+Analysis complete
+------------------------------
+Starting analysis of frame 38
+Centroid: 436.3975      379.2848
+Area: 304774
+Perimeter Length: 2241.333
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 311.0943
+Analysis complete
+------------------------------
+Starting analysis of frame 39
+Centroid: 436.1646      379.3311
+Area: 302877
+Perimeter Length: 2253.022
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 309.9495
+Analysis complete
+------------------------------
+Starting analysis of frame 40
+Centroid: 435.4767       380.408
+Area: 302490
+Perimeter Length: 2793.452
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 309.5527
+Analysis complete
+------------------------------
+Skipping analysis of frame 41
+------------------------------
+Starting analysis of frame 42
+Centroid: 436.2398      378.7747
+Area: 297281
+Perimeter Length: 2204.322
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 307.1406
+Analysis complete
+------------------------------
+Starting analysis of frame 43
+Centroid: 435.7687      378.6875
+Area: 292323
+Perimeter Length: 2276.636
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 304.6015
+Analysis complete
+------------------------------
+Starting analysis of frame 44
+Centroid: 435.7442      378.9474
+Area: 288695
+Perimeter Length: 2227.564
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 302.5405
+Analysis complete
+------------------------------
+Starting analysis of frame 45
+Centroid: 435.454      379.0807
+Area: 283522
+Perimeter Length: 2272.792
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 299.7259
+Analysis complete
+------------------------------
+Starting analysis of frame 46
+Centroid: 435.1258       379.014
+Area: 276775
+Perimeter Length: 2202.977
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 296.3403
+Analysis complete
+------------------------------
+Starting analysis of frame 47
+Centroid: 434.7264      379.1235
+Area: 271101
+Perimeter Length: 2288.71
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 293.3399
+Analysis complete
+------------------------------
+Starting analysis of frame 48
+Centroid: 434.3828      379.3742
+Area: 265936
+Perimeter Length: 2137.492
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 290.3307
+Analysis complete
+------------------------------
+Starting analysis of frame 49
+Centroid: 433.1739      380.9487
+Area: 261612
+Perimeter Length: 2184.027
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 287.8335
+Analysis complete
+------------------------------
+Starting analysis of frame 50
+Centroid: 431.159      383.6795
+Area: 258603
+Perimeter Length: 2608.159
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 286.4747
+Analysis complete
+------------------------------
+Skipping analysis of frame 51
+------------------------------
+Skipping analysis of frame 52
+------------------------------
+Skipping analysis of frame 53
+------------------------------
+Skipping analysis of frame 54
+------------------------------
+Skipping analysis of frame 55
+------------------------------
+Skipping analysis of frame 56
+------------------------------
+Skipping analysis of frame 57
+------------------------------
+Skipping analysis of frame 58
+------------------------------
+Skipping analysis of frame 59
+------------------------------
+Skipping analysis of frame 60
+------------------------------
+Skipping analysis of frame 61
+------------------------------
+Skipping analysis of frame 62
+------------------------------
+Skipping analysis of frame 63
+------------------------------
+Skipping analysis of frame 64
+------------------------------
+Skipping analysis of frame 65
+------------------------------
+Skipping analysis of frame 66
+------------------------------
+Skipping analysis of frame 67
+------------------------------
+Skipping analysis of frame 68
+------------------------------
+Skipping analysis of frame 69
+------------------------------
+Skipping analysis of frame 70
+------------------------------
+Skipping analysis of frame 71
+------------------------------
+Skipping analysis of frame 72
+------------------------------
+Skipping analysis of frame 73
+------------------------------
+Skipping analysis of frame 74
+------------------------------
+Skipping analysis of frame 75
+------------------------------
+Skipping analysis of frame 76
+------------------------------
+Skipping analysis of frame 77
+------------------------------
+Skipping analysis of frame 78
+------------------------------
+Skipping analysis of frame 79
+------------------------------
+Skipping analysis of frame 80
+------------------------------
+Skipping analysis of frame 81
+------------------------------
+Skipping analysis of frame 82
+------------------------------
+Skipping analysis of frame 83
+------------------------------
+Skipping analysis of frame 84
+------------------------------
+Skipping analysis of frame 85
+------------------------------
+Skipping analysis of frame 86
+------------------------------
+Skipping analysis of frame 87
+------------------------------
+Skipping analysis of frame 88
+------------------------------
+Skipping analysis of frame 89
+------------------------------
+Skipping analysis of frame 90
+------------------------------
+Skipping analysis of frame 91
+------------------------------
+Skipping analysis of frame 92
+------------------------------
+Skipping analysis of frame 93
+------------------------------
+Skipping analysis of frame 94
+------------------------------
+Skipping analysis of frame 95
+------------------------------
+Skipping analysis of frame 96
+------------------------------
+Skipping analysis of frame 97
+------------------------------
+Skipping analysis of frame 98
+------------------------------
+Skipping analysis of frame 99
+------------------------------
+Skipping analysis of frame 100
+------------------------------
+Skipping analysis of frame 101
+------------------------------
+Skipping analysis of frame 102
+------------------------------
+Skipping analysis of frame 103
+------------------------------
+Skipping analysis of frame 104
+------------------------------
+Skipping analysis of frame 105
+------------------------------
+Skipping analysis of frame 106
+------------------------------
+Skipping analysis of frame 107
+------------------------------
+Skipping analysis of frame 108
+------------------------------
+Skipping analysis of frame 109
+------------------------------
+Skipping analysis of frame 110
+------------------------------
+Skipping analysis of frame 111
+------------------------------
+Skipping analysis of frame 112
+------------------------------
+Skipping analysis of frame 113
+------------------------------
+Skipping analysis of frame 114
+------------------------------
+Skipping analysis of frame 115
+------------------------------
+Skipping analysis of frame 116
+------------------------------
+Skipping analysis of frame 117
+------------------------------
+Skipping analysis of frame 118
+------------------------------
+Skipping analysis of frame 119
+------------------------------
+Skipping analysis of frame 120
+------------------------------
+Skipping analysis of frame 121
+------------------------------
+Skipping analysis of frame 122
+------------------------------
+Skipping analysis of frame 123
+------------------------------
+Skipping analysis of frame 124
+------------------------------
+Skipping analysis of frame 125
+------------------------------
+Skipping analysis of frame 126
+------------------------------
+Skipping analysis of frame 127
+------------------------------
+Skipping analysis of frame 128
+------------------------------
+Skipping analysis of frame 129
+------------------------------
+Skipping analysis of frame 130
+------------------------------
+Skipping analysis of frame 131
+------------------------------
+Skipping analysis of frame 132
+------------------------------
+Skipping analysis of frame 133
+------------------------------
+Skipping analysis of frame 134
+------------------------------
+Skipping analysis of frame 135
+------------------------------
+Skipping analysis of frame 136
+------------------------------
+Skipping analysis of frame 137
+------------------------------
+Skipping analysis of frame 138
+------------------------------
+Skipping analysis of frame 139
+------------------------------
+Skipping analysis of frame 140
+------------------------------
+Skipping analysis of frame 141
+------------------------------
+Skipping analysis of frame 142
+------------------------------
+Skipping analysis of frame 143
+------------------------------
+Skipping analysis of frame 144
+------------------------------
+Skipping analysis of frame 145
+------------------------------
+Skipping analysis of frame 146
+------------------------------
+Skipping analysis of frame 147
+------------------------------
+Skipping analysis of frame 148
+------------------------------
+Skipping analysis of frame 149
+------------------------------
+Skipping analysis of frame 150
+------------------------------
+Skipping analysis of frame 151
+------------------------------
+Skipping analysis of frame 152
+------------------------------
+Skipping analysis of frame 153
+------------------------------
+Skipping analysis of frame 154
+------------------------------
+Skipping analysis of frame 155
+------------------------------
+Skipping analysis of frame 156
+------------------------------
+Skipping analysis of frame 157
+------------------------------
+Skipping analysis of frame 158
+------------------------------
+Skipping analysis of frame 159
+------------------------------
+Skipping analysis of frame 160
+------------------------------
+Skipping analysis of frame 161
+------------------------------
+Skipping analysis of frame 162
+------------------------------
+Skipping analysis of frame 163
+------------------------------
+Skipping analysis of frame 164
+------------------------------
+Skipping analysis of frame 165
+------------------------------
+Skipping analysis of frame 166
+------------------------------
+Skipping analysis of frame 167
+------------------------------
+Skipping analysis of frame 168
+------------------------------
+Skipping analysis of frame 169
+------------------------------
+Skipping analysis of frame 170
+------------------------------
+Skipping analysis of frame 171
+------------------------------
+Skipping analysis of frame 172
+------------------------------
+Skipping analysis of frame 173
+------------------------------
+Skipping analysis of frame 174
+------------------------------
+Skipping analysis of frame 175
+------------------------------
+Skipping analysis of frame 176
+------------------------------
+Skipping analysis of frame 177
+------------------------------
+Skipping analysis of frame 178
+------------------------------
+Skipping analysis of frame 179
+------------------------------
+Skipping analysis of frame 180

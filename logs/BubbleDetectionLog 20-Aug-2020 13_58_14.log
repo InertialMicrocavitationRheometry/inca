@@ -1,0 +1,4536 @@
+------------------------------
+Generating mask for frame 2
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 2
+------------------------------
+Generating mask for frame 3
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 3
+------------------------------
+Generating mask for frame 4
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 7
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 4
+------------------------------
+Generating mask for frame 5
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 8
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 6
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 5
+------------------------------
+Generating mask for frame 6
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 6
+------------------------------
+Generating mask for frame 7
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 7
+------------------------------
+Generating mask for frame 8
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 7
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 8
+------------------------------
+Generating mask for frame 9
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 8
+Size index: 6
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 6
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 9
+------------------------------
+Generating mask for frame 10
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 7
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 10
+------------------------------
+Generating mask for frame 11
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 7
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 11
+------------------------------
+Generating mask for frame 12
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 10
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 12
+------------------------------
+Generating mask for frame 13
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 10
+Size index: 8
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 8
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 13
+------------------------------
+Generating mask for frame 14
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 12
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 6
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 14
+------------------------------
+Generating mask for frame 15
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 11
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 9
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 15
+------------------------------
+Generating mask for frame 16
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 7
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 16
+------------------------------
+Generating mask for frame 17
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 11
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 8
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 17
+------------------------------
+Generating mask for frame 18
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 11
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 9
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 18
+------------------------------
+Generating mask for frame 19
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 10
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 19
+------------------------------
+Generating mask for frame 20
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 8
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 20
+------------------------------
+Generating mask for frame 21
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 11
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 10
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 21
+------------------------------
+Generating mask for frame 22
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 11
+Size index: 10
+Closest object index: 1
+Lowest pixel average object index: 6
+Most significant object index: 10
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 22
+------------------------------
+Generating mask for frame 23
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 10
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 23
+------------------------------
+Generating mask for frame 24
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 24
+------------------------------
+Generating mask for frame 25
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 9
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 6
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 25
+------------------------------
+Generating mask for frame 26
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 8
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 6
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 26
+------------------------------
+Generating mask for frame 27
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 27
+------------------------------
+Generating mask for frame 28
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 7
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 28
+------------------------------
+Generating mask for frame 29
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 29
+------------------------------
+Generating mask for frame 30
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 7
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 30
+------------------------------
+Generating mask for frame 31
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 31
+------------------------------
+Generating mask for frame 32
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 8
+Size index: 6
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 6
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 32
+------------------------------
+Generating mask for frame 33
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 33
+------------------------------
+Generating mask for frame 34
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 4
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 34
+------------------------------
+Generating mask for frame 35
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 35
+------------------------------
+Generating mask for frame 36
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 36
+------------------------------
+Generating mask for frame 37
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 37
+------------------------------
+Generating mask for frame 38
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 38
+------------------------------
+Generating mask for frame 39
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 39
+------------------------------
+Generating mask for frame 40
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 40
+------------------------------
+Generating mask for frame 41
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 41
+------------------------------
+Generating mask for frame 42
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 42
+------------------------------
+Generating mask for frame 43
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 43
+------------------------------
+Generating mask for frame 44
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 44
+------------------------------
+Generating mask for frame 45
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 45
+------------------------------
+Generating mask for frame 46
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 46
+------------------------------
+Generating mask for frame 47
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 47
+------------------------------
+Generating mask for frame 48
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 48
+------------------------------
+Generating mask for frame 49
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 49
+------------------------------
+Generating mask for frame 50
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 50
+------------------------------
+Generating mask for frame 51
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 51
+------------------------------
+Generating mask for frame 52
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 4
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 52
+------------------------------
+Generating mask for frame 53
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 53
+------------------------------
+Generating mask for frame 54
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 54
+------------------------------
+Generating mask for frame 55
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 55
+------------------------------
+Generating mask for frame 56
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 56
+------------------------------
+Generating mask for frame 57
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 57
+------------------------------
+Generating mask for frame 58
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 58
+------------------------------
+Generating mask for frame 59
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 4
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 59
+------------------------------
+Generating mask for frame 60
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 60
+------------------------------
+Generating mask for frame 61
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 61
+------------------------------
+Generating mask for frame 62
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 62
+------------------------------
+Generating mask for frame 63
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 63
+------------------------------
+Generating mask for frame 64
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 64
+------------------------------
+Generating mask for frame 65
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 65
+------------------------------
+Generating mask for frame 66
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 66
+------------------------------
+Generating mask for frame 67
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 67
+------------------------------
+Generating mask for frame 68
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 68
+------------------------------
+Generating mask for frame 69
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 69
+------------------------------
+Generating mask for frame 70
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 70
+------------------------------
+Generating mask for frame 71
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 71
+------------------------------
+Generating mask for frame 72
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 72
+------------------------------
+Generating mask for frame 73
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 73
+------------------------------
+Generating mask for frame 74
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 74
+------------------------------
+Generating mask for frame 75
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 75
+------------------------------
+Generating mask for frame 76
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 76
+------------------------------
+Generating mask for frame 77
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 77
+------------------------------
+Generating mask for frame 78
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 78
+------------------------------
+Generating mask for frame 79
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 79
+------------------------------
+Generating mask for frame 80
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 80
+------------------------------
+Generating mask for frame 81
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 81
+------------------------------
+Generating mask for frame 82
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 82
+------------------------------
+Generating mask for frame 83
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 83
+------------------------------
+Generating mask for frame 84
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 84
+------------------------------
+Generating mask for frame 85
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 85
+------------------------------
+Generating mask for frame 86
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 86
+------------------------------
+Generating mask for frame 87
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 87
+------------------------------
+Generating mask for frame 88
+Generating gray mask
+Number of objects before isolation: 5
+Size index: 5
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 5
+Final object index: 5
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 88
+------------------------------
+Generating mask for frame 89
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 89
+------------------------------
+Generating mask for frame 90
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 90
+------------------------------
+Generating mask for frame 91
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 91
+------------------------------
+Generating mask for frame 92
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 92
+------------------------------
+Generating mask for frame 93
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 93
+------------------------------
+Generating mask for frame 94
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 94
+------------------------------
+Generating mask for frame 95
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 95
+------------------------------
+Generating mask for frame 96
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 96
+------------------------------
+Generating mask for frame 97
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 97
+------------------------------
+Generating mask for frame 98
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 98
+------------------------------
+Generating mask for frame 99
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 4
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 99
+------------------------------
+Generating mask for frame 100
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 100
+------------------------------
+Generating mask for frame 101
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 101
+------------------------------
+Generating mask for frame 102
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 102
+------------------------------
+Generating mask for frame 103
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 103
+------------------------------
+Generating mask for frame 104
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 104
+------------------------------
+Generating mask for frame 105
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 105
+------------------------------
+Generating mask for frame 106
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 106
+------------------------------
+Generating mask for frame 107
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 107
+------------------------------
+Generating mask for frame 108
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 108
+------------------------------
+Generating mask for frame 109
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 109
+------------------------------
+Generating mask for frame 110
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 110
+------------------------------
+Generating mask for frame 111
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 111
+------------------------------
+Generating mask for frame 112
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 112
+------------------------------
+Generating mask for frame 113
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 113
+------------------------------
+Generating mask for frame 114
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 114
+------------------------------
+Generating mask for frame 115
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 115
+------------------------------
+Generating mask for frame 116
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 116
+------------------------------
+Generating mask for frame 117
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 117
+------------------------------
+Generating mask for frame 118
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 118
+------------------------------
+Generating mask for frame 119
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 4
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 119
+------------------------------
+Generating mask for frame 120
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 120
+------------------------------
+Generating mask for frame 121
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 121
+------------------------------
+Generating mask for frame 122
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 122
+------------------------------
+Generating mask for frame 123
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 123
+------------------------------
+Generating mask for frame 124
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 124
+------------------------------
+Generating mask for frame 125
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 125
+------------------------------
+Generating mask for frame 126
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 126
+------------------------------
+Generating mask for frame 127
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 127
+------------------------------
+Generating mask for frame 128
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 128
+------------------------------
+Generating mask for frame 129
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 129
+------------------------------
+Generating mask for frame 130
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 130
+------------------------------
+Generating mask for frame 131
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 131
+------------------------------
+Generating mask for frame 132
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 132
+------------------------------
+Generating mask for frame 133
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 133
+------------------------------
+Generating mask for frame 134
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 134
+------------------------------
+Generating mask for frame 135
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 135
+------------------------------
+Generating mask for frame 136
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 136
+------------------------------
+Generating mask for frame 137
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 137
+------------------------------
+Generating mask for frame 138
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 138
+------------------------------
+Generating mask for frame 139
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 139
+------------------------------
+Generating mask for frame 140
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 140
+------------------------------
+Generating mask for frame 141
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 141
+------------------------------
+Generating mask for frame 142
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 142
+------------------------------
+Generating mask for frame 143
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 143
+------------------------------
+Generating mask for frame 144
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 144
+------------------------------
+Generating mask for frame 145
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 145
+------------------------------
+Generating mask for frame 146
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 146
+------------------------------
+Generating mask for frame 147
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 147
+------------------------------
+Generating mask for frame 148
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 148
+------------------------------
+Generating mask for frame 149
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 149
+------------------------------
+Generating mask for frame 150
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 150
+------------------------------
+Generating mask for frame 151
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 151
+------------------------------
+Generating mask for frame 152
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 152
+------------------------------
+Generating mask for frame 153
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 153
+------------------------------
+Generating mask for frame 154
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 154
+------------------------------
+Generating mask for frame 155
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Resorting to fallback: Object Circularity
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 155
+------------------------------
+Generating mask for frame 156
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 156
+------------------------------
+Generating mask for frame 157
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 157
+------------------------------
+Generating mask for frame 158
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Final mask assigned for frame 158
+------------------------------
+Generating mask for frame 159
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 159
+------------------------------
+Generating mask for frame 160
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 160
+------------------------------
+Generating mask for frame 161
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 161
+------------------------------
+Generating mask for frame 162
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 162
+------------------------------
+Generating mask for frame 163
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 163
+------------------------------
+Generating mask for frame 164
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 164
+------------------------------
+Generating mask for frame 165
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 165
+------------------------------
+Generating mask for frame 166
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 166
+------------------------------
+Generating mask for frame 167
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 167
+------------------------------
+Generating mask for frame 168
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 168
+------------------------------
+Generating mask for frame 169
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 169
+------------------------------
+Generating mask for frame 170
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 170
+------------------------------
+Generating mask for frame 171
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 171
+------------------------------
+Generating mask for frame 172
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 172
+------------------------------
+Generating mask for frame 173
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 173
+------------------------------
+Generating mask for frame 174
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 174
+------------------------------
+Generating mask for frame 175
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 175
+------------------------------
+Generating mask for frame 176
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 176
+------------------------------
+Generating mask for frame 177
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 177
+------------------------------
+Generating mask for frame 178
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 178
+------------------------------
+Generating mask for frame 179
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 179
+------------------------------
+Generating mask for frame 180
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 180
+------------------------------
+Generating mask for frame 181
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 181
+------------------------------
+Generating mask for frame 182
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 182
+------------------------------
+Generating mask for frame 183
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 183
+------------------------------
+Generating mask for frame 184
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 4
+Resorting to fallback: Object Circularity
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 184
+------------------------------
+Generating mask for frame 185
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 185
+------------------------------
+Generating mask for frame 186
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 186
+------------------------------
+Generating mask for frame 187
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 187
+------------------------------
+Generating mask for frame 188
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 188
+------------------------------
+Generating mask for frame 189
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 189
+------------------------------
+Generating mask for frame 190
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 190
+------------------------------
+Generating mask for frame 191
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 191
+------------------------------
+Generating mask for frame 192
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 192
+------------------------------
+Generating mask for frame 193
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 193
+------------------------------
+Generating mask for frame 194
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 194
+------------------------------
+Generating mask for frame 195
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 195
+------------------------------
+Generating mask for frame 196
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 196
+------------------------------
+Generating mask for frame 197
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 197
+------------------------------
+Generating mask for frame 198
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 198
+------------------------------
+Generating mask for frame 199
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 199
+------------------------------
+Generating mask for frame 200
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 200
+------------------------------
+Generating mask for frame 201
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 201
+------------------------------
+Generating mask for frame 202
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 202
+------------------------------
+Generating mask for frame 203
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 203
+------------------------------
+Generating mask for frame 204
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 204
+------------------------------
+Generating mask for frame 205
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 205
+------------------------------
+Generating mask for frame 206
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 206
+------------------------------
+Generating mask for frame 207
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 207
+------------------------------
+Generating mask for frame 208
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 208
+------------------------------
+Generating mask for frame 209
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 209
+------------------------------
+Generating mask for frame 210
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 210
+------------------------------
+Generating mask for frame 211
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 211
+------------------------------
+Generating mask for frame 212
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 212
+------------------------------
+Generating mask for frame 213
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 213
+------------------------------
+Generating mask for frame 214
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 214
+------------------------------
+Generating mask for frame 215
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 215
+------------------------------
+Generating mask for frame 216
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 216
+------------------------------
+Generating mask for frame 217
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 217
+------------------------------
+Generating mask for frame 218
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 218
+------------------------------
+Generating mask for frame 219
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 219
+------------------------------
+Generating mask for frame 220
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 220
+------------------------------
+Generating mask for frame 221
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 221
+------------------------------
+Generating mask for frame 222
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 222
+------------------------------
+Generating mask for frame 223
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 223
+------------------------------
+Generating mask for frame 224
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 224
+------------------------------
+Generating mask for frame 225
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 225
+------------------------------
+Generating mask for frame 226
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 226
+------------------------------
+Generating mask for frame 227
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 227
+------------------------------
+Generating mask for frame 228
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 228
+------------------------------
+Generating mask for frame 229
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 229
+------------------------------
+Generating mask for frame 230
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 230
+------------------------------
+Generating mask for frame 231
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 231
+------------------------------
+Generating mask for frame 232
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 232
+------------------------------
+Generating mask for frame 233
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 233
+------------------------------
+Generating mask for frame 234
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 234
+------------------------------
+Generating mask for frame 235
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 235
+------------------------------
+Generating mask for frame 236
+Generating gray mask
+Number of objects before isolation: 5
+Size index: 5
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 5
+Final object index: 5
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 236
+------------------------------
+Generating mask for frame 237
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 237
+------------------------------
+Generating mask for frame 238
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 238
+------------------------------
+Generating mask for frame 239
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 239
+------------------------------
+Generating mask for frame 240
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 240
+------------------------------
+Generating mask for frame 241
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 3
+Edge mask generated
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Final mask assigned for frame 241
+------------------------------
+Generating mask for frame 242
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 242
+------------------------------
+Generating mask for frame 243
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 243
+------------------------------
+Generating mask for frame 244
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 244
+------------------------------
+Generating mask for frame 245
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 245
+------------------------------
+Generating mask for frame 246
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 1
+Edge mask generated
+Final mask assigned for frame 246
+------------------------------
+Generating mask for frame 247
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 247
+------------------------------
+Generating mask for frame 248
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 248
+------------------------------
+Generating mask for frame 249
+Generating gray mask
+Number of objects before isolation: 5
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 249
+------------------------------
+Generating mask for frame 250
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 4
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 250
+------------------------------
+Generating mask for frame 251
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 251
+------------------------------
+Generating mask for frame 252
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 252
+------------------------------
+Generating mask for frame 253
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 253
+------------------------------
+Generating mask for frame 254
+Generating gray mask
+Number of objects before isolation: 3
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 3
+Most significant object index: 3
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 254
+------------------------------
+Generating mask for frame 255
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 4
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 4
+Final object index: 4
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 3
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 255
+------------------------------
+Generating mask for frame 256
+Generating gray mask
+Number of objects before isolation: 2
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 2
+Most significant object index: 2
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 5
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 256
+f9
+{Operation terminated by user during <a href="matlab:matlab.internal.language.introspective.errorDocCallback('loadLogs', 'D:\Aditya\Research Stuff\InCA\main\loadLogs.m', 7)" style="font-weight:bold">loadLogs</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\loadLogs.m',7,0)">line 7</a>)
+
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('launchLogViewer/startupFcn', 'D:\Aditya\Research Stuff\InCA\main\launchLogViewer.mlapp', 37)" style="font-weight:bold">launchLogViewer/startupFcn</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\launchLogViewer.mlapp',37,0)">line 37</a>)
+            app.logs = loadLogs(app.names);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('appdesigner.internal.service.AppManagementService/tryCallback', 'D:\Aditya\MATLAB\toolbox\matlab\appdesigner\appdesigner\runtime\+appdesigner\+internal\+service\AppManagementService.m', 347)" style="font-weight:bold">appdesigner.internal.service.AppManagementService/tryCallback</a> (<a href="matlab: opentoline('D:\Aditya\MATLAB\toolbox\matlab\appdesigner\appdesigner\runtime\+appdesigner\+internal\+service\AppManagementService.m',347,0)">line 347</a>)
+                    callback(app);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('appdesigner.internal.service.AppManagementService>@(~,~)obj.tryCallback(app,startupFcn,false,[])', 'D:\Aditya\MATLAB\toolbox\matlab\appdesigner\appdesigner\runtime\+appdesigner\+internal\+service\AppManagementService.m', 156)" style="font-weight:bold">appdesigner.internal.service.AppManagementService>@(~,~)obj.tryCallback(app,startupFcn,false,[])</a> (<a href="matlab: opentoline('D:\Aditya\MATLAB\toolbox\matlab\appdesigner\appdesigner\runtime\+appdesigner\+internal\+service\AppManagementService.m',156,0)">line 156</a>)
+            cbk = @(~, ~)obj.tryCallback(app, startupFcn, false, []);
+} 
+Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('matlab.apps.internal.GraphicsCallbackProxy/runCallbackFunction', 'D:\Aditya\MATLAB\toolbox\matlab\appdesigner\appdesigner\runtime\+matlab\+apps\+internal\GraphicsCallbackProxy.m', 23)" style="font-weight:bold">matlab.apps.internal.GraphicsCallbackProxy/runCallbackFunction</a> (<a href="matlab: opentoline('D:\Aditya\MATLAB\toolbox\matlab\appdesigner\appdesigner\runtime\+matlab\+apps\+internal\GraphicsCallbackProxy.m',23,0)">line 23</a>)
+Interrupt while evaluating GraphicsCallbackProxy CallbackFcn.
+
+clear

@@ -1,0 +1,31 @@
+------------------------------
+Generating mask for frame 1
+Generating gray mask
+Number of objects before isolation: 0
+No gray mask generated for frame 1
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 1
+<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\bubbleIsolation.m',111,1)">111 </a>    finalCC = bwconncomp(finalImage, 8);
+if system_dependent('IsDebugMode')==1, dbcont; end
+Final mask assigned for frame 1
+------------------------------
+Generating mask for frame 2
+Generating gray mask
+Number of objects before isolation: 0
+No gray mask generated for frame 2
+Generating edge mask
+Number of objects before isolation: 6
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 1
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+imshow(finalImage)
+imshow(grayImage)
+imshow(edgeImage)
+if system_dependent('IsDebugMode')==1, dbquit; end
+clc
+mask = bubbleIsolation(0, frames);

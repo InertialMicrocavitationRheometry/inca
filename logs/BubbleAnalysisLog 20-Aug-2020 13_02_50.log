@@ -1,0 +1,178 @@
+Number of frames: 180
+Generating struct with fields: Centroid, TrackingPoints, AverageRadius, SurfaceArea, Volume, FourierPoints, FourierFitX, FourierFitY, xData, yData, Area, Perimeter, PerimeterPoints
+------------------------------
+Starting analysis of frame 1
+Centroid: 327.1059      288.0923
+Area: 444
+Perimeter Length: 221.551
+Generating 50 periemter points
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 4).
+Elapsed time is 11.931664 seconds.
+Perimeter point generation complete
+Tracking Points:
+  347.7356  288.0923
+  343.8773  290.2111
+  347.0040  293.2013
+  341.1453  293.6509
+  335.2496  292.5694
+  330.7865  290.7665
+  330.6494  291.4199
+  330.2051  291.8387
+  329.7684  292.2879
+  329.3007  292.7566
+  329.0034  293.9325
+  328.5241  295.5269
+  327.6882  297.3477
+  326.8076  292.8337
+  325.9726  294.0331
+  324.9976  294.5809
+  325.3708  291.7795
+  325.2813  290.9674
+  322.5399  293.6117
+  318.5247  296.1506
+  318.4960  294.3478
+  319.3280  292.3682
+  309.9967  294.8663
+  317.1122  290.6583
+  314.4097  289.6962
+  309.9975  288.0923
+  309.9147  285.9206
+  316.9593  285.4871
+  311.1936  281.7922
+  315.7397  281.8438
+  322.8332  284.9880
+  323.7937  284.9820
+  324.5200  284.9666
+  325.1323  284.9826
+  325.6338  284.9641
+  326.0966  284.9861
+  326.5083  284.9599
+  326.9105  284.9867
+  328.1712  271.1586
+  330.2203  271.7660
+  330.7160  276.9815
+  332.3357  276.9784
+  330.6526  282.5036
+  331.0196  283.3615
+  331.2471  284.2034
+  331.7596  284.7112
+  332.0230  285.3891
+  344.0902  281.3678
+  346.7254  283.0549
+  339.3327  286.5477
+
+Average Radius: 9.5742
+Fitting Fourier Series to mask perimeter for frame: 1
+Generating 73 periemter points
+Elapsed time is 0.504488 seconds.
+Perimeter point generation complete
+Number of Perimeter Fourier Fit Points: 73
+Minimum Arc Length: 3
+(Max) Number of Terms in Fit: 40
+Adaptive Number of Terms (T/F): 0
+Beginning Fit
+Creating X and Y Fourier function files with 36 number of terms
+[Warning: Start point not provided, choosing random start point.] 
+[Warning: Start point not provided, choosing random start point.] 
+Deleting function files
+Fit complete
+Number of plotting points: 191845
+Analysis complete
+------------------------------
+Starting analysis of frame 2
+Centroid: 593.6364      454.9786
+Area: 187
+Perimeter Length: 95.513
+Generating 50 periemter points
+Elapsed time is 0.378584 seconds.
+Perimeter point generation complete
+Tracking Points:
+  604.9928  454.9786
+  604.6607  456.3713
+  603.5563  457.5256
+  603.8384  459.0179
+  601.0017  459.0277
+  600.3549  459.8599
+  599.2884  460.2863
+  596.9661  459.0036
+  596.1997  459.0178
+  595.1326  458.1584
+  594.4868  457.5959
+  594.0313  457.0490
+  593.7847  457.3366
+  593.4669  457.6728
+  593.0674  457.9613
+  591.9684  460.1120
+  590.6012  461.4287
+  589.9378  460.8065
+  589.6956  459.7421
+  589.1546  459.1873
+  588.0926  459.0064
+  586.3013  459.0111
+  585.2610  458.2946
+  586.0657  456.9224
+  586.9888  455.8184
+  586.8135  454.9786
+  584.8553  453.8693
+  582.0945  452.0152
+  581.9902  450.3676
+  587.7815  451.7599
+  584.2767  448.1784
+  585.2607  447.1134
+  591.9916  452.9905
+  589.4036  448.3089
+  591.4976  450.4336
+  592.9730  452.9369
+  593.2500  452.9533
+  593.5080  452.9378
+  593.7637  452.9548
+  594.0145  452.9964
+  594.2960  452.9485
+  594.5949  452.9417
+  594.9051  452.9794
+  596.0266  452.0893
+  597.7764  451.0908
+  599.1224  450.9927
+  600.1863  451.3777
+  597.8275  453.3192
+  602.0084  452.8290
+  603.5104  453.7312
+
+Average Radius: 6.2867
+Fitting Fourier Series to mask perimeter for frame: 2
+Generating 31 periemter points
+Elapsed time is 0.256853 seconds.
+Perimeter point generation complete
+Number of Perimeter Fourier Fit Points: 31
+Minimum Arc Length: 3
+(Max) Number of Terms in Fit: 40
+Adaptive Number of Terms (T/F): 0
+Beginning Fit
+Creating X and Y Fourier function files with 15 number of terms
+[Warning: Start point not provided, choosing random start point.] 
+[Warning: Start point not provided, choosing random start point.] 
+Deleting function files
+Fit complete
+Number of plotting points: 14416
+Analysis complete
+------------------------------
+Starting analysis of frame 3
+Centroid: 494.6333      281.5778
+Area: 90
+Perimeter Length: 44.593
+Generating 50 periemter points
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleTrack>angularPerimeter', 'D:\Aditya\Research Stuff\InCA\main\bubbleTrack.m', 125)" style="font-weight:bold">bubbleTrack>angularPerimeter</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\bubbleTrack.m',125,0)">line 125</a>)
+Matrix dimensions must agree.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleTrack', 'D:\Aditya\Research Stuff\InCA\main\bubbleTrack.m', 68)" style="font-weight:bold">bubbleTrack</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\bubbleTrack.m',68,0)">line 68</a>)
+        [xVals, yVals] = angularPerimeter(targetMask, [maskInformation(d).Centroid], 50);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('InCA/BeginBubbleAnalysisButtonPushed', 'D:\Aditya\Research Stuff\InCA\InCA.mlapp', 481)" style="font-weight:bold">InCA/BeginBubbleAnalysisButtonPushed</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\InCA.mlapp',481,0)">line 481</a>)
+            app.maskInformation = bubbleTrack(app, app.mask, app.MinArcLengthSpinner.Value,
+            app.FitFourierSeriestoPointsCheckBox.Value, ...
+} 
+Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('matlab.ui.control.internal.controller.ComponentController/executeUserCallback', 'D:\Aditya\MATLAB\toolbox\matlab\uicomponents\uicomponents\+matlab\+ui\+control\+internal\+controller\ComponentController.m', 382)" style="font-weight:bold">matlab.ui.control.internal.controller.ComponentController/executeUserCallback</a> (<a href="matlab: opentoline('D:\Aditya\MATLAB\toolbox\matlab\uicomponents\uicomponents\+matlab\+ui\+control\+internal\+controller\ComponentController.m',382,0)">line 382</a>)
+Error while evaluating Button PrivateButtonPushedFcn.
+
+f9

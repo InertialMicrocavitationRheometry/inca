@@ -1,0 +1,28 @@
+Number of frames: 180
+Generating struct with fields: Centroid, TrackingPoints, AverageRadius, SurfaceArea, Volume, FourierPoints, FourierFitX, FourierFitY, xData, yData, Area, Perimeter, PerimeterPoints
+------------------------------
+Skipping analysis of frame 1
+------------------------------
+Starting analysis of frame 2
+Centroid: 429.9655       260.069
+Area: 58
+Perimeter Length: 56.866
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 3.9503
+Analysis complete
+------------------------------
+Starting analysis of frame 3
+Centroid: 437.6305      213.2081
+Area: 812
+Perimeter Length: 449.437
+Generating 50 periemter points
+Perimeter point generation complete
+Average Radius: 14.9446
+Analysis complete
+------------------------------
+Starting analysis of frame 4
+Centroid: 418.7244      197.3761
+Area: 1005
+Perimeter Length: 531.009
+Generating 50 periemter points

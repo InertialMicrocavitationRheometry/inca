@@ -1,0 +1,21 @@
+{Not enough input arguments.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleIsolation', 'D:\Aditya\Research Stuff\InCA\main\bubbleIsolation.m', 16)" style="font-weight:bold">bubbleIsolation</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\bubbleIsolation.m',16,0)">line 16</a>)
+[row, col, depth] = size(inputFrames);      %Get the size of the initial frame array
+} 
+mask = bubbleIsolation(~, shimadzuFrames);
+ mask = bubbleIsolation(~, shimadzuFrames);
+                         ↑
+{Error: Invalid expression. When calling a function or indexing a variable, use parentheses. Otherwise, check for
+mismatched delimiters.
+} 
+mask = bubbleIsolation(app, shimadzuFrames);
+{Unrecognized function or variable 'app'.
+} 
+app  = 0 
+
+app =
+
+     0
+
+mask = bubbleIsolation(app, shimadzuFrames);

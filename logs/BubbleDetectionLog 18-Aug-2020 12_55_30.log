@@ -1,0 +1,27 @@
+------------------------------
+Generating mask for frame 1
+Generating gray mask
+Number of objects before isolation: 5
+Size index: 3
+Closest object index: 
+Lowest pixel average object index: 3
+Most significant object index: 1
+Resorting to fallback: Object Circularity
+{Unable to resolve the name stats.Circularity.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleIsolation>isolateObject', 'D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m', 247)" style="font-weight:bold">bubbleIsolation>isolateObject</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m',247,0)">line 247</a>)
+    circularities = [stats.Circularity];
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleIsolation>colorMask', 'D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m', 145)" style="font-weight:bold">bubbleIsolation>colorMask</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m',145,0)">line 145</a>)
+    grayImg = isolateObject(grayImg, targetImage, oldData);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleIsolation', 'D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m', 37)" style="font-weight:bold">bubbleIsolation</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m',37,0)">line 37</a>)
+    grayImage = colorMask(targetImage, oldData);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('InCA/BeginBubbleDetectionButtonPushed', 'D:\Aditya\Research Stuff\TEMA Replacement\InCA.mlapp', 442)" style="font-weight:bold">InCA/BeginBubbleDetectionButtonPushed</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\TEMA Replacement\InCA.mlapp',442,0)">line 442</a>)
+            app.mask = bubbleIsolation(app, app.frames);
+} 
+Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('matlab.ui.control.internal.controller.ComponentController/executeUserCallback', 'D:\Aditya\MATLAB\toolbox\matlab\uicomponents\uicomponents\+matlab\+ui\+control\+internal\+controller\ComponentController.m', 382)" style="font-weight:bold">matlab.ui.control.internal.controller.ComponentController/executeUserCallback</a> (<a href="matlab: opentoline('D:\Aditya\MATLAB\toolbox\matlab\uicomponents\uicomponents\+matlab\+ui\+control\+internal\+controller\ComponentController.m',382,0)">line 382</a>)
+Error while evaluating Button PrivateButtonPushedFcn.
+
+opentoline('D:\Aditya\Research Stuff\TEMA Replacement\main\bubbleIsolation.m',247,0)

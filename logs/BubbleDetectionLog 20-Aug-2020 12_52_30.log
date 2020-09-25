@@ -1,0 +1,181 @@
+------------------------------
+Generating mask for frame 1
+Generating gray mask
+Number of objects before isolation: 0
+No gray mask generated for frame 1
+Generating edge mask
+Number of objects before isolation: 31
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 28
+Most significant object index: 1
+Final object index: 1
+Edge mask generated
+Final mask assigned for frame 1
+<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\bubbleIsolation.m',122,1)">122 </a>    if ~any(any(finalImage))
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 2
+Generating gray mask
+Number of objects before isolation: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 27
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 17
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Edge mask generated
+Final mask assigned for frame 2
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 3
+Generating gray mask
+Number of objects before isolation: 6
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 6
+Most significant object index: 1
+Final object index: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 3
+Final mask assigned for frame 3
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 4
+Generating gray mask
+Number of objects before isolation: 11
+Size index: 2
+Closest object index: 1
+Lowest pixel average object index: 11
+Most significant object index: 2
+Resorting to fallback: Object Circularity
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 4
+Final mask assigned for frame 4
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 5
+Generating gray mask
+Number of objects before isolation: 6
+Size index: 5
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 5
+Final object index: 5
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 5
+Final mask assigned for frame 5
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 6
+Generating gray mask
+Number of objects before isolation: 10
+Size index: 9
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 9
+Resorting to fallback: Object Circularity
+Final object index: 3
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 6
+Final mask assigned for frame 6
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 7
+Generating gray mask
+Number of objects before isolation: 9
+Size index: 3
+Closest object index: 1
+Lowest pixel average object index: 7
+Most significant object index: 3
+Resorting to fallback: Object Circularity
+Final object index: 2
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 7
+Final mask assigned for frame 7
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 8
+Generating gray mask
+Number of objects before isolation: 6
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 1
+Final object index: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 8
+Final mask assigned for frame 8
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 9
+Generating gray mask
+Number of objects before isolation: 4
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 4
+Most significant object index: 1
+Final object index: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 9
+Final mask assigned for frame 9
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 10
+Generating gray mask
+Number of objects before isolation: 5
+Size index: 1
+Closest object index: 1
+Lowest pixel average object index: 5
+Most significant object index: 1
+Final object index: 1
+Gray mask generated
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 10
+Final mask assigned for frame 10
+if system_dependent('IsDebugMode')==1, dbcont; end
+------------------------------
+Generating mask for frame 11
+Generating gray mask
+Number of objects before isolation: 0
+No gray mask generated for frame 11
+Generating edge mask
+Number of objects before isolation: 0
+No edge mask generated for frame 11
+Final mask assigned for frame 11
+imshow(finalImage)
+any(any(finalImage)
+ any(any(finalImage)
+                    ↑
+{Error: Invalid expression. When calling a function or indexing a variable, use parentheses. Otherwise, check for
+mismatched delimiters.
+} 
+any(any(finalImage))
+
+ans =
+
+  <a href="matlab:helpPopup logical" style="font-weight:bold">logical</a>
+
+   0
+
+if system_dependent('IsDebugMode')==1, dbquit all; end
+f4
