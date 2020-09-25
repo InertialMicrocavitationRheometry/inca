@@ -1,4 +1,4 @@
-### Installation Notes---
+## Installation Notes---
 * This application was designed with R2020a
 * Performance and compatibility with older versions is not guaranteed however core aspects of the program should continue to function. Please refer to official MATLAB 
   documentation for features that have changed between your version and R2020a
@@ -12,18 +12,7 @@
   - Curve Fitting Toolbox 
   - Parallel Computing Toolbox
 
-* In order to install and run this application download InCA.zip and unzip the folder in your preferred directory. Make sure the folder heirarchy matches the one below.
----------------------------------------
-+---- InCA.mlapp                      |
-\---- main\                           |
-     +---- main runtime files (.m)    |
-\---- themes\                         |
-     +---- theme files (.m)           |
-\---- logs\                           |
-     +---- logging files (.log)       |
-\---- images\                         |
-     +---- program icons (.png/.ico)  |
----------------------------------------
+* In order to install and run this application download InCA.zip and unzip the folder in your preferred directory. Folder heirarchy should already be set
 
 ## Running the MATLAB App---
 In order to properly run InCA make sure that the working path of your MATLAB instance is set to the location of the InCA.mlapp file, it is NOT necessary to add the other
