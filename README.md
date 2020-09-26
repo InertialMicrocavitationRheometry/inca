@@ -13,7 +13,7 @@
   - Curve Fitting Toolbox 
   - Parallel Computing Toolbox
 
-* In order to install and run this application download clone the repository and unzip the folder in your preferred directory. Folder heirarchy should already be set
+* In order to install and run this application download/clone the repository and unzip the folder in your preferred directory. Folder heirarchy should already be set
 
 ## Running the MATLAB App
 In order to properly run InCA make sure that the working path of your MATLAB instance is set to the location of the InCA.mlapp file, it is NOT necessary to add the other
