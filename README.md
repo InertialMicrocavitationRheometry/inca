@@ -1,6 +1,6 @@
 ## Installation Notes
 * This application was designed with R2020a
-   - #### With the release of R2020b MatLab has brought exciting new features to the App Designer such as figure icons and custom components, expect to see a release that will **require** R2020b in order to run. I will attempt to hold off on the update for as long as possible so that others have time to upgrade to R2020b as well
+   - #### With the release of R2020b MatLab has brought exciting new features to the App Designer such as figure icons and custom components and general performance enhancements, expect to see a release that will **require** R2020b in order to run. I will attempt to hold off on the update for as long as possible so that others have time to upgrade to R2020b as well
 * Performance and compatibility with older versions is not guaranteed however core aspects of the program should continue to function. Please refer to official MATLAB 
   documentation for features that have changed between your version and R2020a
 * There are two installation options: A universal installation using the .mlapp MATLAB App file and a Windows only .exe. As of now the universal installation option is
