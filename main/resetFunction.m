@@ -23,10 +23,8 @@ app.SavePath.Value = "";
 cla(app.MainPlot);
 cla(app.EvolutionPlot);
 cla(app.RadiusPlot);
-cla(app.AreaPlot);
-cla(app.PerimeterPlot);
-cla(app.SurfaceAreaPlot);
-cla(app.VolumePlot);
+cla(app.TwoDimensionalPlot);
+cla(app.ThreeDimensionalPlot);
 cla(app.CentroidPlot);
 cla(app.AsphericityPlot);
 
