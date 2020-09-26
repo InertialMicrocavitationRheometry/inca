@@ -40,7 +40,8 @@ the green play/run button found at the top of the MATLAB App Designer window. A 
 ## To-Do 
 - [x] Consolidate plotting functions in plotting class
 - [x] Consolidate figure theme functions in figureappearance class
-- [ ] Consolidate bubble analysis functions in bubbleanalysis class
+- [x] Consolidate bubble analysis functions in bubbleanalysis class
+- [ ] Consolidate functions related to importing and exporting data into InCA
 - [ ] Swap current mask overlay preview panel for triggerable panel/extend control panel so all components are visible at the same time
 
 
