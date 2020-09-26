@@ -240,7 +240,6 @@ classdef figureappearance
             
             app.TwoDimensionalPlot.BackgroundColor = app.theme.backgroundColor;
             app.TwoDimensionalPlot.XColor = app.theme.axisColor;
-            app.TwoDimensionalPlot.YColor = app.theme.axisColor;
             app.TwoDimensionalPlot.ZColor = app.theme.axisColor;
             app.TwoDimensionalPlot.GridColor = app.theme.axisColor;
             app.TwoDimensionalPlot.Color = app.theme.plotBackground;
@@ -250,7 +249,6 @@ classdef figureappearance
             
             app.ThreeDimensionalPlot.BackgroundColor = app.theme.backgroundColor;
             app.ThreeDimensionalPlot.XColor = app.theme.axisColor;
-            app.ThreeDimensionalPlot.YColor = app.theme.axisColor;
             app.ThreeDimensionalPlot.ZColor = app.theme.axisColor;
             app.ThreeDimensionalPlot.GridColor = app.theme.axisColor;
             app.ThreeDimensionalPlot.Color = app.theme.plotBackground;
