@@ -38,9 +38,9 @@ the green play/run button found at the top of the MATLAB App Designer window. A 
 * Due to MATLAB restrictions the InCA window will occasionally hide/show itself when opening/saving files, do not be alarmed by this behavior. MATLAB is still fine tuning graphic application behavior
 
 ## To-Do 
-- [ ] Consolidate plotting functions in plotting class
-- [ ] Consolidate figure theme functions in figureappearance class
-- [ ] Consolidate bubble analysis functinos in bubbleanalysis class
+- [x] Consolidate plotting functions in plotting class
+- [x] Consolidate figure theme functions in figureappearance class
+- [ ] Consolidate bubble analysis functions in bubbleanalysis class
 - [ ] Swap current mask overlay preview panel for triggerable panel/extend control panel so all components are visible at the same time
 
 
