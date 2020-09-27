@@ -3,7 +3,7 @@ classdef bubbleAnalysis
         %Pre Process the frames before analyzing them
         function returnFrames = preprocessFrames(app, inputFrames)
             
-            fileID = generateDiaryFile("FramePreProcessingLog");
+            fileID = logging.generateDiaryFile("FramePreProcessingLog");
             
             [~, ~, numImages] = size(inputFrames);
             returnFrames = zeros(size(inputFrames));
@@ -44,7 +44,7 @@ classdef bubbleAnalysis
         % Generates a mask for the given frame, going forward in time
         function outputMask = maskGenForward(app, inputFrames)
             % A function to isolate the bubble in each frame, returns an MxNxA logical array where M & N are the image size and A is the number of frames
-            fileID = generateDiaryFile("BubbleDetectionLog");
+            fileID = logging.generateDiaryFile("BubbleDetectionLog");
             
             %% Program input and set up
             [row, col, depth] = size(inputFrames);      %Get the size of the initial frame array
@@ -57,7 +57,7 @@ classdef bubbleAnalysis
             
             %% Create mask for each frame
             for f = (1 + app.IgnoreFirstFrameCheckBox.Value):depth
-                
+                wtBr.Message = "Isolating bubble in frame " + num2str(f) + "/" + num2str(depth);
                 %     fprintf(fileID, '%s', '------------------------------');
                 %     fprintf(fileID, '\n');
                 %     fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
@@ -181,7 +181,7 @@ classdef bubbleAnalysis
         % Generates a mask for the given frame, going backwards in time
         function outputMask = maskGenReverse(app, inputFrames)
             % A function to isolate the bubble in each frame, returns an MxNxA logical array where M & N are the image size and A is the number of frames
-            fileID = generateDiaryFile("BubbleReverseDetectionLog");
+            fileID = logging.generateDiaryFile("BubbleReverseDetectionLog");
             
             %% Program input and set up
             [row, col, depth] = size(inputFrames);      %Get the size of the initial frame array
@@ -194,7 +194,7 @@ classdef bubbleAnalysis
             
             %% Create mask for each frame
             for f = depth:-1:(1 + app.IgnoreFirstFrameCheckBox.Value)
-                
+                wtBr.Message = "Isolating bubble in frame " + num2str(f) + "/" + num2str(depth);
                 %                 fprintf(fileID, '%s', '------------------------------');
                 %                 fprintf(fileID, '\n');
                 %                 fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
@@ -501,7 +501,7 @@ classdef bubbleAnalysis
         %to use
         function finalMask = compareMasks(forwardMask, reverseMask)
             
-            %             fileID = generateDiaryFile("MaskComparisionLog");
+            %             fileID = logging.generateDiaryFile("MaskComparisionLog");
             
             %% Preliminary size check
             if size(forwardMask) ~= size(reverseMask)
@@ -649,7 +649,7 @@ classdef bubbleAnalysis
             % A function to generate data about each mask
             
             %% Set up logging
-            fileID = generateDiaryFile("BubbleAnalysisLog");
+            fileID = logging.generateDiaryFile("BubbleAnalysisLog");
             
             %% Get number of frames
             [~, ~, depth] = size(mask);
@@ -669,7 +669,8 @@ classdef bubbleAnalysis
             
             %% Analyze the mask for each frame
             for d = 1:depth
-                
+                standardMsg = "Analyzing frame " + num2str(d) + "/" + num2str(depth);
+                wtBr.Message = standardMsg;
                 wtBr.Value = d./depth;
                 %     fprintf(fileID, '%s', '------------------------------');
                 %     fprintf(fileID, '\n');
@@ -697,6 +698,7 @@ classdef bubbleAnalysis
                     targetMask = mask(:, :, d);
                     
                     %Use regionprops to get basic mask data
+                    wtBr.Message = standardMsg + ": Calculating centroid, area, and perimeter";
                     targetStats = regionprops(targetMask, 'Centroid', 'Area', 'Perimeter');
                     
                     %Assign that data to the output struct
@@ -715,11 +717,13 @@ classdef bubbleAnalysis
                     maskInformation(d).PerimeterPoints = bubbleAnalysis.generatePerimeterPoints(targetMask);
                     
                     %Get the tracking points
+                    wtBr.Message = standardMsg + ": Generaing tracking points";
                     [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], 50, fileID);
                     maskInformation(d).TrackingPoints = [xVals, yVals];
                     
                     %Calculate the average radius
                     center = [maskInformation(d).Centroid];
+                    wtBr.Message = standardMsg + ": Calculating average radius";
                     maskInformation(d).AverageRadius = mean(sqrt( (center(1) - xVals).^2 + (center(2) - yVals).^2 ), 'all');
                     %         fprintf(fileID, '%s', "Average Radius: " + num2str(maskInformation(d).AverageRadius));
                     %         fprintf(fileID, '\n');
@@ -728,6 +732,7 @@ classdef bubbleAnalysis
                         %             fprintf(fileID, '%s', "Fitting Fourier Series to mask perimeter for frame: " + num2str(d));
                         %             fprintf(fileID, '\n');
                         %Get the points for the fourier fit
+                        wtBr.Message = standardMsg + ": Generaing Fourier Fit points";
                         [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], floor( maskInformation(d).Perimeter./arcLength), fileID);
                         maskInformation(d).FourierPoints = [xVals, yVals];
                         %             fprintf(fileID, '%s', "Number of Perimeter Fourier Fit Points: " + num2str(length(xVals)));
@@ -742,6 +747,7 @@ classdef bubbleAnalysis
                         %             fprintf(fileID, '\n');
                         %             fprintf(fileID, '%s', "Beginning Fit");
                         %             fprintf(fileID, '\n');
+                        wtBr.Message = standardMsg + ": Fitting parametric Fourier Series";
                         [xFit, yFit, xData, yData] = bubbleAnalysis.fourierFit(xVals, yVals, arcLength, numberTerms, adaptiveTerms,fileID);
                         %             fprintf(fileID, '%s', "Fit complete");
                         %             fprintf(fileID, '\n');
