@@ -43,5 +43,6 @@ the green play/run button found at the top of the MATLAB App Designer window. A 
 - [x] Consolidate bubble analysis functions in bubbleanalysis class
 - [x] Consolidate functions related to importing and exporting data into InCA
 - [ ] Swap current mask overlay preview panel for triggerable panel/extend control panel so all components are visible at the same time
-
+- [ ] Surface Area/Volume of Revolution calculations
+- [ ] Make it pretty
 
