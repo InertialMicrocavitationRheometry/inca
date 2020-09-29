@@ -645,7 +645,7 @@ classdef bubbleAnalysis
         end
         
         %Analyze the video
-        function maskInformation = bubbleTrack(app, mask, arcLength, doFit, numberTerms, adaptiveTerms, ignoreFrames)
+        function maskInformation = bubbleTrack(app, mask, arcLength, orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames)
             % A function to generate data about each mask
             
             %% Set up logging
@@ -699,7 +699,7 @@ classdef bubbleAnalysis
                     
                     %Use regionprops to get basic mask data
                     wtBr.Message = standardMsg + ": Calculating centroid, area, and perimeter";
-                    targetStats = regionprops(targetMask, 'Centroid', 'Area', 'Perimeter');
+                    targetStats = regionprops(targetMask, 'Centroid', 'Area', 'Perimeter', 'Orientation');
                     
                     %Assign that data to the output struct
                     maskInformation(d).Centroid = targetStats.Centroid;
@@ -728,6 +728,28 @@ classdef bubbleAnalysis
                     %         fprintf(fileID, '%s', "Average Radius: " + num2str(maskInformation(d).AverageRadius));
                     %         fprintf(fileID, '\n');
                     
+                    %Translate the bubble to be centered on the axes
+                    translatedPoints = bubbleAnalysis.translatePerim(maskInformation(d).PerimeterPoints, center);
+                    switch orientation
+                        case 'horizontal'
+                            angle = 0;
+                        case 'vertical'
+                            angle = 90;
+                        case 'major'
+                            angle = targetStats.Orientation;
+                        case 'minor' 
+                            angle = targetStats.Orientation + 90;
+                    end
+                    
+                    %Rotate the bubble to be in its desired orientation
+                    rotatedPoints = bubbleAnalysis.rotatePerim(translatedPoints, angle);
+                    
+                    %Calculate the surface area of the bubble (roughly)
+                    maskInformation(d).SurfaceArea = bubbleAnalysis.calcSurf(rotatedPoints);
+                    
+                    %Calculate the volume of the bubble (roughly)
+                    maskInformation(d).Volume = bubbleAnalysis.calcVol(rotatedPoints);
+   
                     if doFit
                         %             fprintf(fileID, '%s', "Fitting Fourier Series to mask perimeter for frame: " + num2str(d));
                         %             fprintf(fileID, '\n');
@@ -945,6 +967,160 @@ classdef bubbleAnalysis
             %Close the files
             fclose(xFile);
             fclose(yFile);
+        end
+        
+        %Translate the bubble to be centered on the axes
+        function translatedPoints = translatePerim(originalPoints, centroid)
+            translatedPoints = zeros(size(originalPoints));
+            translatedPoints(:, 1) = originalPoints(:, 1) - centroid(1);
+            translatedPoints(:, 2) = originalPoints(:, 2) - centroid(2);
+        end
+        
+        %Rotate the bubble perimeter points so that the specified axis is
+        %the horizontal axis (rotate by angle theta)
+        function rotatedPoints = rotatePerim(originalPoints, theta)
+            rotationMat = [cosd(theta) sind(theta); -sind(theta) cosd(theta)];
+            rotatedPoints = (rotationMat*originalPoints')';
+        end
+        
+        %Calculate the surface area of the bubble by breaking it into
+        %frustrums
+        function surfaceArea = calcSurf(perimeterPoints)
+            topSum = 0;
+            bottomSum = 0;
+            parfor i = 1:2
+                if i == 1
+                    %Create a matrix of all the points above the X axis
+                    aboveX = perimeterPoints(perimeterPoints(:, 2) > 0, :);
+                    
+                    %Create a vector of the x and y points
+                    XVals = aboveX(:, 1);
+                    YVals = aboveX(:, 2);
+                    
+                    %Sort the points so that the x vals are ascending 
+                    [sortedX, sortIndex] = sort(XVals);
+                    sortedY = YVals(sortIndex);
+                    
+                    %Calculate the surface area of each frustrum
+                    for j = 1:length(sortedX) - 1
+                        %Get the index of the right most element that
+                        %hasn't already been evaluated
+                        idx = length(sortedX) - j + 1;
+                        %Get the right radius of the frustrum
+                        R1 = abs(sortedY(idx));
+                        
+                        %Get the left radius of the frustrum
+                        R2 = abs(sortedY(idx - 1));
+                        
+                        %Get the height of the frustrum
+                        h = sortedX(idx) - sortedX(idx - 1);
+                        
+                        %Calculate the surface area and add it to the running
+                        %total
+                        topSum = topSum + (pi/2*(R1 + R2)*sqrt((R1 - R2)^2 + h^2)); 
+                    end
+                elseif i == 2
+                    %Create a matrix of all the points below the X axis
+                    belowX = perimeterPoints(perimeterPoints(:, 2) < 0, :);
+                    
+                    %Create a vector of the x and y points
+                    XVals = belowX(:, 1);
+                    YVals = belowX(:, 2);
+                    
+                    %Sort the points so that the x vals are ascending 
+                    [sortedX, sortIndex] = sort(XVals);
+                    sortedY = YVals(sortIndex);
+                    
+                    %Calculate the surface area of each frustrum
+                    for j = 1:length(sortedX) - 1
+                        %Get the index of the right most element that
+                        %hasn't already been evaluated
+                        idx = length(sortedX) - j + 1;
+                        %Get the right radius of the frustrum
+                        R1 = abs(sortedY(idx));
+                        
+                        %Get the left radius of the frustrum
+                        R2 = abs(sortedY(idx - 1));
+                        
+                        %Get the height of the frustrum
+                        h = sortedX(idx) - sortedX(idx - 1);
+                        
+                        %Calculate the surface area and add it to the running
+                        %total
+                        bottomSum = bottomSum + (pi/2*(R1 + R2)*sqrt((R1 - R2)^2 + h^2)); 
+                    end
+                end
+            end
+            surfaceArea = topSum + bottomSum;
+        end
+        
+        function volume = calcVol(perimeterPoints)
+            topSum = 0;
+            bottomSum = 0;
+            parfor i = 1:2
+                if i == 1
+                    %Create a matrix of all the points above the X axis
+                    aboveX = perimeterPoints(perimeterPoints(:, 2) > 0, :);
+                    
+                    %Create a vector of the x and y points
+                    XVals = aboveX(:, 1);
+                    YVals = aboveX(:, 2);
+                    
+                    %Sort the points so that the x vals are ascending 
+                    [sortedX, sortIndex] = sort(XVals);
+                    sortedY = YVals(sortIndex);
+                    
+                    %Calculate the surface area of each frustrum
+                    for j = 1:length(sortedX) - 1
+                        %Get the index of the right most element that
+                        %hasn't already been evaluated
+                        idx = length(sortedX) - j + 1;
+                        %Get the right radius of the frustrum
+                        R1 = abs(sortedY(idx));
+                        
+                        %Get the left radius of the frustrum
+                        R2 = abs(sortedY(idx - 1));
+                        
+                        %Get the height of the frustrum
+                        h = sortedX(idx) - sortedX(idx - 1);
+                        
+                        %Calculate the surface area and add it to the running
+                        %total
+                        topSum = topSum + pi/6*h*(R1^2 + R1*R2 + R2^2);
+                    end
+                elseif i == 2
+                    %Create a matrix of all the points below the X axis
+                    belowX = perimeterPoints(perimeterPoints(:, 2) < 0, :);
+                    
+                    %Create a vector of the x and y points
+                    XVals = belowX(:, 1);
+                    YVals = belowX(:, 2);
+                    
+                    %Sort the points so that the x vals are ascending 
+                    [sortedX, sortIndex] = sort(XVals);
+                    sortedY = YVals(sortIndex);
+                    
+                    %Calculate the surface area of each frustrum
+                    for j = 1:length(sortedX) - 1
+                        %Get the index of the right most element that
+                        %hasn't already been evaluated
+                        idx = length(sortedX) - j + 1;
+                        %Get the right radius of the frustrum
+                        R1 = abs(sortedY(idx));
+                        
+                        %Get the left radius of the frustrum
+                        R2 = abs(sortedY(idx - 1));
+                        
+                        %Get the height of the frustrum
+                        h = sortedX(idx) - sortedX(idx - 1);
+                        
+                        %Calculate the surface area and add it to the running
+                        %total
+                        bottomSum = bottomSum + pi/6*h*(R1^2 + R1*R2 + R2^2);
+                    end
+                end
+            end
+            volume = topSum + bottomSum;
         end
         
     end

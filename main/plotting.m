@@ -5,8 +5,7 @@ classdef plotting
         function convertedPlotSet = convertUnits(app)
             
             %Convert frames to seconds
-            time = 0:app.frameInterval:(app.numFrames - 1)*app.frameInterval;
-            convertedPlotSet.TimeVector = time;
+            convertedPlotSet.TimeVector = 0:app.frameInterval:(app.numFrames - 1)*app.frameInterval;
             
             %Convert the basic analysis things to microns from pixels
             convertedPlotSet.AverageRadius = app.radius.*app.MicronPixelEditField.Value;
@@ -204,7 +203,7 @@ classdef plotting
                 
                 yyaxis(app.AsphericityPlot, 'right');
                 ylabel(app.AsphericityPlot, "R/Rmax");
-                app.AsphericityPlot.YColor = app.theme.axisColor;
+                app.AsphericityPlot.YColor = [0, 0, 0];
                 
                 r = plot(app.AsphericityPlot, 1:app.numFrames, normalizedRadius, "LineStyle", "-", "Marker", "none", "Color", [1, 1, 1]);
                 
@@ -266,7 +265,7 @@ classdef plotting
                 
                 yyaxis(app.AsphericityPlot, 'right');
                 ylabel(app.AsphericityPlot, "R/Rmax");
-                app.AsphericityPlot.YColor = app.theme.axisColor;
+                app.AsphericityPlot.YColor = [0, 0, 0];
                 
                 r = plot(app.AsphericityPlot, app.convertedPlotSet.TimeVector, normalizedRadius, "LineStyle", "-", "Marker", "none", "Color", [1, 1, 1]);
                 
@@ -373,108 +372,76 @@ classdef plotting
         end
         
         %Plot the Data in the Overview and Centroid Tabs
-        function plotData(app, radius, area, perimeter, surfaceArea, volume, centroid)
+        function plotData(radius, area, perimeter, surfaceArea, volume, centroid, ...
+                radiusHandle, twoDHandle, threeDHandle, centerHandle, numFrames, currentFrame)
             if ~isempty(radius)
                 %Radius Plot
-                app.RadiusPlot.XLim = [1, app.numFrames];
-                plot(app.RadiusPlot, 1:app.numFrames, radius ,"--.");
-                hold(app.RadiusPlot, 'on');
-                plot(app.RadiusPlot, app.currentFrame, radius(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.RadiusPlot, 'off');
+                radiusHandle.XLim = [1, numFrames];
+                plot(radiusHandle, 1:numFrames, radius , currentFrame, radius(currentFrame), '*g');
                 
                 %Area and Perimeter Plot
-                app.TwoDimensionalPlot.XLim = [1, app.numFrames];
-                yyaxis(app.TwoDimensionalPlot, 'left');
-                plot(app.TwoDimensionalPlot, 1:app.numFrames, area, '--.');
-                hold(app.TwoDimensionalPlot, 'on');
-                plot(app.TwoDimensionalPlot, app.currentFrame, area(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.TwoDimensionalPlot, 'off');
-                yyaxis(app.TwoDimensionalPlot, 'right');
-                plot(app.TwoDimensionalPlot, 1:app.numFrames, perimeter,'--.');
-                hold(app.TwoDimensionalPlot, 'on');
-                plot(app.TwoDimensionalPlot, app.currentFrame, perimeter(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.TwoDimensionalPlot, 'off');
+                twoDHandle.XLim = [1, numFrames];
+                yyaxis(twoDHandle, 'left');
+                plot(twoDHandle, 1:numFrames, area, currentFrame, area(currentFrame), '*g');
+                yyaxis(twoDHandle, 'right');
+                plot(twoDHandle, 1:numFrames, perimeter, currentFrame, perimeter(currentFrame), '*g');
                 
                 %Surface Area and Volume Plots
-                app.ThreeDimensionalPlot.XLim = [1, app.numFrames];
-                yyaxis(app.ThreeDimensionalPlot, 'left');
-                plot(app.ThreeDimensionalPlot, 1:app.numFrames, surfaceArea, '--.');
-                hold(app.ThreeDimensionalPlot, 'on');
-                plot(app.ThreeDimensionalPlot, app.currentFrame, surfaceArea(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.ThreeDimensionalPlot, 'off');
-                yyaxis(app.ThreeDimensionalPlot, 'right');
-                plot(app.ThreeDimensionalPlot, 1:app.numFrames, volume, '--.');
-                hold(app.ThreeDimensionalPlot, 'on');
-                plot(app.ThreeDimensionalPlot, app.currentFrame, volume(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.ThreeDimensionalPlot, 'off');
+                threeDHandle.XLim = [1, numFrames];
+                yyaxis(threeDHandle, 'left');
+                plot(threeDHandle, 1:numFrames, surfaceArea, currentFrame, surfaceArea(currentFrame), '*g');
+                yyaxis(threeDHandle, 'right');
+                plot(threeDHandle, 1:numFrames, volume, currentFrame, volume(currentFrame), '*g');
                 
                 %Centroid Plot
-                gradient = zeros(1, 3, app.numFrames);
-                gradient(1, 1, :) = linspace(app.colorMap.Start(1), app.colorMap.End(1), app.numFrames);
-                gradient(1, 2, :) = linspace(app.colorMap.Start(2), app.colorMap.End(2), app.numFrames);
-                gradient(1, 3, :) = linspace(app.colorMap.Start(3), app.colorMap.End(3), app.numFrames);
-                plot(app.CentroidPlot, centroid(1, 1), centroid(1, 2), '--*', "Color", gradient(:, :, 1));
-                hold(app.CentroidPlot, 'on');
-                for d = 2:app.numFrames
-                    plot(app.CentroidPlot, centroid(d, 1), centroid(d, 2), '--*', 'Color', gradient(:, :, d));
-                end
-                plot(app.CentroidPlot, centroid(app.currentFrame, 1), centroid(app.currentFrame, 2), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.CentroidPlot, 'off');
-                
+                gradient = zeros(1, 3, numFrames);
+                gradient(1, 1, :) = linspace(178/255, 33/255, numFrames);
+                gradient(1, 2, :) = linspace(24/255, 102/255, numFrames);
+                gradient(1, 3, :) = linspace(43/255, 172/255, numFrames);
+                plot(centerHandle, centroid(1, 1), centroid(1, 2), '--*', "Color", gradient(:, :, 1));
+                hold(centerHandle, 'on');
+                for d = 2:numFrames
+                    plot(centerHandle, centroid(d, 1), centroid(d, 2), '--*', 'Color', gradient(:, :, d));
+                end                
+                hold(centerHandle, 'off');
             end
         end
         
         %Plot the Data in the Overview and Centroid Tabs in the alternate
         %axes
-        function plotConvertedData(app)
+        function plotConvertedData(plotSet, radiusHandle, twoDHandle, threeDHandle, centerHandle, currentFrame, numFrames)
             
-            if ~isempty(app.radius)
+            if ~isempty(plotSet.AverageRadius)
                 %Radius Plot
-                app.RadiusPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
-                plot(app.RadiusPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.AverageRadius ,"--.");
-                hold(app.RadiusPlot, 'on');
-                plot(app.RadiusPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.AverageRadius(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.RadiusPlot, 'off');
+                radiusHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
+                plot(radiusHandle, plotSet.TimeVector, plotSet.AverageRadius , ...
+                    plotSet.TimeVector(currentFrame), plotSet.AverageRadius(currentFrame), '*g');
                 
                 %Area and Perimeter Plot
-                app.TwoDimensionalPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
-                yyaxis(app.TwoDimensionalPlot, 'left');
-                plot(app.TwoDimensionalPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.Area, '--.');
-                hold(app.TwoDimensionalPlot, 'on');
-                plot(app.TwoDimensionalPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.Area(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.TwoDimensionalPlot, 'off');
-                yyaxis(app.TwoDimensionalPlot, 'right');
-                plot(app.TwoDimensionalPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.Perimeter,'--.');
-                hold(app.TwoDimensionalPlot, 'on');
-                plot(app.TwoDimensionalPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.Perimeter(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.TwoDimensionalPlot, 'off');
+                twoDHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
+                yyaxis(twoDHandle, 'left');
+                plot(twoDHandle, plotSet.TimeVector, plotSet.Area, plotSet.TimeVector(currentFrame), plotSet.Area(currentFrame) ,'*g');
+                yyaxis(twoDHandle, 'right');
+                plot(twoDHandle, plotSet.TimeVector, plotSet.Perimeter, plotSet.TimeVector(currentFrame), plotSet.Perimeter(currentFrame), '*g');
                 
                 %Surface Area and Volume Plots
-                app.ThreeDimensionalPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
-                yyaxis(app.ThreeDimensionalPlot, 'left');
-                plot(app.ThreeDimensionalPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.SurfaceArea, '--.');
-                hold(app.ThreeDimensionalPlot, 'on');
-                plot(app.ThreeDimensionalPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.SurfaceArea(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.ThreeDimensionalPlot, 'off');
-                yyaxis(app.ThreeDimensionalPlot, 'right');
-                plot(app.ThreeDimensionalPlot, app.convertedPlotSet.TimeVector, app.convertedPlotSet.Volume, '--.');
-                hold(app.ThreeDimensionalPlot, 'on');
-                plot(app.ThreeDimensionalPlot, app.convertedPlotSet.TimeVector(app.currentFrame), app.convertedPlotSet.Volume(app.currentFrame), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.ThreeDimensionalPlot, 'off');
-                
+                threeDHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
+                yyaxis(threeDHandle, 'left');
+                plot(threeDHandle, plotSet.TimeVector, plotSet.SurfaceArea, plotSet.TimeVector(currentFrame), plotSet.SurfaceArea(currentFrame), '*g');
+                yyaxis(threeDHandle, 'right');
+                plot(threeDHandle, plotSet.TimeVector, plotSet.Volume, plotSet.TimeVector(currentFrame), plotSet.Volume(currentFrame), '*g');
+
                 %Centroid Plot
-                gradient = zeros(1, 3, app.numFrames);
-                gradient(1, 1, :) = linspace(app.colorMap.Start(1), app.colorMap.End(1), app.numFrames);
-                gradient(1, 2, :) = linspace(app.colorMap.Start(2), app.colorMap.End(2), app.numFrames);
-                gradient(1, 3, :) = linspace(app.colorMap.Start(3), app.colorMap.End(3), app.numFrames);
-                plot(app.CentroidPlot, app.convertedPlotSet.Centroid(1, 1), app.convertedPlotSet.Centroid(1, 2), '--*', "Color", gradient(:, :, 1));
-                hold(app.CentroidPlot, 'on');
-                for d = 2:app.numFrames
-                    plot(app.CentroidPlot, app.convertedPlotSet.Centroid(d, 1), app.convertedPlotSet.Centroid(d, 2), '--*', 'Color', gradient(:, :, d));
+                gradient = zeros(1, 3, numFrames);
+                gradient(1, 1, :) = linspace(178/255, 33/255, numFrames);
+                gradient(1, 2, :) = linspace(24/255, 102/255, numFrames);
+                gradient(1, 3, :) = linspace(43/255, 172/255, numFrames);
+                plot(centerHandle, plotSet.Centroid(1, 1), plotSet.Centroid(1, 2), '--*', "Color", gradient(:, :, 1));
+                hold(centerHandle, 'on');
+                for d = 2:numFrames
+                    plot(centerHandle, plotSet.Centroid(d, 1), plotSet.Centroid(d, 2), '--*', 'Color', gradient(:, :, d));
                 end
-                plot(app.CentroidPlot, app.convertedPlotSet.Centroid(app.currentFrame, 1), app.convertedPlotSet.Centroid(app.currentFrame, 2), '*', 'Color', app.theme.markerStyle, 'MarkerSize', 10);
-                hold(app.CentroidPlot, 'off');
-                
+                hold(centerHandle, 'off');
             end
         end
         
@@ -492,29 +459,25 @@ classdef plotting
                     %Update the main viewer window
                     imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
                     hold(app.MainPlot, 'on');
-                    perimeterPoints = app.maskInformation(app.currentFrame).PerimeterPoints;
-                    X = perimeterPoints(:, 1);
-                    Y = perimeterPoints(:, 2);
-                    plot(app.MainPlot, X, Y, 'LineWidth', 3, 'Color', 'r' , "DisplayName", "Mask Boundary");
-                    center = app.maskInformation(app.currentFrame).Centroid;
-                    X = center(1);
-                    Y = center(2);
-                    plot(app.MainPlot, X, Y, '-b*', 'MarkerSize', 20, 'LineWidth', 2, "DisplayName", "Centroid");
-                    tracking = app.maskInformation(app.currentFrame).TrackingPoints;
-                    X = tracking(:, 1);
-                    Y = tracking(:, 2);
-                    plot(app.MainPlot, X, Y, ':y*', 'MarkerSize', 10, "DisplayName", "Tracking Points");
-                    
-                    if app.FitFourierSeriestoPointsCheckBox.Value
-                        fourier = app.maskInformation(app.currentFrame).FourierPoints;
-                        X = fourier(:, 1);
-                        Y = fourier(:, 2);
-                        plot(app.MainPlot, X, Y, ':c.', "DisplayName", "Fourier Fit Points");
-                        plot(app.MainPlot, app.maskInformation(app.currentFrame).xData, app.maskInformation(app.currentFrame).yData, '-m', 'DisplayName', 'FourierFit');
-                        plot(app.MainPlot, app.maskInformation(app.currentFrame).FourierFitX.a0, app.maskInformation(app.currentFrame).FourierFitY.b0, '-g*', 'MarkerSize', 15, "DisplayName", 'Fourier Fit Centroid')
+
+                    for i = 1:2
+                        if i == 1
+                            perimeterPoints = app.maskInformation(app.currentFrame).PerimeterPoints;
+                            center = app.maskInformation(app.currentFrame).Centroid;
+                            tracking = app.maskInformation(app.currentFrame).TrackingPoints;
+                            plot(app.MainPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'r', ...
+                                center(1), center(2), 'b*',...
+                                tracking(:, 1), tracking(:, 2), 'y*', 'LineWidth', 2, 'MarkerSize', 5);
+                        elseif i == 2
+                            if app.FitFourierSeriestoPointsCheckBox.Value
+                                fourier = app.maskInformation(app.currentFrame).FourierPoints;
+                                plot(app.MainPlot, fourier(:, 1), fourier(:, 2), 'c.', "DisplayName", "Fourier Fit Points", 'MarkerSize', 5);
+                                plot(app.MainPlot, app.maskInformation(app.currentFrame).xData, app.maskInformation(app.currentFrame).yData, '-m', 'DisplayName', 'FourierFit');
+                                plot(app.MainPlot, app.maskInformation(app.currentFrame).FourierFitX.a0, app.maskInformation(app.currentFrame).FourierFitY.b0, '-g*', 'MarkerSize', 15, "DisplayName", 'Fourier Fit Centroid')
+                            end
+                        end
                     end
                     
-                    legend(app.MainPlot);
                     hold(app.MainPlot, 'off');
                     
                     %Update labels
@@ -534,9 +497,9 @@ classdef plotting
             width = floor(position(3));
             height = floor(position(4));
             colorMapImage = zeros(height, width, 3);
-            redLayer = repmat(linspace(app.colorMap.Start(1), app.colorMap.End(1), width), height, 1);
-            greenLayer = repmat(linspace(app.colorMap.Start(2), app.colorMap.End(2), width), height, 1);
-            blueLayer = repmat(linspace(app.colorMap.Start(3), app.colorMap.End(3), width), height, 1);
+            redLayer = repmat(linspace(178/255, 33/255, width), height, 1);
+            greenLayer = repmat(linspace(24/255, 102/255, width), height, 1);
+            blueLayer = repmat(linspace(43/255, 172/255, width), height, 1);
             colorMapImage(:, :, 1) = redLayer;
             colorMapImage(:, :, 2) = greenLayer;
             colorMapImage(:, :, 3) = blueLayer;
@@ -544,9 +507,9 @@ classdef plotting
             if ~isempty(app.maskInformation)
                 [~, ~, depth] = size(app.mask);
                 gradient = zeros(1, 3, depth);
-                gradient(1, 1, :) = linspace(app.colorMap.Start(1), app.colorMap.End(1), depth);
-                gradient(1, 2, :) = linspace(app.colorMap.Start(2), app.colorMap.End(2), depth);
-                gradient(1, 3, :) = linspace(app.colorMap.Start(3), app.colorMap.End(3), depth);
+                gradient(1, 1, :) = linspace(178/255, 33/255, app.numFrames);
+                gradient(1, 2, :) = linspace(24/255, 102/255, app.numFrames);
+                gradient(1, 3, :) = linspace(43/255, 172/255, app.numFrames);
                 perimeterPoints = app.maskInformation(1).PerimeterPoints;
                 if ~isnan(perimeterPoints)
                     plot(app.EvolutionPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'Color', gradient(:, :, 1));
