@@ -19,11 +19,11 @@ classdef bubbleAnalysis
             % fprintf(fileID, '%s', "Filter strength: " + num2str(app.FilterStrengthSpinner.Value));
             % fprintf(fileID, '\n');
             
-            if app.SharpenButton.Value
+            if string(app.PreProcessMethod.Value) == "Sharpen"
                 for i = 1:numImages
                     %         fprintf(fileID, '%s', "Sharpening frame: " + num2str(i));
                     %         fprintf(fileID, '\n');
-                    returnFrames(:, :, i) = imsharpen(inputFrames(:, :, i),'Amount', app.FilterStrengthSpinner.Value);
+                    returnFrames(:, :, i) = imsharpen(inputFrames(:, :, i),'Amount', 1);
                     %         fprintf(fileID, '%s', "Complete");
                     %         fprintf(fileID, '\n');
                 end
@@ -31,7 +31,7 @@ classdef bubbleAnalysis
                 for i = 1:numImages
                     %         fprintf(fileID, '%s', "Softening frame: " + num2str(i));
                     %         fprintf(fileID, '\n');
-                    returnFrames(:, :, i) = imgaussfilt(inputFrames(:, :, i), app.FilterStrengthSpinner.Value);
+                    returnFrames(:, :, i) = imgaussfilt(inputFrames(:, :, i), 1);
                     %         fprintf(fileID, '%s', "Complete");
                     %         fprintf(fileID, '\n');
                 end
@@ -42,7 +42,7 @@ classdef bubbleAnalysis
         end
         
         % Generates a mask for the given frame, going forward in time
-        function outputMask = maskGenForward(app, inputFrames)
+        function outputMask = maskGen(figure, inputFrames, direction, ignoreFirstFrame)
             % A function to isolate the bubble in each frame, returns an MxNxA logical array where M & N are the image size and A is the number of frames
             fileID = logging.generateDiaryFile("BubbleDetectionLog");
             
@@ -53,11 +53,17 @@ classdef bubbleAnalysis
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
             %Create the progress bar
-            wtBr = uiprogressdlg(app.UIFigure, 'Title', 'Please wait', 'Message', 'Isolating...', 'Cancelable', 'on');
+            wtBr = uiprogressdlg(figure, 'Title', 'Please wait', 'Message', 'Isolating...', 'Cancelable', 'on');
             
             %% Create mask for each frame
-            for f = (1 + app.IgnoreFirstFrameCheckBox.Value):depth
-                wtBr.Message = "Isolating bubble in frame " + num2str(f) + "/" + num2str(depth);
+            switch direction
+                case 'forward' 
+                    range = (1 + ignoreFirstFrame):depth;
+                case 'reverse'
+                    range = depth:-1:(1 + ignoreFirstFrame);
+            end
+            for f = range
+                wtBr.Message = "Isolating bubble in frame: " + num2str(f) + "/" + num2str(depth);
                 %     fprintf(fileID, '%s', '------------------------------');
                 %     fprintf(fileID, '\n');
                 %     fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
@@ -108,13 +114,13 @@ classdef bubbleAnalysis
                     finalImage = grayImage;
                 elseif any(any(grayImage)) && any(any(edgeImage))
                     %If both masks are close in size, add them together.
-                    if abs( cellfun(@numel, grayCC.PixelIdxList) - cellfun(@numel, edgeCC.PixelIdxList) ) < 75 && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) < 10
+                    if bubbleAnalysis.areCloseInSize(grayImage, edgeImage) && bubbleAnalysis.areCloseInLocation(grayImage, edgeImage)
                         finalImage = grayImage + edgeImage;
                         %If the edge mask is bigger than the gray mask then if there is no
                         %overlap in the regions, add the masks together and isolate the
                         %most likely object. Otherwise, the final masks is where both are
                         %present
-                    elseif cellfun(@numel, grayCC.PixelIdxList) < cellfun(@numel, edgeCC.PixelIdxList) && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) < 10
+                    elseif cellfun(@numel, grayCC.PixelIdxList) < cellfun(@numel, edgeCC.PixelIdxList) && bubbleAnalysis.areCloseInLocation(grayImage, edgeImage)
                         if ~any(any(grayImage & edgeImage))
                             finalImage = bubbleAnalysis.isolateObject(logical(grayImage + edgeImage), targetImage, fileID);
                         else
@@ -134,19 +140,11 @@ classdef bubbleAnalysis
                         end
                         %If both masks are close in size but not close in location, use the
                         %one with the mask that is closer to the center
-                    elseif abs( cellfun(@numel, grayCC.PixelIdxList) - cellfun(@numel, edgeCC.PixelIdxList) ) < 75 && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) > 10
-                        if sqrt( (grayCenter(1) - col./2).^2 + (grayCenter(2) - row./2).^2 ) < sqrt( (edgeCenter(1) - col./2).^2 + (edgeCenter(2) - row./2).^2 )
-                            finalImage = grayImage;
-                        else
-                            finalImage = edgeImage;
-                        end
+                    elseif bubbleAnalysis.areCloseInSize(grayImage, edgeImage) && ~bubbleAnalysis.areCloseInLocation(grayImage, edgeImage)
+                        finalImage = bubbleAnalysis.closerToCenterMask(grayImage, edgeImage);
                         %If all else fails, use the most circular mask
                     else
-                        if abs( 1 - edgeStats.Circularity ) < abs( 1 - grayStats.Circularity )
-                            finalImage = edgeImage;
-                        else
-                            finalImage = grayImage;
-                        end
+                        finalImage = bubbleAnalysis.moreCircularMask(grayImage, edgeImage);
                     end
                 end
                 
@@ -176,143 +174,6 @@ classdef bubbleAnalysis
             %Close waitbar
             close(wtBr);
             % fclose(fileID);
-        end
-        
-        % Generates a mask for the given frame, going backwards in time
-        function outputMask = maskGenReverse(app, inputFrames)
-            % A function to isolate the bubble in each frame, returns an MxNxA logical array where M & N are the image size and A is the number of frames
-            fileID = logging.generateDiaryFile("BubbleReverseDetectionLog");
-            
-            %% Program input and set up
-            [row, col, depth] = size(inputFrames);      %Get the size of the initial frame array
-            outputMask = zeros(row, col, depth);        %Create the output frame array
-            tic;
-            oldData.Center = [col./2, row./2];
-            oldData.Size = 0;
-            %Create the progress bar
-            wtBr = uiprogressdlg(app.UIFigure, 'Title', 'Please wait', 'Message', 'Isolating...', 'Cancelable', 'on');
-            
-            %% Create mask for each frame
-            for f = depth:-1:(1 + app.IgnoreFirstFrameCheckBox.Value)
-                wtBr.Message = "Isolating bubble in frame " + num2str(f) + "/" + num2str(depth);
-                %                 fprintf(fileID, '%s', '------------------------------');
-                %                 fprintf(fileID, '\n');
-                %                 fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
-                %                 fprintf(fileID, '\n');
-                if wtBr.CancelRequested
-                    break;
-                end
-                
-                %% Get the frame
-                targetImage = inputFrames(:, :, f);
-                
-                %% Create a mask based on color
-                %                 fprintf(fileID, '%s', "Generating gray mask");
-                %                 fprintf(fileID, '\n');
-                grayImage = bubbleAnalysis.colorMask(targetImage, oldData, fileID);
-                if any(any(grayImage))
-                    grayCC = bwconncomp(grayImage, 8);
-                    grayStats = regionprops(grayCC, 'Centroid', 'Circularity');
-                    grayCenter = grayStats.Centroid;
-                    %                     fprintf(fileID, '%s', "Gray mask generated");
-                    %                     fprintf(fileID, '\n');
-                else
-                    %                     fprintf(fileID, '%s', "No gray mask generated for frame " + num2str(f));
-                    %                     fprintf(fileID, '\n');
-                end
-                
-                %% Create a mask based on edges
-                %                 fprintf(fileID, '%s', "Generating edge mask");
-                %                 fprintf(fileID, '\n');
-                edgeImage = bubbleAnalysis.edgeMask(targetImage, oldData, fileID);
-                if any(any(edgeImage))
-                    edgeCC = bwconncomp(edgeImage, 8);
-                    edgeStats = regionprops(edgeCC, 'Centroid', 'Circularity');
-                    edgeCenter = edgeStats.Centroid;
-                    %                     fprintf(fileID, '%s', "Edge mask generated");
-                    %                     fprintf(fileID, '\n');
-                else
-                    %                     fprintf(fileID, '%s', "No edge mask generated for frame " + num2str(f));
-                    %                     fprintf(fileID, '\n');
-                end
-                
-                %% Decide which mask/combination of masks to use
-                %If the gray mask is empty use the edge mask
-                if ~any(any(grayImage))
-                    finalImage = edgeImage;
-                    %If the edge mask is empty use the gray mask
-                elseif ~any(any(edgeImage))
-                    finalImage = grayImage;
-                elseif any(any(grayImage)) && any(any(edgeImage))
-                    %If both masks are close in size, add them together.
-                    if abs( cellfun(@numel, grayCC.PixelIdxList) - cellfun(@numel, edgeCC.PixelIdxList) ) < 75 && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) < 10
-                        finalImage = grayImage + edgeImage;
-                        %If the edge mask is bigger than the gray mask then if there is no
-                        %overlap in the regions, add the masks together and isolate the
-                        %most likely object. Otherwise, the final masks is where both are
-                        %present
-                    elseif cellfun(@numel, grayCC.PixelIdxList) < cellfun(@numel, edgeCC.PixelIdxList) && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) < 10
-                        if ~any(any(grayImage & edgeImage))
-                            finalImage = bubbleAnalysis.isolateObject(logical(grayImage + edgeImage), targetImage, fileID);
-                        else
-                            finalImage = grayImage & edgeImage;
-                        end
-                        %If the gray mask is bigger than the edge mask, then if the
-                        %circularities are wildly different, use mask logic to figure out
-                        %which one to use, otherwise if the ciruclarities are similar then
-                        %use the combination of the two masks.
-                    elseif cellfun(@numel, grayCC.PixelIdxList) > cellfun(@numel, edgeCC.PixelIdxList) && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) < 10
-                        if abs ( grayStats.Circularity - edgeStats.Circularity ) > 0.15 && grayStats.Circularity > edgeStats.Circularity
-                            finalImage = bubbleAnalysis.maskLogic(grayImage, edgeImage, targetImage, oldData, fileID);
-                        elseif abs( grayStats.Circularity - edgeStats.Circularity) > 0.15 && grayStats.Circularity < edgeStats.Circularity
-                            finalImage = bubbleAnalysis.maskLogic(edgeImage, grayImage, targetImage, oldData, fileID);
-                        elseif abs ( grayStats.Circularity - edgeStats.Circularity ) <= 0.15
-                            finalImage = grayImage + edgeImage;
-                        end
-                        %If both masks are close in size but not close in location, use the
-                        %one with the mask that is closer to the center
-                    elseif abs( cellfun(@numel, grayCC.PixelIdxList) - cellfun(@numel, edgeCC.PixelIdxList) ) < 75 && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) > 10
-                        if sqrt( (grayCenter(1) - col./2).^2 + (grayCenter(2) - row./2).^2 ) < sqrt( (edgeCenter(1) - col./2).^2 + (edgeCenter(2) - row./2).^2 )
-                            finalImage = grayImage;
-                        else
-                            finalImage = edgeImage;
-                        end
-                        %If all else fails, use the most circular mask
-                    else
-                        if abs( 1 - edgeStats.Circularity ) < abs( 1 - grayStats.Circularity )
-                            finalImage = edgeImage;
-                        else
-                            finalImage = grayImage;
-                        end
-                    end
-                end
-                
-                %% Fault check the final image before assignment
-                finalCC = bwconncomp(finalImage, 8);
-                
-                %If there is more than one object, attempt to isolate the correct object
-                if finalCC.NumObjects > 1
-                    outputMask(:, :, f) = logical(bubbleAnalysis.isolateObject(finalImage, targetImage), oldData, fileID);
-                else
-                    outputMask(:, :, f) = logical(finalImage);
-                end
-                %                 fprintf(fileID, '%s', "Final mask assigned for frame " + num2str(f));
-                %                 fprintf(fileID, '\n');
-                
-                %Update the oldData values as long as the mask isn't empty
-                if any(any(finalImage))
-                    finalCC = bwconncomp(finalImage, 8);
-                    oldData.Size = cellfun(@numel, finalCC.PixelIdxList);
-                    finalStats = regionprops(finalImage, 'Centroid');
-                    oldData.Center = finalStats.Centroid;
-                end
-                
-                %Update the waitbar
-                wtBr.Value = f/depth;
-            end
-            %Close waitbar
-            close(wtBr);
-            %             fclose(fileID);
         end
         
         %Create a mask based on color
@@ -469,7 +330,8 @@ classdef bubbleAnalysis
         end
         
         %Advanced mask comparision logic that targets mask circularity
-        function finalImage = maskLogic(higherCircularityMask, lowerCircularityMask, targetImage, oldData, fileID)
+        function finalImage = maskLogic(higherCircularityMask, ...
+                lowerCircularityMask, targetImage, oldData, fileID)
             hCMStats = regionprops(higherCircularityMask, 'Circularity');
             finalStatsEither = regionprops(logical(higherCircularityMask + lowerCircularityMask), 'Circularity');
             finalCCEither = bwconncomp(logical(higherCircularityMask + lowerCircularityMask), 8);
@@ -645,7 +507,8 @@ classdef bubbleAnalysis
         end
         
         %Analyze the video
-        function maskInformation = bubbleTrack(app, mask, arcLength, orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames)
+        function maskInformation = bubbleTrack(app, mask, arcLength, ...
+                orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames)
             % A function to generate data about each mask
             
             %% Set up logging
@@ -662,7 +525,7 @@ classdef bubbleAnalysis
             maskInformation = struct('Centroid', cell(depth, 1), 'TrackingPoints', cell(depth, 1), 'AverageRadius', cell(depth, 1), ...
                 'SurfaceArea', cell(depth, 1), 'Volume', cell(depth, 1), 'FourierPoints', cell(depth, 1),...
                 'FourierFitX', cell(depth, 1), 'FourierFitY', cell(depth, 1), 'xData', cell(depth, 1), 'yData', cell(depth, 1), 'Area', cell(depth, 1), 'Perimeter', cell(depth, 1), ...
-                'PerimeterPoints', cell(depth, 1));
+                'PerimeterPoints', cell(depth, 1), 'PerimVelocity', cell(depth, 1), 'Orientation', cell(depth, 1));
             
             %% Create the progress bar
             wtBr = uiprogressdlg(app.UIFigure, 'Title', 'Please wait', 'Message', 'Calculating...');
@@ -690,6 +553,7 @@ classdef bubbleAnalysis
                     maskInformation(d).Volume = NaN;
                     maskInformation(d).FourierFitX = NaN;
                     maskInformation(d).FourierFitY = NaN;
+                    maskInformation(d).PerimVelocity = NaN;
                     continue;
                 else
                     %         fprintf(fileID, '%s', "Starting analysis of frame " + num2str(d));
@@ -714,13 +578,20 @@ classdef bubbleAnalysis
                     %         fprintf(fileID, '%s', "Perimeter Length: " + num2str(targetStats.Perimeter));
                     %         fprintf(fileID, '\n');
                     
+                    maskInformation(d).Orientation = targetStats.Orientation;
+                    %         fprintf(fileID, '%s', "Major Axis Angle: " + num2str(targetStats.Orientation));
+                    %         fprintf(fileId, '\n');
+                    
                     maskInformation(d).PerimeterPoints = bubbleAnalysis.generatePerimeterPoints(targetMask);
                     
                     %Get the tracking points
                     wtBr.Message = standardMsg + ": Generaing tracking points";
                     [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], 50, fileID);
                     maskInformation(d).TrackingPoints = [xVals, yVals];
-                    
+%                     if d > 1 && ~isnan(maskInformation(d).PerimVelocity)
+%                         
+%                         maskInformation(d).PerimVelocity = [topVelocity, bottomVelocity, leftVelocity, rightVelocity];
+%                     end
                     %Calculate the average radius
                     center = [maskInformation(d).Centroid];
                     wtBr.Message = standardMsg + ": Calculating average radius";
@@ -731,13 +602,13 @@ classdef bubbleAnalysis
                     %Translate the bubble to be centered on the axes
                     translatedPoints = bubbleAnalysis.translatePerim(maskInformation(d).PerimeterPoints, center);
                     switch orientation
-                        case 'horizontal'
+                        case "horizontal"
                             angle = 0;
-                        case 'vertical'
+                        case "vertical"
                             angle = 90;
-                        case 'major'
+                        case "major"
                             angle = targetStats.Orientation;
-                        case 'minor' 
+                        case "minor" 
                             angle = targetStats.Orientation + 90;
                     end
                     
@@ -755,7 +626,8 @@ classdef bubbleAnalysis
                         %             fprintf(fileID, '\n');
                         %Get the points for the fourier fit
                         wtBr.Message = standardMsg + ": Generaing Fourier Fit points";
-                        [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], floor( maskInformation(d).Perimeter./arcLength), fileID);
+                        [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], ...
+                            floor( maskInformation(d).Perimeter./arcLength), fileID);
                         maskInformation(d).FourierPoints = [xVals, yVals];
                         %             fprintf(fileID, '%s', "Number of Perimeter Fourier Fit Points: " + num2str(length(xVals)));
                         %             fprintf(fileID, '\n');
@@ -786,7 +658,7 @@ classdef bubbleAnalysis
             end
             %% Close waitbar and the diary
             close(wtBr);
-            % fclose(fileID);
+            %fclose(fileID);
         end
         
         %Generate the evenly angularly spaced tracking points
@@ -877,7 +749,8 @@ classdef bubbleAnalysis
         end
         
         %Fit a fourier function to the x and y points on the mask
-        function [xFit, yFit, xData, yData] = fourierFit(xPoints, yPoints, arcLength, numberTerms, adaptiveTerms, fileID)
+        function [xFit, yFit, xData, yData] = fourierFit(xPoints, yPoints, ...
+                arcLength, numberTerms, adaptiveTerms, fileID)
             %Get the number of points in the data set
             [row, ~] = size(xPoints);
             if adaptiveTerms
@@ -898,12 +771,13 @@ classdef bubbleAnalysis
                 clear fitfuncx fitfuncy xFitPrelim yFitPrelim r arcLength w;
             end
             %Create the equations to fit to
-            if numberTerms > length(xPoints)/2
+            if numberTerms < length(xPoints)/2
                 numberTerms = floor(length(xPoints)/2);
             end
             if numberTerms == 0
                 %     fprintf(fileID, '%s', "Not enough perimeter points");
                 %     fprintf(fileID, '\n');
+                exit;
             end
             % fprintf(fileID, '%s', "Creating X and Y Fourier function files with " + num2str(numberTerms) + " number of terms");
             % fprintf(fileID, '\n');
@@ -1054,6 +928,7 @@ classdef bubbleAnalysis
             surfaceArea = topSum + bottomSum;
         end
         
+        %Calculate the volume of the bubble by breaking it into frustrums
         function volume = calcVol(perimeterPoints)
             topSum = 0;
             bottomSum = 0;
@@ -1123,5 +998,249 @@ classdef bubbleAnalysis
             volume = topSum + bottomSum;
         end
         
+        %Calculate perimeter velocity
+        function [avg, top, bottom, left, right] = calcPerimVelocity(currentFramePoints, oldFramePoints)
+            %Calculate the average velocity of the perimeter tracking
+            %points over one frame
+            avg = mean(oldFramePoints - currentFramePoints, all);
+        end
+        
+        %Generate a 3 cloud of points that represents the bubble
+        function surfacePoints = genSurface(perimeterPoints, minArc)
+            topSurf = [];
+            botSurf = [];
+            parfor i = 1:2
+                if i == 1
+                    %Create a matrix of all the points above the X axis
+                    aboveX = perimeterPoints(perimeterPoints(:, 2) > 0, :);
+                    
+                    %Create a vector of the x and y points
+                    XVals = aboveX(:, 1);
+                    YVals = aboveX(:, 2);
+                    
+                    %Sort the points so that the x vals are ascending 
+                    [sortedX, sortIndex] = sort(XVals);
+                    sortedY = YVals(sortIndex);
+                    
+                    %Generate a circle of points for each (x, y) pairs
+                    for j = 1:length(sortedX)
+                        %Index the X value we are working with (since
+                        %rotating around the X axis)
+                        targX = sortedX(j);
+                        
+                        %The radius of the rotated circle is equal to the y
+                        %value
+                        radius = sortedY(j);
+                        
+                        %The perimeter of the circle 
+                        cirPerim = 2*pi*radius;
+                            
+                        %The number of points for the circle so that the
+                        %arc length between points is greater than or equal
+                        %to the minArc length (div by 2 because half
+                        %circle)
+                        numPoints = floor(cirPerim/minArc)/2;
+                        
+                        %The vector of angles to evaluate the equation of
+                        %the circle at 
+                        theta = linspace(0, pi, numPoints);
+                        
+                        %Generate the Y and Z points
+                        YVals = radius*cos(theta);
+                        ZVals = radius*sin(theta);
+                        
+                        %Generate a vector of X values for the circle
+                        XVals = repmat(targX, length(YVals), 1);
+                        
+                        %Concatenate the vectors togther
+                        cirPoints = [XVals, YVals', ZVals']; 
+                        
+                        %Concatenate the points to the end of the existing
+                        %array
+                        topSurf = [topSurf; cirPoints];
+                    end
+                elseif i == 2
+                    %Create a matrix of all the points above the X axis
+                    belowX = perimeterPoints(perimeterPoints(:, 2) < 0, :);
+                    
+                    %Create a vector of the x and y points
+                    XVals = belowX(:, 1);
+                    YVals = belowX(:, 2);
+                    
+                    %Sort the points so that the x vals are ascending 
+                    [sortedX, sortIndex] = sort(XVals);
+                    sortedY = YVals(sortIndex);
+                    
+                    %Generate a circle of points for each (x, y) pairs
+                    for j = 1:length(sortedX)
+                        %Index the X value we are working with (since
+                        %rotating around the X axis)
+                        targX = sortedX(j);
+                        
+                        %The radius of the rotated circle is equal to the y
+                        %value
+                        radius = abs(sortedY(j));
+                        
+                        %The perimeter of the circle 
+                        cirPerim = 2*pi*radius;
+                            
+                        %The number of points for the circle so that the
+                        %arc length between points is greater than or equal
+                        %to the minArc length (div by 2 because half
+                        %circle)
+                        numPoints = floor(cirPerim/minArc)/2;
+                        
+                        %The vector of angles to evaluate the equation of
+                        %the circle at 
+                        theta = linspace(0, -pi, numPoints);
+                        
+                        %Generate the Y and Z points
+                        YVals = radius*cos(theta);
+                        ZVals = radius*sin(theta); %Multiply by negative 1 because this is technically the bottom half of the circle
+                        
+                        %Generate a vector of X values for the circle
+                        XVals = repmat(targX, length(YVals), 1);
+                        
+                        %Concatenate the vectors togther
+                        cirPoints = [XVals, YVals', ZVals']; 
+                        
+                        %Concatenate the points to the end of the existing
+                        %array
+                        botSurf = [botSurf; cirPoints];
+                    end
+                end
+            end
+            surfacePoints = [topSurf; botSurf];
+        end
+        
+        %Recalculate the surface area and volume if selection is changed
+        function info = reCalcSurfandVolume(info, rotAxis, numFrames, ignoreFrames)
+            for i = 1:numFrames
+                if isempty(find(ignoreFrames == i, 1))
+                    translatedPerim = bubbleAnalysis.translatePerim(info(i).PerimeterPoints, info(i).Centroid);
+                    switch rotAxis
+                        case 'horizontal'
+                            angle = 0;
+                        case 'vertical'
+                            angle = 90;
+                        case 'major'
+                            angle = info(i).Orientation;
+                        case 'minor'
+                            angle = info(i).Orientation + 90;
+                    end
+                    rotatedPerim = rotatePerim(translatedPerim, angle);
+                    info(i).SurfaceArea = bubbleAnalysis.calcSurf(rotatedPerim);
+                    info(i).Volume = bubbleAnalysis.calcVol(rotatedPerim);
+                end
+            end
+        end
+        
+        %% A function to fit a polar fourier series to the bubble
+        function [rFit, rData] = polarFourier(xPoints, yPoints, centroid, arcLength, numberTerms, adaptiveTerms)
+            
+            %% Translate the points in the data set
+            xPoints = xPoints - centroid(1);
+            yPoints = yPoints - centroid(2);
+            [theta, rho] = cart2pol(xPoints, yPoints);
+            
+            %% Get the number of points in the data set
+            row = size(xPoints, 1);
+            
+            %% If an adaptive number of terms is to be used, determine the number of terms
+            if adaptiveTerms
+                %Do a preliminary fit to get radius
+                w = 2*pi/(row - 1);
+                fitfuncx = fittype( @(a0, a1, x) a0 + a1*cos(x*w));
+                xFitPrelim = fit(transpose(1:row), xPoints, fitfuncx);
+                
+                fitfuncy = fittype( @(b0, b1, x) b0 + b1*sin(x*w));
+                yFitPrelim = fit(transpose(1:row), yPoints, fitfuncy);
+                
+                %Calculate the number of terms in the fourier fit
+                r = sqrt(xFitPrelim.a1^2 + yFitPrelim.b1^2);
+                calcTerms = floor(r*pi/arcLength);
+                if calcTerms < numberTerms
+                    numberTerms = calcTerms;
+                end
+                clear fitfuncx fitfuncy xFitPrelim yFitPrelim r arcLength w;
+            end
+            
+            %% Do one last check to make sure there are enough terms for the number of points
+            if numberTerms < length(xPoints)/2
+                numberTerms = floor(length(xPoints)/2);
+            end
+            if numberTerms == 0
+                %     fprintf(fileID, '%s', "Not enough perimeter points");
+                %     fprintf(fileID, '\n');
+                exit;
+            end
+            
+            %% Initialize the coefficient and term cell arrays
+            coeffs = cell(1, numberTerms + 1);
+            terms = cell(1, numberTerms + 1);
+            
+            %% Create the coefficient cell array
+            for j = 1:2:numTerms
+                coeffs{j} = 'a' + num2str(j);
+                coeffs{j + 1} = 'b' + num2str(j);
+            end
+            coeffs{end} = 'r';
+            
+            %% Create the terms cell array
+            for k = 1:numTerms/2
+                terms{2*k - 1} = 'cos(w*' + num2str(k) + '*x)';
+                terms{2*k} = 'sin(w*' + num2str(k) + '*x)';
+            end
+            terms{end} = 1;
+            
+            %% Create the fit type
+            ft = fittype(terms, 'coefficients', coeffs);
+            
+            %% Fit 
+            rFit = fit(theta, rho, ft);
+            
+            %% Evaluate for data points
+            rData = feval(rFit, 0:1/(numberTerms*row):row);
+        end
+              
+        %% A function to fit a phase shifted polar fourier series to the bubble perimeter
+        function rFit = phasePolarFourier(xPoints, yPoints, centroid, arcLength, numberTerms, adaptiveTerms)
+             %% Translate the points in the data set
+            xPoints = xPoints - centroid(1);
+            yPoints = yPoints - centroid(2);
+            [theta, rho] = cart2pol(xPoints, yPoints);
+            
+            %% Get the number of points in the data set
+            row = size(xPoints, 1);
+            
+            %% If an adaptive number of terms is to be used, determine the number of terms
+            if adaptiveTerms
+                %Do a preliminary fit to get radius
+                w = 2*pi/(row - 1);
+                fitfuncx = fittype( @(a0, a1, x) a0 + a1*cos(x*w));
+                xFitPrelim = fit(transpose(1:row), xPoints, fitfuncx);
+                
+                fitfuncy = fittype( @(b0, b1, x) b0 + b1*sin(x*w));
+                yFitPrelim = fit(transpose(1:row), yPoints, fitfuncy);
+                
+                %Calculate the number of terms in the fourier fit
+                r = sqrt(xFitPrelim.a1^2 + yFitPrelim.b1^2);
+                calcTerms = floor(r*pi/arcLength);
+                if calcTerms < numberTerms
+                    numberTerms = calcTerms;
+                end
+                clear fitfuncx fitfuncy xFitPrelim yFitPrelim r arcLength w;
+            end
+            
+            %% Do one last check to make sure there are enough terms for the number of points
+            if numberTerms < length(xPoints)/2
+                numberTerms = floor(length(xPoints)/2);
+            end
+            if numberTerms == 0
+                %     fprintf(fileID, '%s', "Not enough perimeter points");
+                %     fprintf(fileID, '\n');
+                exit;
+            end
+        end
     end
 end

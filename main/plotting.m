@@ -5,15 +5,16 @@ classdef plotting
         function convertedPlotSet = convertUnits(app)
             
             %Convert frames to seconds
-            convertedPlotSet.TimeVector = 0:app.frameInterval:(app.numFrames - 1)*app.frameInterval;
+            frameInterval = 1/app.FPSField.Value;
+            convertedPlotSet.TimeVector = 0:frameInterval:(app.numFrames - 1)*frameInterval;
             
             %Convert the basic analysis things to microns from pixels
-            convertedPlotSet.AverageRadius = app.radius.*app.MicronPixelEditField.Value;
-            convertedPlotSet.Area = app.area.*(app.MicronPixelEditField.Value).^2;
-            convertedPlotSet.Perimeter = app.perimeter.*app.MicronPixelEditField.Value;
-            convertedPlotSet.SurfaceArea = app.surfaceArea.*(app.MicronPixelEditField.Value).^2;
-            convertedPlotSet.Volume = app.volume.*(app.MicronPixelEditField.Value).^3;
-            convertedPlotSet.Centroid = app.centroid.*app.MicronPixelEditField.Value;
+            convertedPlotSet.AverageRadius = app.radius.*app.MicronPxField.Value;
+            convertedPlotSet.Area = app.area.*(app.MicronPxField.Value).^2;
+            convertedPlotSet.Perimeter = app.perimeter.*app.MicronPxField.Value;
+            convertedPlotSet.SurfaceArea = app.surfaceArea.*(app.MicronPxField.Value).^2;
+            convertedPlotSet.Volume = app.volume.*(app.MicronPxField.Value).^3;
+            convertedPlotSet.Centroid = app.centroid.*app.MicronPxField.Value;
             
         end
         
@@ -107,46 +108,41 @@ classdef plotting
             switch titleType
                 case 'pixels'
                     %Update the average radius plot labels
-                    app.RadiusPlot.XLabel.String = "Frame";
-                    app.RadiusPlot.YLabel.String = "Pixels";
+                    app.RadiusPlot.XLabel.String = "FRAME";
+                    app.RadiusPlot.Title.String = "AVERAGE RADIUS (PX/FRAME)";
                     
                     %Update the area and perimeter plot labels
-                    app.TwoDimensionalPlot.XLabel.String = "Frame";
-                    yyaxis(app.TwoDimensionalPlot, 'left');
-                    app.TwoDimensionalPlot.YLabel.String = "Area (Square Pixels)";
-                    yyaxis(app.TwoDimensionalPlot, 'right');
-                    app.TwoDimensionalPlot.YLabel.String = "Perimeter (Pixels)";
+                    app.TwoDimensionalPlot.XLabel.String = "FRAME";
+                    app.TwoDimensionalPlot.Title.String = "AREA AND PERIMETER (PX/FRAME)";
                     
                     %Update the surface area and volume labels
-                    app.ThreeDimensionalPlot.XLabel.String = "Frame";
-                    yyaxis(app.ThreeDimensionalPlot, 'left');
-                    app.ThreeDimensionalPlot.YLabel.String = "Surface Area (Square Pixels)";
-                    yyaxis(app.ThreeDimensionalPlot, 'right');
-                    app.ThreeDimensionalPlot.YLabel.String = "Volume (Cubic Pixels)";
+                    app.ThreeDimensionalPlot.XLabel.String = "FRAME";
+                    app.ThreeDimensionalPlot.Title.String = "SURFACE AREA AND VOLUME (PX/FRAME)";
                     
                     %Update the asphericity plot
-                    app.AsphericityPlot.XLabel.String = "Frame";
-                case 'microns'
+                    app.AsphericityPlot.XLabel.String = "FRAME";
                     
-                    %Update the average radius plot labels
-                    app.RadiusPlot.XLabel.String = "Seconds";
-                    app.RadiusPlot.YLabel.String = "Microns";
+                    %Update the velocity plot
+                    app.VelocityPlot.XLabel.String = "FRAME";
+                    app.VelocityPlot.Title.String = "PERIMETER VELOCITY (PX/FRAME)";
+                case 'microns'
+                    app.RadiusPlot.XLabel.String = "SECONDS";
+                    app.RadiusPlot.Title.String = "AVERAGE RADIUS (MICRON/S)";
                     
                     %Update the area and perimeter plot labels
-                    app.TwoDimensionalPlot.XLabel.String = "Seconds";
-                    yyaxis(app.TwoDimensionalPlot, 'left');
-                    app.TwoDimensionalPlot.YLabel.String = "Area (Square Microns)";
-                    yyaxis(app.TwoDimensionalPlot, 'right');
-                    app.TwoDimensionalPlot.YLabel.String = "Perimeter (Microns)";
+                    app.TwoDimensionalPlot.XLabel.String = "SECONDS";
+                    app.TwoDimensionalPlot.Title.String = "AREA AND PERIMETER (MICRON/S)";
                     
                     %Update the surface area and volume labels
-                    app.ThreeDimensionalPlot.XLabel.String = "Seconds";
-                    yyaxis(app.ThreeDimensionalPlot, 'left');
-                    app.ThreeDimensionalPlot.YLabel.String = "Surface Area (Square Microns)";
-                    yyaxis(app.ThreeDimensionalPlot, 'right');
-                    app.ThreeDimensionalPlot.YLabel.String = "Volume (Cubic Microns)";
+                    app.ThreeDimensionalPlot.XLabel.String = "SECONDS";
+                    app.ThreeDimensionalPlot.Title.String = "SURFACE AREA AND VOLUME (MICRON/S)";
                     
-                    app.AsphericityPlot.XLabel.String = "Seconds";
+                    %Update the asphericity plot
+                    app.AsphericityPlot.XLabel.String = "SECONDS";
+                    
+                    %Update the velocity plot
+                    app.VelocityPlot.XLabel.String = "SECONDS";
+                    app.VelocityPlot.Title.String = "PERIMETER VELOCITY (MICRON/S)";
             end
         end
         
@@ -157,33 +153,12 @@ classdef plotting
             yyaxis(app.AsphericityPlot, "right");
             cla(app.AsphericityPlot);
             app.AsphericityPlot.XLim = [1, app.numFrames];
-            if app.FitFourierSeriestoPointsCheckBox.Value
+            if app.FourierFitToggle.UserData
                 %Get the color map set up
-                cmap = viridis(app.TermstoPlotEditField.Value - 1);
-                
-                %Fill in the colormap bar for reference
-                position = app.FourierColorMap.Position;
-                width = floor(position(3));
-                height = floor(position(4));
-                colorMapImage = zeros(height, width, 3);
-                
-                imageMap = viridis(width);
-                
-                redLine = transpose(imageMap(:, 1));
-                greenLine = transpose(imageMap(:, 2));
-                blueLine = transpose(imageMap(:, 3));
-                
-                redLayer = repmat(redLine, height, 1);
-                greenLayer = repmat(greenLine, height, 1);
-                blueLayer = repmat(blueLine, height, 1);
-                
-                colorMapImage(:, :, 1) = redLayer;
-                colorMapImage(:, :, 2) = greenLayer;
-                colorMapImage(:, :, 3) = blueLayer;
-                app.FourierColorMap.ImageSource = colorMapImage;
+                cmap = viridis(app.TermsofInterestField.Value - 1);
                 
                 %Plot the data points
-                points = plotting.fourierFitPlot(app.maskInformation, app.TermstoPlotEditField.Value, app.numFrames, app.ignoreFrames);
+                points = plotting.fourierFitPlot(app.maskInformation, app.TermsofInterestField.Value, app.numFrames, app.ignoreFrames);
                 
                 yyaxis(app.AsphericityPlot, 'left');
                 
@@ -193,7 +168,7 @@ classdef plotting
                 
                 hold(app.AsphericityPlot, 'on');
                 
-                for d = 2:(app.TermstoPlotEditField.Value - 1)
+                for d = 2:(app.TermsofInterestField.Value - 1)
                     plot(app.AsphericityPlot, 1:app.numFrames, points(:, d),"Color", cmap(d, :), "LineStyle","-", "Marker", "none");
                     
                 end
@@ -203,7 +178,7 @@ classdef plotting
                 
                 yyaxis(app.AsphericityPlot, 'right');
                 ylabel(app.AsphericityPlot, "R/Rmax");
-                app.AsphericityPlot.YColor = [0, 0, 0];
+                app.AsphericityPlot.YColor = [1, 1, 1];
                 
                 r = plot(app.AsphericityPlot, 1:app.numFrames, normalizedRadius, "LineStyle", "-", "Marker", "none", "Color", [1, 1, 1]);
                 
@@ -219,33 +194,12 @@ classdef plotting
             yyaxis(app.AsphericityPlot, "right");
             cla(app.AsphericityPlot);
             app.AsphericityPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
-            if app.FitFourierSeriestoPointsCheckBox.Value
+            if app.FourierFitToggle.UserData
                 %Get the color map set up
-                cmap = viridis(app.TermstoPlotEditField.Value - 1);
-                
-                %Fill in the colormap bar for reference
-                position = app.FourierColorMap.Position;
-                width = floor(position(3));
-                height = floor(position(4));
-                colorMapImage = zeros(height, width, 3);
-                
-                imageMap = viridis(width);
-                
-                redLine = transpose(imageMap(:, 1));
-                greenLine = transpose(imageMap(:, 2));
-                blueLine = transpose(imageMap(:, 3));
-                
-                redLayer = repmat(redLine, height, 1);
-                greenLayer = repmat(greenLine, height, 1);
-                blueLayer = repmat(blueLine, height, 1);
-                
-                colorMapImage(:, :, 1) = redLayer;
-                colorMapImage(:, :, 2) = greenLayer;
-                colorMapImage(:, :, 3) = blueLayer;
-                app.FourierColorMap.ImageSource = colorMapImage;
+                cmap = viridis(app.TermsofInterestField.Value - 1);
                 
                 %Plot the data points
-                points = plotting.fourierFitPlot(app.maskInformation, app.TermstoPlotEditField.Value, app.numFrames, app.ignoreFrames);
+                points = plotting.fourierFitPlot(app.maskInformation, app.TermsofInterestField.Value, app.numFrames, app.ignoreFrames);
                 
                 yyaxis(app.AsphericityPlot, 'left');
                 
@@ -339,34 +293,21 @@ classdef plotting
             panelPos = app.DecomposedPlotsPanel.Position;
             for i = 1:row
                 axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 60], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
-                    "BackgroundColor", app.theme.backgroundColor, "XColor", app.theme.axisColor, "YColor", app.theme.axisColor, "ZColor", app.theme.axisColor, ...
-                    "Color", app.theme.plotBackground);
+                    "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], "Color", [0 0 0]);
                 axishandle.Title.String = "";
-                if app.MaintainColormapCheckBox.Value
-                    dataPoints = [points{i, 1}];
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2} - 1, :), "DisplayName", "Term " + num2str(points{i, 2}));
-                    legend(axishandle, "Color", app.theme.fontColor);
-                else
-                    dataPoints = points{i, 1};
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(i, :), "DisplayName", "Term " + num2str(points{i, 2}));
-                    legend(axishandle, "Color", app.theme.fontColor);
-                end
+                dataPoints = [points{i, 1}];
+                plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2} - 1, :), "DisplayName", "Term " + num2str(points{i, 2}));
+                legend(axishandle, "Color", [1 1 1]);
             end
             axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 60], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
-                "BackgroundColor", app.theme.backgroundColor, "XColor", app.theme.axisColor, "YColor", app.theme.axisColor, "ZColor", app.theme.axisColor, ...
-                "Color", app.theme.plotBackground);
+                "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], ...
+                "Color", [0 0 0]);
             axishandle.Title.String = "";
             hold(axishandle, 'on');
             for j = 1:row
-                if app.MaintainColormapCheckBox.Value
-                    dataPoints = [points{j, 1}];
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{j, 2} - 1, :), "DisplayName", "Term " + num2str(points{j, 2}));
-                    legend(axishandle, "Color", app.theme.fontColor);
-                else
-                    dataPoints = points{j, 1};
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(j, :), "DisplayName", "Term " + num2str(points{j, 2}));
-                    legend(axishandle, "Color", app.theme.fontColor);
-                end
+                dataPoints = [points{j, 1}];
+                plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{j, 2} - 1, :), "DisplayName", "Term " + num2str(points{j, 2}));
+                legend(axishandle, "Color", [1 1 1]);
             end
             hold(axishandle, 'off');
         end
@@ -377,7 +318,7 @@ classdef plotting
             if ~isempty(radius)
                 %Radius Plot
                 radiusHandle.XLim = [1, numFrames];
-                plot(radiusHandle, 1:numFrames, radius , currentFrame, radius(currentFrame), '*g');
+                plot(radiusHandle, 1:numFrames, radius , '-w', currentFrame, radius(currentFrame), '*g');
                 
                 %Area and Perimeter Plot
                 twoDHandle.XLim = [1, numFrames];
@@ -414,7 +355,7 @@ classdef plotting
             if ~isempty(plotSet.AverageRadius)
                 %Radius Plot
                 radiusHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
-                plot(radiusHandle, plotSet.TimeVector, plotSet.AverageRadius , ...
+                plot(radiusHandle, plotSet.TimeVector, plotSet.AverageRadius , '-w', ...
                     plotSet.TimeVector(currentFrame), plotSet.AverageRadius(currentFrame), '*g');
                 
                 %Area and Perimeter Plot
@@ -448,62 +389,40 @@ classdef plotting
         %Display the current frame and the overlays in the main viewer
         function displayCurrentFrame(app)
             if ~isempty(app.maskInformation)
-                if ~isempty(find(app.ignoreFrames == app.currentFrame, 1))
-                    imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
-                    app.FrameNumberSpinner.Value = app.currentFrame;
-                    app.AreaLabel.Text = "Area: " + num2str(app.maskInformation(app.currentFrame).Area);
-                    app.PerimeterLabel.Text = "Perimeter: " + num2str(app.maskInformation(app.currentFrame).Perimeter);
-                    app.AverageRadiusLabel.Text = "Average Radius: " + num2str(app.maskInformation(app.currentFrame).AverageRadius);
-                    app.CentroidLabel.Text = "Centroid " + num2str(app.maskInformation(app.currentFrame).Centroid);
-                else
-                    %Update the main viewer window
-                    imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
-                    hold(app.MainPlot, 'on');
-
-                    for i = 1:2
-                        if i == 1
-                            perimeterPoints = app.maskInformation(app.currentFrame).PerimeterPoints;
-                            center = app.maskInformation(app.currentFrame).Centroid;
-                            tracking = app.maskInformation(app.currentFrame).TrackingPoints;
-                            plot(app.MainPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'r', ...
-                                center(1), center(2), 'b*',...
-                                tracking(:, 1), tracking(:, 2), 'y*', 'LineWidth', 2, 'MarkerSize', 5);
-                        elseif i == 2
-                            if app.FitFourierSeriestoPointsCheckBox.Value
-                                fourier = app.maskInformation(app.currentFrame).FourierPoints;
-                                plot(app.MainPlot, fourier(:, 1), fourier(:, 2), 'c.', "DisplayName", "Fourier Fit Points", 'MarkerSize', 5);
-                                plot(app.MainPlot, app.maskInformation(app.currentFrame).xData, app.maskInformation(app.currentFrame).yData, '-m', 'DisplayName', 'FourierFit');
-                                plot(app.MainPlot, app.maskInformation(app.currentFrame).FourierFitX.a0, app.maskInformation(app.currentFrame).FourierFitY.b0, '-g*', 'MarkerSize', 15, "DisplayName", 'Fourier Fit Centroid')
+                if ~isempty(app.ignoreFrames)
+                    if ~isempty(find(app.ignoreFrames == app.currentFrame, 1))
+                        imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
+                    else
+                        %Update the main viewer window
+                        imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
+                        hold(app.MainPlot, 'on');
+                        
+                        for i = 1:2
+                            if i == 1
+                                perimeterPoints = app.maskInformation(app.currentFrame).PerimeterPoints;
+                                center = app.maskInformation(app.currentFrame).Centroid;
+                                tracking = app.maskInformation(app.currentFrame).TrackingPoints;
+                                plot(app.MainPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'r', ...
+                                    center(1), center(2), 'b*',...
+                                    tracking(:, 1), tracking(:, 2), 'y*', 'LineWidth', 2, 'MarkerSize', 5);
+                            elseif i == 2
+                                if app.FourierFitToggle.UserData
+                                    fourier = app.maskInformation(app.currentFrame).FourierPoints;
+                                    plot(app.MainPlot, fourier(:, 1), fourier(:, 2), 'c.', "DisplayName", "Fourier Fit Points", 'MarkerSize', 5);
+                                    plot(app.MainPlot, app.maskInformation(app.currentFrame).xData, app.maskInformation(app.currentFrame).yData, '-m', 'DisplayName', 'FourierFit');
+                                    plot(app.MainPlot, app.maskInformation(app.currentFrame).FourierFitX.a0, app.maskInformation(app.currentFrame).FourierFitY.b0, '-g*', 'MarkerSize', 15, "DisplayName", 'Fourier Fit Centroid')
+                                end
                             end
                         end
+                        
+                        hold(app.MainPlot, 'off');
                     end
-                    
-                    hold(app.MainPlot, 'off');
-                    
-                    %Update labels
-                    app.FrameNumberSpinner.Value = app.currentFrame;
-                    app.AreaLabel.Text = "Area: " + num2str(app.maskInformation(app.currentFrame).Area);
-                    app.PerimeterLabel.Text = "Perimeter: " + num2str(app.maskInformation(app.currentFrame).Perimeter);
-                    app.AverageRadiusLabel.Text = "Average Radius: " + num2str(app.maskInformation(app.currentFrame).AverageRadius);
-                    app.CentroidLabel.Text = "Centroid " + num2str(app.maskInformation(app.currentFrame).Centroid);
                 end
             end
         end
         
         %Display the perimeter evolution overlay
         function dispEvolution(app)
-            %Fill in the colormap
-            position = app.ColorMap.Position;
-            width = floor(position(3));
-            height = floor(position(4));
-            colorMapImage = zeros(height, width, 3);
-            redLayer = repmat(linspace(178/255, 33/255, width), height, 1);
-            greenLayer = repmat(linspace(24/255, 102/255, width), height, 1);
-            blueLayer = repmat(linspace(43/255, 172/255, width), height, 1);
-            colorMapImage(:, :, 1) = redLayer;
-            colorMapImage(:, :, 2) = greenLayer;
-            colorMapImage(:, :, 3) = blueLayer;
-            app.ColorMap.ImageSource = colorMapImage;
             if ~isempty(app.maskInformation)
                 [~, ~, depth] = size(app.mask);
                 gradient = zeros(1, 3, depth);

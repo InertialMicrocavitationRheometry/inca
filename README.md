@@ -4,7 +4,7 @@
 * Performance and compatibility with older versions is not guaranteed however core aspects of the program should continue to function. Please refer to official MATLAB 
   documentation for features that have changed between your version and R2020a
 * There are two installation options: A universal installation using the .mlapp MATLAB App file and a Windows only .exe. As of now the universal installation option is
-  recommended. Equivalent executables for Mac and Linux are being considered for development. 
+  recommended. Equivalent executables for Mac and Linux are being developed.
 
 ## MATLAB App Installation 
 * Supported Platforms: Windows, Mac, Linux
@@ -16,9 +16,9 @@
 * In order to install and run this application download/clone the repository and unzip the folder in your preferred directory. Folder heirarchy should already be set
 
 ## Running the MATLAB App
-In order to properly run InCA make sure that the working path of your MATLAB instance is set to the location of the InCA.mlapp file, it is NOT necessary to add the other
-folders to the working path, running InCA automatically adds them. Double clicking InCA.mlapp will open up MATLAB App Designer by default. The program can be launched with 
-the green play/run button found at the top of the MATLAB App Designer window. A user manual for the current software version can be found included in the .zip file.
+In order to properly run InCA make sure that the working path of your MATLAB instance is set to the location of the InCA.m file, it is NOT necessary to add the other
+folders to the working path, running InCA automatically adds them.  The program can be launched with 
+the green play/run button found at the top of the MATLAB Editor tab. 
 
 
 ## Windows Only Experimental Installation
@@ -42,7 +42,18 @@ the green play/run button found at the top of the MATLAB App Designer window. A 
 - [x] Consolidate figure theme functions in figureappearance class
 - [x] Consolidate bubble analysis functions in bubbleanalysis class
 - [x] Consolidate functions related to importing and exporting data into InCA
-- [ ] Swap current mask overlay preview panel for triggerable panel/extend control panel so all components are visible at the same time
-- [ ] Surface Area/Volume of Revolution calculations
-- [ ] Make it pretty
+- [x] Swap current mask overlay preview panel for triggerable panel/extend control panel so all components are visible at the same time
+- [x] Surface Area/Volume of Revolution calculations
+- [x] Make it pretty
+- [ ] Finish the perimeter velocity calculation function
+- [ ] Integrate the perimeter velocity function with plotting and changing axes
+- [ ] Integrate polar fourier fit function
+- [ ] Write code for phase shift fourier fit function
+- [ ] Integrate phase shift fourier fit function 
+- [ ] Introduce global app property app.fit as a struct to hold the fit data for the session
+- [ ] Figure out how to handle data during batch processing and switching between videos 
+- [ ] Update the IMR export code to export fourier coefficients for any type of fit
+- [ ] Debug Frame inspector opening up a new figure window when launched 
+- [ ] Overhaul the user manual 
+- [ ] Enhance performance of Main Viewer Axes
 

@@ -1,0 +1,3 @@
+Primary: 0049FF
+Analogous: #00c8ff
+Triadic: #b700ff, #ff0048 
