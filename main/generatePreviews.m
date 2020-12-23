@@ -22,7 +22,6 @@ mainAxes = uiaxes(MaskOverlayPreviewPanel, 'AmbientLightColor', [0 0 0], 'FontNa
                 'YColor', [1 1 1], 'Color', [0 0 0], 'BackgroundColor', [0 0 0], 'Position', [parentPos(3)/5, 55, parentPos(3)*4/5, parentPos(4) - 60]);
 
 %Create the requried buttons: close, accept, reject, next, and previous
-buttonWidth = floor((parentPos(3)*4/5 - 30)/6);
 
 %Previous Button
 uibutton(MaskOverlayPreviewPanel, 'push', 'FontName', 'Roboto Medium', 'FontSize', 10, ...

@@ -389,9 +389,7 @@ classdef plotting
                         
                         rEq = fit.r + xCoeffVal.*cos(cmapIdx.*t) + yCoeffVal.*sin(cmapIdx.*t);
                         
-                        [x, y] = pol2cart(t, rEq);      %Convert to cartesian for plotting
-                        
-                        points =  [x, y] ;              %Convert to cartesian for plotting
+                        points = pol2cart(t, rEq);      %Convert to cartesian for plotting
                         output{j, 1} = points;          %Assign to the output variable
                         
                         asphericity(cmapIdx) = NaN;     %Replace the highest valued term with NaN
@@ -419,9 +417,7 @@ classdef plotting
                         
                         rEq = fit.a0 + xCoeffVal.*cos(cmapIdx.*t + yCoeffVal);
                         
-                        [x, y] = pol2cart(t, rEq);      %Convert to cartesian for plotting
-                        
-                        points =  [x, y] ;              %Convert to cartesian for plotting
+                        points = pol2cart(t, rEq);      %Convert to cartesian for plotting
                         output{j, 1} = points;          %Assign to the output variable
                         
                         asphericity(cmapIdx) = NaN;     %Replace the highest valued term with NaN
@@ -459,7 +455,7 @@ classdef plotting
                 hold(axishandle, 'off');
             else
                 for i = 1:row
-                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 60], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
+                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 60], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
                         "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], "Color", [0 0 0]);
                     axishandle.Title.String = "";
                     dataPoints = [points{i, 1}];

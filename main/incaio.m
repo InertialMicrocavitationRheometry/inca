@@ -57,6 +57,9 @@ classdef incaio
             if exist('BubbleVolume', 'var') == 1
                 app.volume = BubbleVolume;
             end
+            if exist('BubbleVelocity', 'var') == 1
+                app.velocity = BubbleVelocity;
+            end
             if exist('numFrames', 'var') == 1
                 app.numFrames = numFrames;
             end
@@ -78,13 +81,14 @@ classdef incaio
             BubbleSurfaceArea = app.surfaceArea;
             BubbleCentroid = app.centroid;
             BubbleVolume = app.volume;
+            BubbleVelocity = app.velocity;
             numFrames = app.numFrames;
             alternatePlotSet = app.convertedPlotSet;
             %% Write the table to the specified file
             [file, path] = uiputfile('*.mat');
             savePath = append(path, file);
             save(savePath, 'frames', 'masks', 'infoStruct', 'ignoreFrames', 'BubbleRadius', 'BubbleArea', 'BubblePerimeter', ...
-                'BubbleSurfaceArea', 'BubbleCentroid', 'BubbleVolume', 'numFrames', 'alternatePlotSet', '-v7.3');
+                'BubbleSurfaceArea', 'BubbleCentroid', 'BubbleVolume', 'BubbleVelocity', 'numFrames', 'alternatePlotSet', '-v7.3');
         end
         
         %Write analyzed data to an excel spreadsheet

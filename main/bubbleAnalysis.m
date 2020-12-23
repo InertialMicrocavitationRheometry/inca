@@ -200,7 +200,7 @@ classdef bubbleAnalysis
         function edgeImage = edgeMask(targetImage, oldData, fileID)
             %A function to create a binary mask of the bubble based on edge detection
             [~, threshold] = edge(targetImage, 'Sobel');
-            edgeImage = imfill(imclearborder(imcomplement(imdilate(edge(targetImage, 'Sobel', threshold*0.01), [strel('line', 3, 90) strel('line', 3, 0)]))), 'holes');
+            edgeImage = imfill(imclearborder(imcomplement(imdilate(edge(targetImage, 'Sobel', threshold), [strel('line', 3, 90) strel('line', 3, 0)]))), 'holes');
             %Remove ridiculously large and small objects from the image
             edgeImage = bubbleAnalysis.removeOutliers(edgeImage);
             %Refresh the connected components list
@@ -507,8 +507,7 @@ classdef bubbleAnalysis
         end
         
         %Analyze the video
-        function maskInformation = bubbleTrack(app, mask, arcLength, ...
-                orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames)
+        function maskInformation = bubbleTrack(app, mask, arcLength, orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames, style)
             % A function to generate data about each mask
             
             %% Set up logging
@@ -524,7 +523,7 @@ classdef bubbleAnalysis
             % fprintf(fileID, '\n');
             maskInformation = struct('Centroid', cell(depth, 1), 'TrackingPoints', cell(depth, 1), 'AverageRadius', cell(depth, 1), ...
                 'SurfaceArea', cell(depth, 1), 'Volume', cell(depth, 1), 'FourierPoints', cell(depth, 1),...
-                'FourierFitX', cell(depth, 1), 'FourierFitY', cell(depth, 1), 'xData', cell(depth, 1), 'yData', cell(depth, 1), 'Area', cell(depth, 1), 'Perimeter', cell(depth, 1), ...
+                'perimFit', cell(depth, 1), 'perimEq', cell(depth, 1), 'Area', cell(depth, 1), 'Perimeter', cell(depth, 1), ...
                 'PerimeterPoints', cell(depth, 1), 'PerimVelocity', cell(depth, 1), 'Orientation', cell(depth, 1));
             
             %% Create the progress bar
@@ -535,12 +534,8 @@ classdef bubbleAnalysis
                 standardMsg = "Analyzing frame " + num2str(d) + "/" + num2str(depth);
                 wtBr.Message = standardMsg;
                 wtBr.Value = d./depth;
-                %     fprintf(fileID, '%s', '------------------------------');
-                %     fprintf(fileID, '\n');
                 %Skip any frames that are in the ignore list
                 if ~isempty(find(ignoreFrames == d, 1))
-                    %         fprintf(fileID, '%s', "Skipping analysis of frame " + num2str(d));
-                    %         fprintf(fileID, '\n');
                     maskInformation(d).Centroid = NaN;
                     maskInformation(d).Area = NaN;
                     maskInformation(d).Perimeter = NaN;
@@ -556,8 +551,6 @@ classdef bubbleAnalysis
                     maskInformation(d).PerimVelocity = NaN;
                     continue;
                 else
-                    %         fprintf(fileID, '%s', "Starting analysis of frame " + num2str(d));
-                    %         fprintf(fileID, '\n');
                     %Get the mask
                     targetMask = mask(:, :, d);
                     
@@ -567,20 +560,12 @@ classdef bubbleAnalysis
                     
                     %Assign that data to the output struct
                     maskInformation(d).Centroid = targetStats.Centroid;
-                    %         fprintf(fileID, '%s', "Centroid: " + num2str(targetStats.Centroid));
-                    %         fprintf(fileID, '\n');
                     
                     maskInformation(d).Area = targetStats.Area;
-                    %         fprintf(fileID, '%s', "Area: " + num2str(targetStats.Area));
-                    %         fprintf(fileID, '\n');
                     
                     maskInformation(d).Perimeter = targetStats.Perimeter;
-                    %         fprintf(fileID, '%s', "Perimeter Length: " + num2str(targetStats.Perimeter));
-                    %         fprintf(fileID, '\n');
                     
                     maskInformation(d).Orientation = targetStats.Orientation;
-                    %         fprintf(fileID, '%s', "Major Axis Angle: " + num2str(targetStats.Orientation));
-                    %         fprintf(fileId, '\n');
                     
                     maskInformation(d).PerimeterPoints = bubbleAnalysis.generatePerimeterPoints(targetMask);
                     
@@ -588,16 +573,25 @@ classdef bubbleAnalysis
                     wtBr.Message = standardMsg + ": Generaing tracking points";
                     [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], 50, fileID);
                     maskInformation(d).TrackingPoints = [xVals, yVals];
-%                     if d > 1 && ~isnan(maskInformation(d).PerimVelocity)
-%                         
-%                         maskInformation(d).PerimVelocity = [topVelocity, bottomVelocity, leftVelocity, rightVelocity];
-%                     end
+                    
+                    %Calculate the perimeter velocity as long as we are not
+                    %on the first frame and the previous frame was not
+                    %ignored
+                    if (d > 1) 
+                        if ~isnan(maskInformation(d - 1).PerimeterPoints)
+                            maskInformation(d).PerimVelocity = zeros(1, 5);
+                            maskInformation(d).PerimVelocity(1, :) = bubbleAnalysis.calcPerimVelocity(maskInformation(d).TrackingPoints, maskInformation(d - 1).TrackingPoints);
+                        else 
+                            maskInformation(d).PerimVelocity = NaN;
+                        end
+                    else
+                        maskInformation(d).PerimVelocity = NaN;
+                    end
+                    
                     %Calculate the average radius
                     center = [maskInformation(d).Centroid];
                     wtBr.Message = standardMsg + ": Calculating average radius";
                     maskInformation(d).AverageRadius = mean(sqrt( (center(1) - xVals).^2 + (center(2) - yVals).^2 ), 'all');
-                    %         fprintf(fileID, '%s', "Average Radius: " + num2str(maskInformation(d).AverageRadius));
-                    %         fprintf(fileID, '\n');
                     
                     %Translate the bubble to be centered on the axes
                     translatedPoints = bubbleAnalysis.translatePerim(maskInformation(d).PerimeterPoints, center);
@@ -622,39 +616,22 @@ classdef bubbleAnalysis
                     maskInformation(d).Volume = bubbleAnalysis.calcVol(rotatedPoints);
    
                     if doFit
-                        %             fprintf(fileID, '%s', "Fitting Fourier Series to mask perimeter for frame: " + num2str(d));
-                        %             fprintf(fileID, '\n');
+
                         %Get the points for the fourier fit
                         wtBr.Message = standardMsg + ": Generaing Fourier Fit points";
                         [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], ...
                             floor( maskInformation(d).Perimeter./arcLength), fileID);
                         maskInformation(d).FourierPoints = [xVals, yVals];
-                        %             fprintf(fileID, '%s', "Number of Perimeter Fourier Fit Points: " + num2str(length(xVals)));
-                        %             fprintf(fileID, '\n');
+
                         %Actually do the fourier fit and get the coefficients for the
                         %equation
-                        %             fprintf(fileID, '%s', "Minimum Arc Length: " + num2str(arcLength));
-                        %             fprintf(fileID, '\n');
-                        %             fprintf(fileID, '%s', "(Max) Number of Terms in Fit: " + num2str(numberTerms));
-                        %             fprintf(fileID, '\n');
-                        %             fprintf(fileID, '%s', "Adaptive Number of Terms (T/F): " + num2str(adaptiveTerms));
-                        %             fprintf(fileID, '\n');
-                        %             fprintf(fileID, '%s', "Beginning Fit");
-                        %             fprintf(fileID, '\n');
-                        wtBr.Message = standardMsg + ": Fitting parametric Fourier Series";
-                        [xFit, yFit, xData, yData] = bubbleAnalysis.fourierFit(xVals, yVals, arcLength, numberTerms, adaptiveTerms,fileID);
-                        %             fprintf(fileID, '%s', "Fit complete");
-                        %             fprintf(fileID, '\n');
-                        maskInformation(d).FourierFitX = xFit;
-                        maskInformation(d).FourierFitY = yFit;
-                        maskInformation(d).xData = xData;
-                        maskInformation(d).yData = yData;
-                        %             fprintf(fileID, '%s', "Number of plotting points: " + num2str(length(xData)));
-                        %             fprintf(fileID, '\n');
+                        wtBr.Message = standardMsg + ": Fitting " + style + " Fourier Series";
+                        [perimFit, perimEq] = bubbleAnalysis.fourierFit(xVals, yVals, arcLength, numberTerms, adaptiveTerms, fileID, style, ...
+                            maskInformation(d).Centroid);
+                        maskInformation(d).perimFit = perimFit;
+                        maskInformation(d).perimEq = perimEq;
                     end
                 end
-                %     fprintf(fileID, '%s', "Analysis complete");
-                %     fprintf(fileID, '\n');
             end
             %% Close waitbar and the diary
             close(wtBr);
@@ -749,55 +726,36 @@ classdef bubbleAnalysis
         end
         
         %Fit a fourier function to the x and y points on the mask
-        function [xFit, yFit, xData, yData] = fourierFit(xPoints, yPoints, ...
-                arcLength, numberTerms, adaptiveTerms, fileID)
-            %Get the number of points in the data set
-            [row, ~] = size(xPoints);
-            if adaptiveTerms
-                %Do a preliminary fit to get radius
-                w = 2*pi/(row - 1);
-                fitfuncx = fittype( @(a0, a1, x) a0 + a1*cos(x*w));
-                xFitPrelim = fit(transpose(1:row), xPoints, fitfuncx);
-                
-                fitfuncy = fittype( @(b0, b1, x) b0 + b1*sin(x*w));
-                yFitPrelim = fit(transpose(1:row), yPoints, fitfuncy);
-                
-                %Calculate the number of terms in the fourier fit
-                r = sqrt(xFitPrelim.a1^2 + yFitPrelim.b1^2);
-                calcTerms = floor(r*pi/arcLength);
-                if calcTerms < numberTerms
-                    numberTerms = calcTerms;
-                end
-                clear fitfuncx fitfuncy xFitPrelim yFitPrelim r arcLength w;
-            end
-            %Create the equations to fit to
-            if numberTerms < length(xPoints)/2
-                numberTerms = floor(length(xPoints)/2);
-            end
+        function [perimFit, perimEq] = fourierFit(xPoints, yPoints, ~, maxTerms, adaptiveTerms, fileID, style, centroid)
+            % Calculate optimal number of terms based on Nyquil (Nyquist) sampling
+            numberTerms = bubbleAnalysis.calcNumTerms(xPoints, adaptiveTerms, maxTerms);
             if numberTerms == 0
-                %     fprintf(fileID, '%s', "Not enough perimeter points");
-                %     fprintf(fileID, '\n');
                 exit;
             end
-            % fprintf(fileID, '%s', "Creating X and Y Fourier function files with " + num2str(numberTerms) + " number of terms");
-            % fprintf(fileID, '\n');
-            [functionNameX, functionNameY] = bubbleAnalysis.createFourierFunc(numberTerms);
+
+            %Generate the fit type based on which Fourier format the user
+            %wants to use
+            ft = bubbleAnalysis.genFitType(numberTerms, style);
             
             %Actually fit it for the correct number of terms
-            ftx = fittype(functionNameX);
-            xFit = fit(transpose(1:row), xPoints, ftx);
-            fty = fittype(functionNameY);
-            yFit = fit(transpose(1:row), yPoints, fty);
-            
-            %Evaluate the fit
-            xData = feval(xFit, 0:1/(row*numberTerms):row);
-            yData = feval(yFit, 0:1/(row*numberTerms):row);
-            
-            %Delete the files
-            % fprintf(fileID, '%s', 'Deleting function files');
-            % fprintf(fileID, '\n');
-            delete('main/xFourierFunc.m');
-            delete('main/yFourierFunc.m');
+            switch style
+                case "parametric"
+                    perimFit{1} = fit(transpose(2.*pi.*(1:length(xPoints))./(length(xPoints) - 1)), xPoints, ft{1});
+                    perimFit{2} = fit(transpose(2.*pi.*(1:length(yPoints))./(length(yPoints) - 1)), yPoints, ft{2});
+                    perimEq = bubbleAnalysis.genFitEq(perimFit, "parametric");
+                case "polar (standard)"
+                    xPoints = xPoints - centroid(1);
+                    yPoints = yPoints - centroid(2);
+                    [theta, rho] = cart2pol(xPoints, yPoints);
+                    perimFit = fit(theta, rho, ft);
+                    perimEq = bubbleAnalysis.genFitEq(perimFit, "polar (standard)");
+                case "polar (phase shift)"
+                    xPoints = xPoints - centroid(1);
+                    yPoints = yPoints - centroid(2);
+                    [theta, rho] = cart2pol(xPoints, yPoints);
+                    perimFit = fit(theta, rho, ft);
+                    perimEq = bubbleAnalysis.genFitEq(perimFit, "polar (phase shift)");
+            end
         end
         
         %Extract all the perimeter points from the mask
@@ -805,42 +763,6 @@ classdef bubbleAnalysis
             boundaries = cell2mat(bwboundaries(inputMask));
             output(:, 1) = boundaries(:, 2);
             output(:, 2) = boundaries(:, 1);
-        end
-        
-        %Create the Fourier Function files dependent on the number of terms
-        %in the fit
-        function [xName, yName] = createFourierFunc(numTerms)
-            %Create the function name for the x fourier series
-            xName = "xFourierFunc(x";
-            for i = 0:numTerms
-                xName = xName + ", a" + num2str(i);
-            end
-            xName = xName + ")";
-            %Create the function name for the y fourier series
-            yName = "yFourierFunc(x";
-            for j = 0:numTerms
-                yName = yName + ", b" + num2str(j);
-            end
-            yName = yName + ")";
-            %Create and open the files for writing
-            xFile = fopen("main/xFourierFunc.m", 'w');
-            yFile = fopen("main/yFourierFunc.m", 'w');
-            %Write in the first line of the function
-            fprintf(xFile, "function y = " + xName + "\n \n");
-            fprintf(yFile, "function y = " + yName + "\n \n");
-            %Write in the function set up
-            fprintf(xFile, "y = zeros(size(x)); \nw = 2*pi/(max(x) - min(x)); \n \nfor i = 1:length(x) \n \ty(i) = a0");
-            fprintf(yFile, "y = zeros(size(x)); \nw = 2*pi/(max(x) - min(x)); \n \nfor i = 1:length(x) \n \ty(i) = b0");
-            for j = 1:numTerms
-                fprintf(xFile, "+ a" + num2str(j) + "*cos(" + num2str(j) + "*x(i)*w)");
-                fprintf(yFile, "+ b" + num2str(j) + "*sin(" + num2str(j) + "*x(i)*w)");
-            end
-            %Finish up the functions
-            fprintf(xFile, ";\nend\n\nend");
-            fprintf(yFile, ";\nend\n\nend");
-            %Close the files
-            fclose(xFile);
-            fclose(yFile);
         end
         
         %Translate the bubble to be centered on the axes
@@ -999,10 +921,39 @@ classdef bubbleAnalysis
         end
         
         %Calculate perimeter velocity
-        function [avg, top, bottom, left, right] = calcPerimVelocity(currentFramePoints, oldFramePoints)
+        function velocity = calcPerimVelocity(currentFramePoints, oldFramePoints)
             %Calculate the average velocity of the perimeter tracking
             %points over one frame
-            avg = mean(oldFramePoints - currentFramePoints, all);
+            avg = mean(sqrt( (oldFramePoints(:, 1) - currentFramePoints(:, 1)).^2 + (oldFramePoints(:, 2) - currentFramePoints(:, 2)).^2));
+            
+            %Calculate the average velocity of the top of the bubble over
+            %one frame
+            [~, topCoordOld] = max(oldFramePoints(:, 2));
+            [~, topCoordNew] = max(currentFramePoints(:, 2));
+            top = sqrt( (oldFramePoints(topCoordOld, 1) - currentFramePoints(topCoordNew, 1)).^2 + ...
+                (oldFramePoints(topCoordOld, 2) - currentFramePoints(topCoordNew, 2)).^2);
+            
+            %Calculate the average velocity of the bottom of the bubble over
+            %one frame
+            [~, botCoordOld] = min(oldFramePoints(:, 2));
+            [~, botCoordNew] = min(currentFramePoints(:, 2));
+            bottom = sqrt( (oldFramePoints(botCoordOld, 1) - currentFramePoints(botCoordNew, 1)).^2 + ...
+                (oldFramePoints(botCoordOld, 2) - currentFramePoints(botCoordNew, 2)).^2);
+            
+            %Calculate the average velocity of the left edge of the bubble over
+            %one frame
+            [~, leftCoordOld] = min(oldFramePoints(:, 1));
+            [~, leftCoordNew] = min(currentFramePoints(:, 1));
+            left = sqrt( (oldFramePoints(leftCoordOld, 1) - currentFramePoints(leftCoordNew, 1)).^2 + ...
+                (oldFramePoints(leftCoordOld, 2) - currentFramePoints(leftCoordNew, 2)).^2);
+            
+            %Calculate the average velocity of the right edge of the bubble over
+            %one frame
+            [~, rightCoordOld] = max(oldFramePoints(:, 1));
+            [~, rightCoordNew] = max(currentFramePoints(:, 1));
+            right = sqrt( (oldFramePoints(rightCoordOld, 1) - currentFramePoints(rightCoordNew, 1)).^2 + ...
+                (oldFramePoints(rightCoordOld, 2) - currentFramePoints(rightCoordNew, 2)).^2);
+            velocity = [avg, top, bottom, left, right];
         end
         
         %Generate a 3 cloud of points that represents the bubble
@@ -1135,111 +1086,148 @@ classdef bubbleAnalysis
             end
         end
         
-        %% A function to fit a polar fourier series to the bubble
-        function [rFit, rData] = polarFourier(xPoints, yPoints, centroid, arcLength, numberTerms, adaptiveTerms)
-            
-            %% Translate the points in the data set
-            xPoints = xPoints - centroid(1);
-            yPoints = yPoints - centroid(2);
-            [theta, rho] = cart2pol(xPoints, yPoints);
-            
-            %% Get the number of points in the data set
-            row = size(xPoints, 1);
-            
-            %% If an adaptive number of terms is to be used, determine the number of terms
-            if adaptiveTerms
-                %Do a preliminary fit to get radius
-                w = 2*pi/(row - 1);
-                fitfuncx = fittype( @(a0, a1, x) a0 + a1*cos(x*w));
-                xFitPrelim = fit(transpose(1:row), xPoints, fitfuncx);
-                
-                fitfuncy = fittype( @(b0, b1, x) b0 + b1*sin(x*w));
-                yFitPrelim = fit(transpose(1:row), yPoints, fitfuncy);
-                
-                %Calculate the number of terms in the fourier fit
-                r = sqrt(xFitPrelim.a1^2 + yFitPrelim.b1^2);
-                calcTerms = floor(r*pi/arcLength);
-                if calcTerms < numberTerms
-                    numberTerms = calcTerms;
+        % A function to calculate the number of terms in the bubble fit
+        % equation dependent on Nyquist sampling (half the number of points
+        % minus 1)
+        function numTerms = calcNumTerms(xPoints, adaptiveTerms, maxTerms)
+            numTerms = floor((length(xPoints) - 1)/2);
+            if ~adaptiveTerms
+                if numTerms > maxTerms
+                    numTerms = maxTerms;
                 end
-                clear fitfuncx fitfuncy xFitPrelim yFitPrelim r arcLength w;
             end
-            
-            %% Do one last check to make sure there are enough terms for the number of points
-            if numberTerms < length(xPoints)/2
-                numberTerms = floor(length(xPoints)/2);
-            end
-            if numberTerms == 0
-                %     fprintf(fileID, '%s', "Not enough perimeter points");
-                %     fprintf(fileID, '\n');
-                exit;
-            end
-            
-            %% Initialize the coefficient and term cell arrays
-            coeffs = cell(1, numberTerms + 1);
-            terms = cell(1, numberTerms + 1);
-            
-            %% Create the coefficient cell array
-            for j = 1:2:numTerms
-                coeffs{j} = 'a' + num2str(j);
-                coeffs{j + 1} = 'b' + num2str(j);
-            end
-            coeffs{end} = 'r';
-            
-            %% Create the terms cell array
-            for k = 1:numTerms/2
-                terms{2*k - 1} = 'cos(w*' + num2str(k) + '*x)';
-                terms{2*k} = 'sin(w*' + num2str(k) + '*x)';
-            end
-            terms{end} = 1;
-            
-            %% Create the fit type
-            ft = fittype(terms, 'coefficients', coeffs);
-            
-            %% Fit 
-            rFit = fit(theta, rho, ft);
-            
-            %% Evaluate for data points
-            rData = feval(rFit, 0:1/(numberTerms*row):row);
         end
-              
-        %% A function to fit a phase shifted polar fourier series to the bubble perimeter
-        function rFit = phasePolarFourier(xPoints, yPoints, centroid, arcLength, numberTerms, adaptiveTerms)
-             %% Translate the points in the data set
-            xPoints = xPoints - centroid(1);
-            yPoints = yPoints - centroid(2);
-            [theta, rho] = cart2pol(xPoints, yPoints);
-            
-            %% Get the number of points in the data set
-            row = size(xPoints, 1);
-            
-            %% If an adaptive number of terms is to be used, determine the number of terms
-            if adaptiveTerms
-                %Do a preliminary fit to get radius
-                w = 2*pi/(row - 1);
-                fitfuncx = fittype( @(a0, a1, x) a0 + a1*cos(x*w));
-                xFitPrelim = fit(transpose(1:row), xPoints, fitfuncx);
-                
-                fitfuncy = fittype( @(b0, b1, x) b0 + b1*sin(x*w));
-                yFitPrelim = fit(transpose(1:row), yPoints, fitfuncy);
-                
-                %Calculate the number of terms in the fourier fit
-                r = sqrt(xFitPrelim.a1^2 + yFitPrelim.b1^2);
-                calcTerms = floor(r*pi/arcLength);
-                if calcTerms < numberTerms
-                    numberTerms = calcTerms;
-                end
-                clear fitfuncx fitfuncy xFitPrelim yFitPrelim r arcLength w;
+        
+        % A function to generate the fit type depending on the user defined
+        % number of terms and user defined fit style
+        function ft = genFitType(numTerms, style)
+            switch style
+                case "parametric"
+                    Xcoeffs = cell(1, numTerms + 1);
+                    Ycoeffs = cell(1, numTerms + 1);
+                    Xterms = cell(1, numTerms + 1);
+                    Yterms = cell(1, numTerms + 1);
+                    
+                    for i = 1:numTerms
+                        Xcoeffs{i} = append('a', char(num2str(i)));
+                        Ycoeffs{i} = append('b', char(num2str(i)));
+                        Xterms{i} = append('cos(', char(num2str(i)), '*x)');
+                        Yterms{i} = append('sin(', char(num2str(i)), '*x)');
+                    end
+                    Xcoeffs{end} = 'a0';
+                    Ycoeffs{end} = 'b0';
+                    Xterms{end} = '1';
+                    Yterms{end} = '1';
+                    
+                    ft{1} = fittype(Xterms, 'coefficients', Xcoeffs);
+                    ft{2} = fittype(Yterms, 'coefficients', Ycoeffs);
+                case "polar (standard)"
+                    %% Initialize the coefficient and term cell arrays
+                    coeffs = cell(1, 2*numTerms + 1);
+                    terms = cell(1, 2*numTerms + 1);
+                    
+                    %% Create the coefficient cell array
+                    for j = 1:numTerms
+                        coeffs{2*j - 1} = append('a', char(num2str(j)));
+                        coeffs{2*j} = append('b', char(num2str(j)));
+                    end
+                    coeffs{end} = 'r';
+                    
+                    %% Create the terms cell array
+                    for k = 1:numTerms
+                        terms{2*k - 1} = append('cos(', char(num2str(k)), '*x)');
+                        terms{2*k} = append('sin(', char(num2str(k)), '*x)');
+                    end
+                    terms{end} = '1';
+                    
+                    %% Create the fit type
+                    ft = fittype(terms, 'coefficients', coeffs);
+                case "polar (phase shift)"
+                    %% Start the string function
+                    strFunc = "@(a0, ";
+                    
+                    %% Input vars
+                    for i = 1:numTerms
+                        strFunc = strFunc + "a" + num2str(i) + ", ";
+                    end
+                    for i = 1:numTerms
+                        strFunc = strFunc + "phi" + num2str(i) + ", ";
+                    end
+                    strFunc = strFunc + "x) a0";
+                    
+                    %% Terms
+                    for i = 1:numTerms
+                        strFunc = strFunc + " + a" + num2str(i) + ".*cos(" + num2str(i) + ".*x + phi" + num2str(i) + ")";
+                    end
+                    
+                    %% Create the fit type
+                    ft = fittype(str2func(strFunc));
             end
-            
-            %% Do one last check to make sure there are enough terms for the number of points
-            if numberTerms < length(xPoints)/2
-                numberTerms = floor(length(xPoints)/2);
-            end
-            if numberTerms == 0
-                %     fprintf(fileID, '%s', "Not enough perimeter points");
-                %     fprintf(fileID, '\n');
-                exit;
+        end
+        
+        % A Function to reconstruct the resulting fit into a usable
+        % equation based on the fit style
+        function fitEq = genFitEq(fit, style)
+            switch style
+                case "parametric"
+                    xFit = fit{1};
+                    yFit = fit{2};
+                    
+                    xnames = coeffnames(xFit);
+                    ynames = coeffnames(yFit);
+                    
+                    xvals = coeffvalues(xFit);
+                    yvals = coeffvalues(yFit);
+                    
+                    xStr = "@(x) " + num2str(xFit.a0) + " ";
+                    yStr = "@(x) " + num2str(yFit.b0) + " ";
+                    
+                    for i = 1:(numcoeffs(xFit) - 1)
+                        targetCoeffX = "a" + num2str(i);
+                        targetCoeffY = "b" + num2str(i);
+                        
+                        xCoeffVal = xvals(xnames == targetCoeffX);
+                        yCoeffVal = yvals(ynames == targetCoeffY);
+                        
+                        xStr = xStr + "+ " + num2str(xCoeffVal) + "*cos(" + num2str(i) + "*x)";
+                        yStr = yStr + "+ " + num2str(yCoeffVal) + "*cos(" + num2str(i) + "*x)";
+                    end
+                    fitEq{1} = str2func(xStr);
+                    fitEq{2} = str2func(yStr);
+                case "polar (standard)"
+                    names = coeffnames(fit);
+                    
+                    vals = coeffvalues(fit);
+                    
+                    fitStr = "@(x) " + num2str(fit.r) + " ";
+                    
+                    for i = 1:(numcoeffs(fit)/2)
+                        targetCoeffX = "a" + num2str(i);
+                        targetCoeffY = "b" + num2str(i);
+                        
+                        xVal = vals(names == targetCoeffX);
+                        yVal = vals(names == targetCoeffY);
+                        
+                        fitStr = fitStr + "+ " + num2str(xVal) + "*cos(" + num2str(i) + "*x) + " + num2str(yVal) + "*sin(" + num2str(i) + "*x)";
+                    end
+                    fitEq = str2func(fitStr);
+                case "polar (phase shift)"
+                    names = coeffnames(fit);
+                    
+                    vals = coeffvalues(fit);
+                    
+                    fitStr = "@(x) " + num2str(fit.a0) + " ";
+                    
+                    for i = 1:(numcoeffs(fit)/2)
+                        targetCoeff = "a" + num2str(i);
+                        targetAngle = "phi" + num2str(i);
+                        
+                        coeffval = vals(names == targetCoeff);
+                        angleval = vals(names == targetAngle);
+                        
+                        fitStr = fitStr + "+ " + num2str(coeffval) + "*cos(" + num2str(i) + "*x + " + num2str(angleval) + ")";
+                    end
+                    fitEq = str2func(fitStr);
             end
         end
     end

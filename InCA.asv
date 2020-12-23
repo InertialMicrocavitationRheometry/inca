@@ -523,11 +523,9 @@ classdef InCA < matlab.apps.AppBase
         end
         
         function DecomposeButtonPushed(app, ~)
-            delete(app.DecomposedPlotsPanel.Children);
             try 
                 f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Decomposing", "Indeterminate","on");
-                decompPlots = plotting.fourierDecomposition(app.maskInformation, app.TargetFrameField.Value, app.TermsofInterestField.Value, "descending", ...
-                    lower(string(app.FitType.Value)));
+                decompPlots = plotting.fourierDecomposition(app.maskInformation, app.TargetFrameField.Value, app.TermsofInterestField.Value, "descending");
                 f.Title = "Plotting...";
                 plotting.plotFourierDecomp(app, decompPlots);
                 close(f);
@@ -691,29 +689,28 @@ classdef InCA < matlab.apps.AppBase
             
             %Analysis Settings
             app.FourierFitLabel = uilabel(app.Toolstrip, 'Text', 'FOURIER RECONSTRUCTION', 'FontName', 'Roboto Medium', 'FontColor', [1, 1,1], ...
-                'Position', [1020, 30, 160, 20], 'Tooltip', 'Tells InCA whether or not to fit a Fourier series to the perimeter of the bubble');
+                'Position', [1020, 30, 160, 20], 'Toolti);
             app.FourierFitToggle = uiimage(app.Toolstrip, 'ImageSource', 'baseline_toggle_off_white_48dp.png', 'Position', [1185, 30, 40, 20], ...
-                'ScaleMethod', 'fit', 'UserData', 0, 'ImageClickedFcn', {@toggleClicked}, 'Tooltip', 'Tells InCA whether or not to fit a Fourier series to the perimeter of the bubble');
+                'ScaleMethod', 'fit', 'UserData', 0, 'ImageClickedFcn', {@toggleClicked});
             app.MinArcLengthLabel = uilabel(app.Toolstrip, 'Text', 'MINIMUM ARC LENGTH', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
-                'Position', [1020, 5, 130, 20], 'Tooltip', 'The minimum arc length between points to be considered for the Fourier Perimeter fit');
+                'Position', [1020, 5, 130, 20]);
             app.MinArcLengthField = uieditfield(app.Toolstrip, 'numeric', 'BackgroundColor', [0, 0, 0], 'FontName', 'Roboto Medium', 'Value', 3, 'FontColor', ...
-                [1, 1, 1], 'Position', [1155, 5, 70, 20], 'Limits', [0, Inf], 'Tooltip', 'The minimum arc length between points to be considered for the Fourier Perimeter fit');
+                [1, 1, 1], 'Position', [1155, 5, 70, 20], 'Limits', [0, Inf]);
             app.NumTermsLabel = uilabel(app.Toolstrip, 'Text', 'NUMBER TERMS', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
-                'Position', [1230, 30, 95, 20], 'Tooltip', 'Tells InCA whether or not to use a dynamic number of terms in the fit depending on Nyquist sampling rules for how many points there are on the perimeter');
+                'Position', [1230, 30, 95, 20]);
             app.NumTerms = uidropdown(app.Toolstrip, 'Items', {'Fixed', 'Variable'}, 'Value', 'Fixed', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
-                'Position', [1330, 30, 90, 20], 'BackgroundColor', [0, 0, 0], 'Tooltip', 'Tells InCA whether or not to use a dynamic number of terms in the fit depending on Nyquist sampling rules for how many points there are on the perimeter');
+                'Position', [1330, 30, 90, 20], 'BackgroundColor', [0, 0, 0]);
             app.FitTypeLabel = uilabel(app.Toolstrip, 'Text', 'FIT TYPE', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
-                'Position', [1230, 5, 50, 20], 'Tooltip', 'Tells InCA which type of function to construct to fit the perimeter points to');
+                'Position', [1230, 5, 50, 20]);
             app.FitType = uidropdown(app.Toolstrip, 'Items', {'Parametric', 'Polar (Standard)', 'Polar (Phase Shift)'}, 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
-                'BackgroundColor', [0 0 0], 'Position', [1285, 5, 135, 20], 'Value', 'Polar (Standard)', 'Tooltip', 'Tells InCA which type of function to construct to fit the perimeter points to');
-            app.MaxTermsLabel = uilabel(app.Toolstrip, 'Text', 'MAX NUM TERMS', 'FontName', 'Roboto Medium', 'FontColor', [1 1 1], 'Position', [1425, 30, 100, 20], ...
-                'Tooltip', 'The maximum number of terms InCA should use in the fit');
+                'BackgroundColor', [0 0 0], 'Position', [1285, 5, 135, 20], 'Value', 'Parametric');
+            app.MaxTermsLabel = uilabel(app.Toolstrip, 'Text', 'MAX NUM TERMS', 'FontName', 'Roboto Medium', 'FontColor', [1 1 1], 'Position', [1425, 30, 100, 20]);
             app.MaxTermsField = uieditfield(app.Toolstrip, 'numeric', 'Value', 40, 'Limits', [1, Inf], 'FontName', 'Roboto Medium', 'FontColor', [1 1 1], ...
-                'BackgroundColor', [0 0 0], 'Position', [1530, 30, 55, 20], 'Tooltip', 'The maximum number of terms InCA should use in the fit');
+                'BackgroundColor', [0 0 0], 'Position', [1530, 30, 55, 20]);
             app.TermsofInterestLabel = uilabel(app.Toolstrip, 'Text', 'TERMS OF INTEREST', 'FontName', 'Roboto Medium', 'FontColor', [1 1 1], 'Position', ...
-                [1425, 5, 115, 20], 'Tooltip', 'The number of terms to be used for asphericity, decomposition, and export');
+                [1425, 5, 115, 20]);
             app.TermsofInterestField = uieditfield(app.Toolstrip, 'numeric', 'Value', 8, 'Limits', [1, Inf], 'FontName', 'Roboto Medium', 'FontColor', [1 1 1], ...
-                'BackgroundColor', [0 0 0], 'Position', [1545, 5, 40, 20], 'Tooltip', 'The number of terms to be used for asphericity, decomposition, and export');
+                'BackgroundColor', [0 0 0], 'Position', [1545, 5, 40, 20]);
             
             %Camera Settings
             app.MicronPxLabel = uilabel(app.Toolstrip, 'Text', 'MICRON/PX', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], 'Position', [1590, 30, 70, 20]);
