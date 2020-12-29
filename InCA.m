@@ -409,18 +409,22 @@ classdef InCA < matlab.apps.AppBase
                 uialert(app.UIFigure, ME.message, append('Preprocessing Error: ', ME.identifier), 'Icon', 'error'); 
             end
             
-            %If the user wants to run the detection on the frames both ways
-            %then run it forwards, then reverse, and then compare the two.
-            %Otherwise just run the detection forward
             try 
-                if app.RDBWToggle.UserData == 1
-                    forwardMask = bubbleAnalysis.maskGen(app.UIFigure, detectionFrames, 'forward', app.IgnoreFirstFrameCheckBox.Value);
-                    reverseMask = bubbleAnalysis.maskGen(app.UIFigure, detectionFrames, 'reverse', app.IgnoreFirstFrameCheckBox.Value);
-                    f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Comparing masks...", "Indeterminate","on");
-                    app.mask = bubbleAnalysis.compareMasks(forwardMask, reverseMask);
-                    close(f)
+                if app.MultiToggle.UserData == 1
+                    app.mask = bubbleAnalysis.multiViewDetect(detectionFrames);
                 else
-                    app.mask = bubbleAnalysis.maskGen(app.UIFigure, detectionFrames, 'forward', app.IFFToggle.UserData);
+                    %If the user wants to run the detection on the frames both ways
+                    %then run it forwards, then reverse, and then compare the two.
+                    %Otherwise just run the detection forward
+                    if app.RDBWToggle.UserData == 1
+                        forwardMask = bubbleAnalysis.maskGen(app.UIFigure, detectionFrames, 'forward', app.IgnoreFirstFrameCheckBox.Value);
+                        reverseMask = bubbleAnalysis.maskGen(app.UIFigure, detectionFrames, 'reverse', app.IgnoreFirstFrameCheckBox.Value);
+                        f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Comparing masks...", "Indeterminate","on");
+                        app.mask = bubbleAnalysis.compareMasks(forwardMask, reverseMask);
+                        close(f)
+                    else
+                        app.mask = bubbleAnalysis.maskGen(app.UIFigure, detectionFrames, 'forward', app.IFFToggle.UserData);
+                    end
                 end
             catch me
                uialert(app.UIFigure, me.message, append('Detection Error: ', me.identifier), 'Icon', 'error'); 
@@ -591,8 +595,10 @@ classdef InCA < matlab.apps.AppBase
                 if iscell(app.maskInformation(app.currentFrame).perimEq)
                     xFunc = app.maskInformation(app.currentFrame).perimEq{1};
                     yFunc = app.maskInformation(app.currentFrame).perimEq{2};
-                    info.xData = xFunc(linspace(0, 2*pi, 1000)) + app.maskInformation(app.currentFrame).Centroid(1);
-                    info.yData = yFunc(linspace(0, 2*pi, 1000)) + app.maskInformation(app.currentFrame).Centroid(2);
+                    info.xData = xFunc(linspace(1, length(app.maskInformation(app.currentFrame).FourierPoints(:, 1)), ...
+                        numcoeffs(app.maskInformation(app.currentFrame).perimFit{1}).*25));
+                    info.yData = yFunc(linspace(1, length(app.maskInformation(app.currentFrame).FourierPoints(:, 2)), ...
+                        numcoeffs(app.maskInformation(app.currentFrame).perimFit{2}).*25));
                 else
                     rFunc = app.maskInformation(app.currentFrame).perimEq;
                     rData = rFunc(linspace(0, 2*pi, 1000));

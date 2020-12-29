@@ -582,8 +582,8 @@ classdef plotting
                                     if iscell(fit)
                                         xFunc = fit{1};
                                         yFunc = fit{2};
-                                        xData = xFunc(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame).perimFit{1}).*25));
-                                        yData = yFunc(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame).perimFit{2}).*25));
+                                        xData = xFunc(linspace(1, length(fourier(:, 1)), numcoeffs(app.maskInformation(app.currentFrame).perimFit{1}).*25));
+                                        yData = yFunc(linspace(1, length(fourier(:, 2)), numcoeffs(app.maskInformation(app.currentFrame).perimFit{2}).*25));
                                     else
                                         rFunc = fit;
                                         rData = rFunc(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame).perimFit)./2.*25));

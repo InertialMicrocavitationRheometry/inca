@@ -506,6 +506,10 @@ classdef bubbleAnalysis
             end
         end
         
+        %Return a mask in a multiviewpoint video
+        function mask = multiViewDetect(frames)
+        end
+        
         %Analyze the video
         function maskInformation = bubbleTrack(app, mask, arcLength, orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames, style)
             % A function to generate data about each mask
@@ -740,8 +744,8 @@ classdef bubbleAnalysis
             %Actually fit it for the correct number of terms
             switch style
                 case "parametric"
-                    perimFit{1} = fit(transpose(2.*pi.*(1:length(xPoints))./(length(xPoints) - 1)), xPoints, ft{1});
-                    perimFit{2} = fit(transpose(2.*pi.*(1:length(yPoints))./(length(yPoints) - 1)), yPoints, ft{2});
+                    perimFit{1} = fit(transpose(1:length(xPoints)), xPoints, ft{1}, 'problem', 2*pi/(length(xPoints) - 1));
+                    perimFit{2} = fit(transpose(1:length(yPoints)), yPoints, ft{2}, 'problem', 2*pi/(length(yPoints) - 1));
                     perimEq = bubbleAnalysis.genFitEq(perimFit, "parametric");
                 case "polar (standard)"
                     xPoints = xPoints - centroid(1);
@@ -1111,16 +1115,16 @@ classdef bubbleAnalysis
                     for i = 1:numTerms
                         Xcoeffs{i} = append('a', char(num2str(i)));
                         Ycoeffs{i} = append('b', char(num2str(i)));
-                        Xterms{i} = append('cos(', char(num2str(i)), '*x)');
-                        Yterms{i} = append('sin(', char(num2str(i)), '*x)');
+                        Xterms{i} = append('cos(', char(num2str(i)), '*w*x)');
+                        Yterms{i} = append('sin(', char(num2str(i)), '*w*x)');
                     end
                     Xcoeffs{end} = 'a0';
                     Ycoeffs{end} = 'b0';
                     Xterms{end} = '1';
                     Yterms{end} = '1';
                     
-                    ft{1} = fittype(Xterms, 'coefficients', Xcoeffs);
-                    ft{2} = fittype(Yterms, 'coefficients', Ycoeffs);
+                    ft{1} = fittype(Xterms, 'coefficients', Xcoeffs, 'problem', 'w');
+                    ft{2} = fittype(Yterms, 'coefficients', Ycoeffs, 'problem', 'w');
                 case "polar (standard)"
                     %% Initialize the coefficient and term cell arrays
                     coeffs = cell(1, 2*numTerms + 1);
@@ -1173,6 +1177,9 @@ classdef bubbleAnalysis
                     xFit = fit{1};
                     yFit = fit{2};
                     
+                    xw = xFit.w;
+                    yw = yFit.w;
+                    
                     xnames = coeffnames(xFit);
                     ynames = coeffnames(yFit);
                     
@@ -1189,8 +1196,8 @@ classdef bubbleAnalysis
                         xCoeffVal = xvals(xnames == targetCoeffX);
                         yCoeffVal = yvals(ynames == targetCoeffY);
                         
-                        xStr = xStr + "+ " + num2str(xCoeffVal) + "*cos(" + num2str(i) + "*x)";
-                        yStr = yStr + "+ " + num2str(yCoeffVal) + "*cos(" + num2str(i) + "*x)";
+                        xStr = xStr + "+ " + num2str(xCoeffVal) + "*cos(" + num2str(i) + "*" + num2str(xw) + "*x)";
+                        yStr = yStr + "+ " + num2str(yCoeffVal) + "*sin(" + num2str(i) + "*" + num2str(yw) + "*x)";
                     end
                     fitEq{1} = str2func(xStr);
                     fitEq{2} = str2func(yStr);

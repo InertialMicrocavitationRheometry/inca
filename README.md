@@ -53,9 +53,8 @@ the green play/run button found at the top of the MATLAB Editor tab.
 - [ ] Overhaul the user manual 
 - [x] Enhance performance of Main Viewer Axes
 - [ ] Set up for spherical harmonics analysis
-- [ ] Set up for multi viewpoint analysis
-- [ ] Continue to refine detection algorithms
-- [ ] Configuration file?
-- [ ] Versioning and update control/notification?
-- [ ] Fix parametric fit plotting (possible bad fit?)
+- [x] Set up for multi viewpoint analysis
+- [ ] Continue to refine detection algorithms (calibration?)
+- [x] Versioning and update control/notification?
+- [x] Fix parametric fit plotting (possible bad fit?)
 
