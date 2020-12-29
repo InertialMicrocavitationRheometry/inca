@@ -120,6 +120,13 @@ classdef InCA < matlab.apps.AppBase
     
     methods (Access = private)
         
+        function checkVersion(app)
+            newestVersion = str2double(string(webread('https://raw.githubusercontent.com/estradalab/inca/master/version.txt')));
+            if newestVersion > 11
+                uialert(app.UIFigure, 'A newer version of InCA is available. An update is recommended.', 'Newer version detected');
+            end
+        end
+        
     end
     
 
@@ -129,6 +136,7 @@ classdef InCA < matlab.apps.AppBase
         % Code that executes after component creation
         function startupFcn(app)
             app.currentFrame = 1;
+            checkVersion(app);
         end
         
         function resetFunction(app)
