@@ -156,53 +156,166 @@ classdef incaio
         end
         
         %Configure InCA data for IMR
-        function data = configureDataForIMR(frames, mask, numFrames, ignoreFrames, maskInformation, convertedPlotSet, numExportTerms)
+        function data = configureDataForIMR(frames, mask, numFrames, ignoreFrames, maskInformation, convertedPlotSet, numExportTerms, style)
             % A function to configure InCA data for export to IMR
             % data - an output struct with the fields:
             %     .RoFT - a n x 1 column vector that contains the Fourier Fit radius for
             %     each frame, where n is the number of frames
             %     .t - a n x 1 column vector that contains the timestamp for each
             %     frame, where n is the number of frames
-            %     .FTs - a n x 2*k matrix that contains the first k fourier term
-            %     amplitudes and where n is the number of frames
+            %     .FTs - a table that contains the first k fourier
+            %     term amplitudes, where k is the number of terms to
+            %     export
             %     .regionprops - a n x 1 struct that contains various
             %     region props data about each frame/mask
             
             %% Extract the radius of each frame and put it in a vector
             radius = zeros(numFrames, 1);
-            for i = 1:numFrames
-                if isempty(find(ignoreFrames == i, 1))
-                    xVal = maskInformation(i).FourierFitX.a1;               %Get the x component of the radius
-                    yVal = maskInformation(i).FourierFitY.b1;               %Get the y component of the radius
-                    radius(i) = sqrt(xVal^2 + yVal^2);                      %Calculate and store the radius
-                end
+            switch style
+                case "parametric"
+                    for i = 1:numFrames
+                        if isempty(find(ignoreFrames == i, 1))
+                            xVal = maskInformation(i).perimFit{1}.a1;               %Get the x component of the radius
+                            yVal = maskInformation(i).perimFit{2}.b1;               %Get the y component of the radius
+                            radius(i) = sqrt(xVal^2 + yVal^2);                      %Calculate and store the radius
+                        else
+                            radius(i) = NaN;
+                        end
+                    end
+                case "polar (standard)"
+                    for i = 1:numFrames
+                        if isempty(find(ignoreFrames == i, 1))
+                            radius(i) = maskInformation(i).perimFit.r;
+                        else
+                            radius(i) = NaN;
+                        end
+                    end
+                case "polar (phase shift)"
+                    for i = 1:numFrames
+                        if isempty(find(ignoreFrames == i, 1))
+                            radius(i) = maskInformation(i).perimFit.a0;
+                        else
+                            radius(i) = NaN;
+                        end
+                    end
             end
             
             %% Extract the time stamp for each frame and put it in a vector
             timestamp = convertedPlotSet.TimeVector;
             
             %% Extract the Fourier Fit Amplitudes for each frame
-            FourierAmps = zeros(numFrames, numExportTerms);
-            for i = 1:numFrames
-                if isempty(find(ignoreFrames == i, 1))
-                    xFourier = maskInformation(i).FourierFitX;              %Get the xFit for the frame
-                    yFourier = maskInformation(i).FourierFitY;              %Get the yFit for the frame
-                    xnames = coeffnames(xFourier);                              %Extract the x fit coefficient names
-                    ynames = coeffnames(yFourier);                              %Extract the y fit coefficient names
-                    xcoeffvals = coeffvalues(xFourier);                         %Extract the x fit coefficient values
-                    ycoeffvals = coeffvalues(yFourier);                         %Extract the y fit coefficient values
-                    
-                    for j = 1:numExportTerms
-                        targetCoeffX = "a" + num2str(j);                        %Generate a target x coefficient name
-                        targetCoeffY = "b" + num2str(j);                        %Generate a target y coefficent name
-                        
-                        xVal = xcoeffvals(xnames == targetCoeffX);              %Get the x coefficient value associated with that name
-                        yVal = ycoeffvals(ynames == targetCoeffY);              %Get the y coefficient value associated with that name
-                        
-                        FourierAmps(i, 2*j - 1) = xVal;
-                        FourierAmps(i, 2*j) = yVal;
+            switch style
+
+                case "parametric"
+                    FourierAmps = cell(numFrames + 1, 2*numExportTerms + 2);  % Initialize cell array
+                    %Insert the top row column identifier
+                    for j = 0:numExportTerms
+                        FourierAmps{1, (2*j + 1)} = "a" + num2str(j);
+                        FourierAmps{1, (2*j + 2)} = "b" + num2str(j);
                     end
-                end
+                    for i = 1:numFrames
+                        if isempty(find(ignoreFrames == i, 1))
+                            xFit = maskInformation(i).perimFit{1};          % Extract the xfit
+                            yFit = maskInformation(i).perimFit{2};          % Extract the y fit
+                            
+                            xvals = coeffvalues(xFit);                      % Extract coefficient values
+                            yvals = coeffvalues(yFit);                      % Extract coefficient values
+                            
+                            xterms = string(coeffnames(xFit));              % Extract coefficient names
+                            yterms = string(coeffnames(yFit));              % Extract coefficient names
+                            
+                            %Insert the coefficients
+                            for k = 0:numExportTerms
+                                xtarg = "a" + num2str(k);
+                                ytarg = "b" + num2str(k);
+                                FourierAmps{i + 1, (2*k + 1)} = xvals(xterms == xtarg);
+                                FourierAmps{i + 1, (2*k + 2)} = yvals(yterms == ytarg);
+                            end
+                        else
+                            for m = 1:(2*numExportTerms + 2)
+                                FourierAmps{i + 1, :} = NaN(1, 2*numExportTerms + 2);
+                            end
+                        end
+                    end
+                    C = FourierAmps(2:end, :);
+                    FourierTable = cell2table(C);
+                    varnames = cell(1, (2*numExportTerms + 2));
+                    for n = 1:length(varnames)
+                        varnames{n} = char(FourierAmps{1, n});
+                    end
+                    FourierTable.Properties.VariableNames = varnames;
+                case "polar (standard)"
+                    FourierAmps = cell(numFrames + 1, 2*numExportTerms + 1);  % Initialize cell array
+                    %Insert top row
+                    FourierAmps{1, 1} = "r";
+                    for j = 1:numExportTerms
+                        FourierAmps{1, (2*j)} = "a" + num2str(j);
+                        FourierAmps{1, (2*j + 1)} = "b" + num2str(j);
+                    end
+                    for i = 1:numFrames
+                        if isempty(find(ignoreFrames == i, 1))
+                            rFit = maskInformation(i).perimFit;                 % Extract the fit
+                            
+                            rnames = string(coeffnames(rFit));                  % Extract fit coeffs
+                            rvals = coeffvalues(rFit);                          % Extract coeff vals
+
+                            %Insert the coefficients
+                            FourierAmps{i + 1, 1} = rFit.r;
+                            for k = 1:numExportTerms
+                                atarg = "a" + num2str(k);
+                                btarg = "b" + num2str(k);
+                                FourierAmps{i + 1, 2*k} = rvals(rnames == atarg);
+                                FourierAmps{i + 1, (2*k + 1)} = rvals(rnames == btarg);
+                            end
+                        else
+                            for m = 1:(2*numExportTerms + 1)
+                                FourierAmps{i + 1, m} = NaN;
+                            end
+                        end
+                    end
+                    C = FourierAmps(2:end, :);
+                    FourierTable = cell2table(C);
+                    varnames = cell(1, (2*numExportTerms + 1));
+                    for n = 1:length(varnames)
+                        varnames{n} = char(FourierAmps{1, n});
+                    end
+                    FourierTable.Properties.VariableNames = varnames;
+                case "polar (phase shift)"
+                    FourierAmps = cell(numFrames + 1, 2*numExportTerms + 1);  % Initialize cell array
+                    %Insert top row
+                    FourierAmps{1, 1} = "a0";
+                    for j = 1:numExportTerms
+                        FourierAmps{1, (2*j)} = "a" + num2str(j);
+                        FourierAmps{1, (2*j + 1)} = "phi" + num2str(j);
+                    end
+                    for i = 1:numFrames
+                        if isempty(find(ignoreFrames == i, 1))
+                            rFit = maskInformation(i).perimFit;                 % Extract the fit
+                            
+                            rnames = string(coeffnames(rFit));                  % Extract fit coeffs
+                            rvals = coeffvalues(rFit);                          % Extract coeff vals
+                            
+                            %Insert the coefficients
+                            FourierAmps{i + 1, 1} = rFit.a0;
+                            for k = 1:numExportTerms
+                                atarg = "a" + num2str(k);
+                                phitarg = "phi" + num2str(k);
+                                FourierAmps{i + 1, 2*k} = rvals(rnames == atarg);
+                                FourierAmps{i + 1, (2*k + 1)} = rvals(rnames == phitarg);
+                            end
+                        else
+                            for m = 1:(2*numExportTerms + 1)
+                                FourierAmps{i + 1, m} = NaN;
+                            end
+                        end
+                    end
+                    C = FourierAmps(2:end, :);
+                    FourierTable = cell2table(C);
+                    varnames = cell(1, (2*numExportTerms + 1));
+                    for n = 1:length(varnames)
+                        varnames{n} = char(FourierAmps{1, n});
+                    end
+                    FourierTable.Properties.VariableNames = varnames;
             end
             
             %% Get regionprops data for each frame
@@ -230,7 +343,7 @@ classdef incaio
             %% Assign to final output struct
             data.RoFT = radius;
             data.t = timestamp;
-            data.FTs = FourierAmps;
+            data.FTs = FourierTable;
             data.regionprops = imageAnalysis;
             
         end

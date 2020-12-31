@@ -22,6 +22,9 @@ classdef plotting
         function [radius, area, perimeter, surfaceArea, volume, centroid, velocity] = generatePlotData(app)
             
             info = app.maskInformation;
+            if isempty(info)
+                return;
+            end
             numFrames = app.numFrames;
             
             %Set up the output variables
@@ -35,28 +38,44 @@ classdef plotting
             velocity(:, 1) = 0.5:(numFrames - 0.5);
             for i = 1:numFrames
                 
+                if isempty(info(i))
+                    continue;
+                end
+                
                 if ~isempty(info(i).AverageRadius)
                     radius(i) = info(i).AverageRadius;
+                else 
+                    radius(i) = NaN;
                 end
                 
                 if ~isempty(info(i).Area)
                     area(i) = info(i).Area;
+                else
+                    area(i) = NaN;
                 end
                 
                 if ~isempty(info(i).Perimeter)
                     perimeter(i) = info(i).Perimeter;
+                else
+                    perimeter(i) = NaN;
                 end
                 
                 if ~isempty(info(i).SurfaceArea)
                     surfaceArea(i) = info(i).SurfaceArea;
+                else 
+                    surfaceArea(i) = NaN;
                 end
                 
                 if ~isempty(info(i).Volume)
                     volume(i) = info(i).Volume;
+                else 
+                    volume(i) = NaN;
                 end
                 
                 if ~isempty(info(i).Centroid)
                     centroid(i, :) = info(i).Centroid;
+                else
+                    centroid(i) = [NaN, NaN];
                 end
                 
                 if ~isempty(info(i).PerimVelocity)
@@ -560,6 +579,8 @@ classdef plotting
             if ~isempty(app.maskInformation)
                 if ~isempty(app.ignoreFrames)
                     if ~isempty(find(app.ignoreFrames == app.currentFrame, 1))
+                        imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
+                    elseif isempty(app.mask(:, :, app.currentFrame))
                         imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
                     else
                         %Update the main viewer window

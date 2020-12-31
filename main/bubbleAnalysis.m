@@ -546,13 +546,13 @@ classdef bubbleAnalysis
                     maskInformation(d).PerimeterPoints = NaN;
                     maskInformation(d).TrackingPoints = NaN;
                     maskInformation(d).FourierPoints = NaN;
-                    maskInformation(d).FourierFit = NaN;
                     maskInformation(d).AverageRadius = NaN;
                     maskInformation(d).SurfaceArea = NaN;
                     maskInformation(d).Volume = NaN;
-                    maskInformation(d).FourierFitX = NaN;
-                    maskInformation(d).FourierFitY = NaN;
+                    maskInformation(d).perimFit = NaN;
+                    maskInformation(d).perimEq = NaN;
                     maskInformation(d).PerimVelocity = NaN;
+                    maskInformation(d).Orientation = NaN;
                     continue;
                 else
                     %Get the mask

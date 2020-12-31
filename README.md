@@ -46,13 +46,14 @@ the green play/run button found at the top of the MATLAB Editor tab.
 - [x] Integrate polar fourier fit function
 - [x] Write code for phase shift fourier fit function
 - [x] Integrate phase shift fourier fit function 
-- [ ] Figure out how to handle data during batch processing and switching between videos 
-- [ ] Update the IMR export code to export fourier coefficients for any type of fit
-- [ ] Have the IMR button save instead of open
+- [x] Figure out how to handle data during batch processing and switching between videos 
+- [x] Enable batch processing
+- [x] Update the IMR export code to export fourier coefficients for any type of fit
+- [x] Have the IMR button save instead of open
 - [ ] Debug Frame inspector opening up a new figure window when launched 
 - [ ] Overhaul the user manual 
 - [x] Enhance performance of Main Viewer Axes
-- [ ] Set up for spherical harmonics analysis
+- [x] Set up for spherical harmonics analysis
 - [x] Set up for multi viewpoint analysis
 - [ ] Continue to refine detection algorithms (calibration?)
 - [x] Versioning and update control/notification?

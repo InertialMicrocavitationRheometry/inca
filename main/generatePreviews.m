@@ -129,7 +129,9 @@ frameInView = 1;
             frameofInterst.ImageSource = plainimage;
         end
         frameofInterst.Tooltip = "Click to ignore frame " + num2str(frameInView) + " during calculations";
-        uialert(app.UIFigure, 'This frame will be used during bubble analysis', 'Message', 'Icon', 'success');
+        if app.FrameWarningToggle.UserData
+            uialert(app.UIFigure, 'This frame will be used during bubble analysis', 'Message', 'Icon', 'success');
+        end
     end
 
     %% Reject Button Clicked
@@ -139,7 +141,9 @@ frameInView = 1;
         dontUseMask = ones(size(app.frames(:, :, frameInView)));
         frameofInterest.ImageSource = labeloverlay(app.frames(:, :, frameInView), dontUseMask, 'Colormap', 'autumn');
         frameofInterset.Tooltip = "This frame will be ignored during bubble analysis";
-        uialert(app.UIFigure, 'This frame will be ignored during bubble analysis', 'Message');
+        if app.FrameWarningToggle.UserData
+            uialert(app.UIFigure, 'This frame will be ignored during bubble analysis', 'Message');
+        end
     end
             
 end

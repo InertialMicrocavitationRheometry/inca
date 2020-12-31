@@ -13,6 +13,7 @@ classdef InCA < matlab.apps.AppBase
         CentroidTab
         FourierFitDataTab
         FourierDecompositionTab
+        SphericalHarmonicsTab
         ViewerTab
         EvolutionOverlayTab
         
@@ -116,13 +117,14 @@ classdef InCA < matlab.apps.AppBase
         numFrames
         convertedPlotSet
         frameInterval
+        batchmode
     end
     
     methods (Access = private)
         
         function checkVersion(app)
             newestVersion = str2double(string(webread('https://raw.githubusercontent.com/estradalab/inca/master/version.txt')));
-            if newestVersion > 12
+            if newestVersion > 14
                 uialert(app.UIFigure, 'A newer version of InCA is available. An update is recommended.', 'Newer version detected', 'Icon', 'warning');
             end
         end
@@ -314,6 +316,7 @@ classdef InCA < matlab.apps.AppBase
         end
         
         function NewButtonPushed(app, ~)
+            app.batchmode = false;
             try 
                 resetFunction(app);
                 f = uiprogressdlg(app.UIFigure, 'Title', "Please Wait", 'Message', "Loading video...", 'Indeterminate', 'on');
@@ -330,7 +333,62 @@ classdef InCA < matlab.apps.AppBase
         end
         
         function BatchButtonPushed(app, ~)
-            parentPos = app.UIFigure.Position;
+            selection = uiconfirm(app.UIFigure, 'Batch analysis will be conducted with current settings.', 'Continue?', 'Options', ...
+                {'Continue with current settings', 'Cancel'}, 'DefaultOption', 1, 'CancelOption', 2);
+            if all(selection == 'Continue with current settings')
+                app.batchmode = true;
+                [files, path] = uigetfile('*.avi', 'Select videos to analyze', 'MultiSelect', 'on');
+                savepath = uigetdir();
+                f = uiprogressdlg(app.UIFigure, 'Message', "Processing videos");
+                for q = 1:length(files)
+                    f.Value = q./length(files);
+                    %% Set up the current file path
+                    currentFilePath = append(path, files{q});
+                    
+                    %% Read the frames
+                    vidObj = VideoReader(currentFilePath);
+                    app.numFrames = vidObj.NumFrames;
+                    vidObj = VideoReader(currentFilePath);
+                    % Read the individual frames into a cell array
+                    for j = 1:app.numFrames
+                        pause(0.01);
+                        img = readFrame(vidObj);            %Read the Frame
+                        img = rgb2hsv(img);                 %Convert to HSV
+                        img = img(:, :, 3);                 %Extract the value matrix
+                        app.frames(:, :, j) = img;          %Store the frame in the cell array
+                    end
+                    
+                    %% Run detection
+                    DetectButtonPushed(app, 0);
+                    
+                    %% Run analysis
+                    AnalyzeButtonPushed(app, 0);
+                    
+                    %% Save 
+                    filename = append('BatchAnalysis', num2str(q));
+                    fullsave = append(savepath, '\', filename, '.mat');
+                    
+                    frames = app.frames;
+                    masks = app.mask;
+                    infoStruct = app.maskInformation;
+                    ignoreFrames = app.ignoreFrames;
+                    BubbleRadius = app.radius;
+                    BubbleArea = app.area;
+                    BubblePerimeter = app.perimeter;
+                    BubbleSurfaceArea = app.surfaceArea;
+                    BubbleCentroid = app.centroid;
+                    BubbleVolume = app.volume;
+                    BubbleVelocity = app.velocity;
+                    numFrames = app.numFrames;
+                    alternatePlotSet = app.convertedPlotSet;
+                    
+                    save(fullsave, 'frames', 'masks', 'infoStruct', 'ignoreFrames', 'BubbleRadius', 'BubbleArea', 'BubblePerimeter', ...
+                        'BubbleSurfaceArea', 'BubbleCentroid', 'BubbleVolume', 'BubbleVelocity', 'numFrames', 'alternatePlotSet', '-v7.3');
+                end
+                close(f);
+                app.batchmode = false;
+                uialert(app.UIFigure, 'Batch Processing Completed!', 'Success', 'Icon', "success", "Modal", true);
+            end
         end
         
         function OpenButtonPushed(app, ~)
@@ -430,11 +488,13 @@ classdef InCA < matlab.apps.AppBase
                uialert(app.UIFigure, me.message, append('Detection Error: ', me.identifier), 'Icon', 'error'); 
             end
             
-            %User niceties
-            f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Generating frame previews...", "Indeterminate","on");
-            generatePreviews(app, app.frames, app.mask);
-            close(f);
-            uialert(app.UIFigure, "Bubble detection complete! Please review frames before proceeding.", 'Message', 'Icon', 'info');
+            if ~app.batchmode
+                %User niceties
+                f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Generating frame previews...", "Indeterminate","on");
+                generatePreviews(app, app.frames, app.mask);
+                close(f);
+                uialert(app.UIFigure, "Bubble detection complete! Please review frames before proceeding.", 'Message', 'Icon', 'info');
+            end
         end
         
         function MaskPreviewButtonPushed(app, ~)
@@ -458,29 +518,31 @@ classdef InCA < matlab.apps.AppBase
             catch ME
                 uialert(app.UIFigure, ME.message, append('Analysis Error: ', ME.identifier), 'Icon', 'error'); 
             end
-            f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Configuring for plotting...", "Indeterminate","on");
-            try
-                [app.radius, app.area, app.perimeter, app.surfaceArea, app.volume, app.centroid, app.velocity] = plotting.generatePlotData(app);
-                plotting.displayCurrentFrame(app);
-                app.convertedPlotSet = plotting.convertUnits(app);
-                if string(app.PlotAxes.Value) == "Px/Frame"
-                    plotting.plotData(app.radius, app.area, app.perimeter, app.surfaceArea, app.volume, app.centroid, ...
-                        app.RadiusPlot, app.TwoDimensionalPlot, app.ThreeDimensionalPlot, app.CentroidPlot, app.numFrames, app.currentFrame);
-                    plotting.dispEvolution(app);
-                    plotting.plotFourier(app);
-                    plotting.plotVelocity(app.VelocityPlot, app.velocity);
-                else
-                    plotting.plotConvertedData(app.convertedPlotSet, app.RadiusPlot, app.TwoDimensionalPlot, app.ThreeDimensionalPlot, app.CentroidPlot,...
-                        app.currentFrame, app.numFrames);
-                    plotting.plotConvertedFourier(app);
-                    plotting.dispEvolution(app);
+            [app.radius, app.area, app.perimeter, app.surfaceArea, app.volume, app.centroid, app.velocity] = plotting.generatePlotData(app);
+            app.convertedPlotSet = plotting.convertUnits(app);
+            if ~app.batchmode
+                f = uiprogressdlg(app.UIFigure ,"Title", "Please wait", "Message", "Configuring for plotting...", "Indeterminate","on");
+                try
+                    plotting.displayCurrentFrame(app);
+                    if string(app.PlotAxes.Value) == "Px/Frame"
+                        plotting.plotData(app.radius, app.area, app.perimeter, app.surfaceArea, app.volume, app.centroid, ...
+                            app.RadiusPlot, app.TwoDimensionalPlot, app.ThreeDimensionalPlot, app.CentroidPlot, app.numFrames, app.currentFrame);
+                        plotting.dispEvolution(app);
+                        plotting.plotFourier(app);
+                        plotting.plotVelocity(app.VelocityPlot, app.velocity);
+                    else
+                        plotting.plotConvertedData(app.convertedPlotSet, app.RadiusPlot, app.TwoDimensionalPlot, app.ThreeDimensionalPlot, app.CentroidPlot,...
+                            app.currentFrame, app.numFrames);
+                        plotting.plotConvertedFourier(app);
+                        plotting.dispEvolution(app);
+                    end
+                catch ME
+                    uialert(app.UIFigure, ME.message, append('Plotting Error: ', ME.identifier), 'Icon', 'error');
                 end
-            catch ME
-                uialert(app.UIFigure, ME.message, append('Plotting Error: ', ME.identifier), 'Icon', 'error'); 
+                drawnow;
+                pause(0.01);
+                close(f);
             end
-            drawnow;
-            pause(0.01);
-            close(f);
         end
         
         function ExportButtonPushed(app, ~)
@@ -494,7 +556,11 @@ classdef InCA < matlab.apps.AppBase
 
         function IMRButtonPushed(app, ~)
             try
-                data = incaio.configureDataForIMR(app.frames, app.mask, app.numFrames, app.ignoreFrames, app.maskInformation, app.convertedPlotSet, app.numberFourierTermsToExport);
+                data = incaio.configureDataForIMR(app.frames, app.mask, app.numFrames, app.ignoreFrames, ...
+                    app.maskInformation, app.convertedPlotSet, app.TermsofInterestField.Value, lower(string(app.FitType.Value)));
+                [file, path] = uiputfile('*.mat');
+                savePath = append(path, file);
+                save(savePath, 'data', '-v7.3');
             catch me
                 uialert(app.UIFigure, me.message, append('Data Configuration Error: ', me.identifier), 'Icon', 'error'); 
             end
@@ -690,7 +756,7 @@ classdef InCA < matlab.apps.AppBase
                 'Position', [700, 30, 120, 20], 'Tooltip', 'Ignore the first frame of the video (common with high speed cameras)');
             app.IFFToggle = uiimage(app.Toolstrip, 'ImageSource', 'baseline_toggle_on_white_48dp.png', 'Position', [825, 30, 40, 20], ...
                 'ScaleMethod', 'fit', 'UserData', 1, 'ImageClickedFcn', {@toggleClicked}, 'Tooltip', 'Ignore the first frame of the video (common with high speed cameras)');
-            app.MultiToggleLabel = uilabel(app.Toolstrip, 'Text', 'MULTIBUBBLE', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
+            app.MultiToggleLabel = uilabel(app.Toolstrip, 'Text', '      MULTI-VIEWPOINT', 'FontName', 'Roboto Medium', 'FontColor', [1, 1, 1], ...
                 'Position', [700, 5, 120, 20], 'Tooltip', 'Tells InCA to expect multiple (possibly overlapping) bubbles per frame');
             app.MultiToggle = uiimage(app.Toolstrip, 'ImageSource', 'baseline_toggle_off_white_48dp.png', 'Position', [825, 5, 40, 20], ...
                 'ScaleMethod', 'fit', 'UserData', 0, 'ImageClickedFcn', {@toggleClicked},  'Tooltip', 'Tells InCA to expect multiple (possibly overlapping) bubbles per frame');
@@ -751,6 +817,7 @@ classdef InCA < matlab.apps.AppBase
             app.CentroidTab = uitab(app.AnalysisTabs, 'Title', 'Centroid', 'BackgroundColor', [0, 0, 0], 'Scrollable', 'on', 'AutoResizeChildren', 'off');
             app.FourierFitDataTab = uitab(app.AnalysisTabs, 'Title', 'Fourier Fit Data', 'BackgroundColor', [0, 0, 0], 'Scrollable', 'on', 'AutoResizeChildren', 'off');
             app.FourierDecompositionTab = uitab(app.AnalysisTabs, 'Title', 'Fourier Decomposition', 'BackgroundColor', [0, 0, 0], 'Scrollable', 'on', 'AutoResizeChildren', 'off');
+            app.SphericalHarmonicsTab = uitab(app.AnalysisTabs, 'Title', 'Spherical Harmonics', 'BackgroundColor', [0 0 0], 'Scrollable', 'on', 'AutoResizeChildren', 'off');
             
             %Populate the Overview Tab
             app.VelocityPlot = uiaxes(app.OverviewTab, 'AmbientLightColor', [0 0 0], 'FontName', 'Roboto', 'FontSize', 12, 'XColor', [1 1 1], ...
@@ -857,6 +924,7 @@ classdef InCA < matlab.apps.AppBase
             app.MainPlot = uiaxes(app.ViewerTab, 'DataAspectRatio', [1 1 1], 'FontName', 'Roboto', 'FontSize', 14, 'YDir', 'reverse', 'Box', 'on', ...
                 'BoxStyle', 'full', 'XTick', [], 'YTick', [], 'Position', [5, 60, 890, 679], 'Color', [0 0 0], 'BackgroundColor', [0 0 0], 'XColor', ...
                 [1 1 1], 'YColor', [1 1 1], 'AmbientLightColor', [0 0 0]);
+            disableDefaultInteractivity(app.MainPlot);
             
             %Populate the Evolution Overlay Tab
             app.EvolutionFirst = uilabel(app.EvolutionOverlayTab, 'Text', 'FIRST FRAME', 'FontColor', [178, 24, 43]./255, 'FontName', 'Roboto Medium', ...
