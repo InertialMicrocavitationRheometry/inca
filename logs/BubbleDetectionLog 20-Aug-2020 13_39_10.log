@@ -1,6 +1,0 @@
-{Not enough input arguments.
-
-Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('bubbleIsolation', 'D:\Aditya\Research Stuff\InCA\main\bubbleIsolation.m', 16)" style="font-weight:bold">bubbleIsolation</a> (<a href="matlab: opentoline('D:\Aditya\Research Stuff\InCA\main\bubbleIsolation.m',16,0)">line 16</a>)
-[row, col, depth] = size(inputFrames);      %Get the size of the initial frame array
-} 
-mask = bubbleIsolation(0, frames);

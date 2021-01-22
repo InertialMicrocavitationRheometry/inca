@@ -50,7 +50,7 @@ the green play/run button found at the top of the MATLAB Editor tab.
 - [x] Enable batch processing
 - [x] Update the IMR export code to export fourier coefficients for any type of fit
 - [x] Have the IMR button save instead of open
-- [ ] Debug Frame inspector opening up a new figure window when launched 
+- [x] Debug Frame inspector opening up a new figure window when launched 
 - [ ] Overhaul the user manual 
 - [x] Enhance performance of Main Viewer Axes
 - [x] Set up for spherical harmonics analysis
@@ -58,4 +58,3 @@ the green play/run button found at the top of the MATLAB Editor tab.
 - [ ] Continue to refine detection algorithms (calibration?)
 - [x] Versioning and update control/notification?
 - [x] Fix parametric fit plotting (possible bad fit?)
-

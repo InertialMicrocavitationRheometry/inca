@@ -93,7 +93,7 @@ classdef plotting
             rawRadius = zeros(1, numFrames);
             switch style
                 case "parametric"
-                    parfor i = 1:numFrames
+                    for i = 1:numFrames
                         if isempty(find(ignoreFrames == i, 1))
                             xFit = info(i).perimFit{1};
                             yFit = info(i).perimFit{2};
@@ -104,7 +104,7 @@ classdef plotting
                     end
                     normalizedRadius = rawRadius./max(rawRadius);
                 case "polar (standard)"
-                    parfor i = 1:numFrames
+                    for i = 1:numFrames
                         if isempty(find(ignoreFrames == i, 1))
                             rawRadius(i) = info(i).perimFit.r;
                         else
@@ -113,7 +113,7 @@ classdef plotting
                     end
                     normalizedRadius = rawRadius./max(rawRadius);
                 case "polar (phase shift)"
-                    parfor i = 1:numFrames
+                    for i = 1:numFrames
                         if isempty(find(ignoreFrames == i, 1))
                             rawRadius(i) = info(i).perimFit.a0;
                         else
@@ -136,12 +136,23 @@ classdef plotting
                             yFit = maskInformation(i).perimFit{2};
                             
                             xnames = coeffnames(xFit);
+                            xno = numcoeffs(xFit) - 1;
                             xvals = coeffvalues(xFit);
                             
                             ynames = coeffnames(yFit);
                             yvals = coeffvalues(yFit);
+                            yno = numcoeffs(yFit) - 1;
                             
-                            parfor j = 2:numberTerms
+                            if xno < numberTerms && xno == yno
+                                limit = xno;
+                            elseif xno == 0 || yno == 0
+                                output(i, :) = NaN;
+                                continue;
+                            else
+                                limit = numberTerms;
+                            end
+                            
+                            parfor j = 2:limit
                                 targetCoeffX = "a" + num2str(j);
                                 targetCoeffY = "b" + num2str(j);
                                 
@@ -161,17 +172,30 @@ classdef plotting
                             perimFit = maskInformation(i).perimFit;
                             
                             names = coeffnames(perimFit);
-                            
+                            nocoeff = (numcoeffs(perimFit) - 1)./2;
                             vals = coeffvalues(perimFit);
                             
-                            for j = 1:numberTerms
+                            if nocoeff < numberTerms
+                                limit = nocoeff;
+                            elseif nocoeff == 0
+                                output(i, :) = NaN;
+                                continue;
+                            else
+                                limit = numberTerms;
+                            end
+                            
+                            for j = 1:limit
                                 targetCoeffX = "a" + num2str(j);
                                 targetCoeffY = "b" + num2str(j);
                                 
                                 xval = vals(names == targetCoeffX);
                                 yval = vals(names == targetCoeffY);
                                 
-                                output(i, j) = (xval + yval)./perimFit.r;
+                                try 
+                                    output(i, j) = (xval + yval)./perimFit.r;
+                                catch ME
+                                    pause;
+                                end
                             end
                         else 
                             output(i, :) = NaN;
@@ -184,10 +208,19 @@ classdef plotting
                             perimFit = maskInformation(i).perimFit;
                             
                             names = coeffnames(perimFit);
-                            
+                            nocoeffs = (numcoeffs(perimFit) - 1)./2;
                             vals = coeffvalues(perimFit);
                             
-                            for j = 1:numberTerms
+                            if nocoeffs < numberTerms
+                                limit = nocoeffs;
+                            elseif nocoeffs == 0
+                                output(i, :) = NaN;
+                                continue;
+                            else
+                                limit = numberTerms;
+                            end
+                            
+                            for j = 1:limit
                                 targetCoeff = "a" + num2str(j);
 
                                 coeffval = vals(names == targetCoeff);

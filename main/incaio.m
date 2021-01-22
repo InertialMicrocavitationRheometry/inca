@@ -14,8 +14,11 @@ classdef incaio
             for i = 1:numFrames
                 pause(0.01);
                 img = readFrame(vidObj);            %Read the Frame
-                img = rgb2hsv(img);                 %Convert to HSV
-                img = img(:, :, 3);                 %Extract the value matrix
+                [~, ~, layer] = size(img);
+                if layer > 1
+                	img = rgb2hsv(img);                 %Convert to HSV
+                    img = img(:, :, 3);                 %Extract the value matrix
+                end
                 frames(:, :, i) = img;              %Store the frame in the cell array
             end
         end
@@ -24,6 +27,10 @@ classdef incaio
         function [app, fullPath] = readFromFile(app)
             %% Load in the Data Table
             [file, path] = uigetfile('*.mat');
+            if file == 0 && path == 0
+                fullPath = '';
+                return;
+            end
             fullPath = append(path, file);
             load(fullPath);
             %% Read in the data to the app variables if they exist in the current workspace
@@ -86,6 +93,10 @@ classdef incaio
             alternatePlotSet = app.convertedPlotSet;
             %% Write the table to the specified file
             [file, path] = uiputfile('*.mat');
+            if file == 0 && path == 0
+                savePath = '';
+                return;
+            end
             savePath = append(path, file);
             save(savePath, 'frames', 'masks', 'infoStruct', 'ignoreFrames', 'BubbleRadius', 'BubbleArea', 'BubblePerimeter', ...
                 'BubbleSurfaceArea', 'BubbleCentroid', 'BubbleVolume', 'BubbleVelocity', 'numFrames', 'alternatePlotSet', '-v7.3');

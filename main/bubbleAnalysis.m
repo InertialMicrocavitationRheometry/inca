@@ -2,49 +2,24 @@ classdef bubbleAnalysis
     methods (Static)
         %Pre Process the frames before analyzing them
         function returnFrames = preprocessFrames(app, inputFrames)
-            
-            fileID = logging.generateDiaryFile("FramePreProcessingLog");
-            
+                        
             [~, ~, numImages] = size(inputFrames);
             returnFrames = zeros(size(inputFrames));
-            
-            % fprintf(fileID, '%s', "Beginning Frame Preprocessing");
-            % fprintf(fileID, '\n');
-            % fprintf(fileID, '%s', "User input selection: ");
-            % fprintf(fileID, '\n');
-            % fprintf(fileID, '%s', "Sharpen frames before detection: " + num2str(app.SharpenButton.Value));
-            % fprintf(fileID, '\n');
-            % fprintf(fileID, '%s', "Soften frames before detection: " + num2str(app.SoftenButton.Value));
-            % fprintf(fileID, '\n');
-            % fprintf(fileID, '%s', "Filter strength: " + num2str(app.FilterStrengthSpinner.Value));
-            % fprintf(fileID, '\n');
-            
+
             if string(app.PreProcessMethod.Value) == "Sharpen"
                 for i = 1:numImages
-                    %         fprintf(fileID, '%s', "Sharpening frame: " + num2str(i));
-                    %         fprintf(fileID, '\n');
                     returnFrames(:, :, i) = imsharpen(inputFrames(:, :, i),'Amount', 1);
-                    %         fprintf(fileID, '%s', "Complete");
-                    %         fprintf(fileID, '\n');
                 end
             else
                 for i = 1:numImages
-                    %         fprintf(fileID, '%s', "Softening frame: " + num2str(i));
-                    %         fprintf(fileID, '\n');
                     returnFrames(:, :, i) = imgaussfilt(inputFrames(:, :, i), 1);
-                    %         fprintf(fileID, '%s', "Complete");
-                    %         fprintf(fileID, '\n');
                 end
-            end
-            
-            % fclose(fileID);
-            
+            end            
         end
         
         % Generates a mask for the given frame, going forward in time
         function outputMask = maskGen(figure, inputFrames, direction, ignoreFirstFrame)
             % A function to isolate the bubble in each frame, returns an MxNxA logical array where M & N are the image size and A is the number of frames
-            fileID = logging.generateDiaryFile("BubbleDetectionLog");
             
             %% Program input and set up
             [row, col, depth] = size(inputFrames);      %Get the size of the initial frame array
@@ -52,6 +27,7 @@ classdef bubbleAnalysis
             tic;
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
+            
             %Create the progress bar
             wtBr = uiprogressdlg(figure, 'Title', 'Please wait', 'Message', 'Isolating...', 'Cancelable', 'on');
             
@@ -64,10 +40,6 @@ classdef bubbleAnalysis
             end
             for f = range
                 wtBr.Message = "Isolating bubble in frame: " + num2str(f) + "/" + num2str(depth);
-                %     fprintf(fileID, '%s', '------------------------------');
-                %     fprintf(fileID, '\n');
-                %     fprintf(fileID, '%s', "Generating mask for frame " + num2str(f));
-                %     fprintf(fileID, '\n');
                 if wtBr.CancelRequested
                     break;
                 end
@@ -76,33 +48,19 @@ classdef bubbleAnalysis
                 targetImage = inputFrames(:, :, f);
                 
                 %% Create a mask based on color
-                %     fprintf(fileID, '%s', "Generating gray mask");
-                %     fprintf(fileID, '\n');
-                grayImage = bubbleAnalysis.colorMask(targetImage, oldData, fileID);
+                grayImage = bubbleAnalysis.colorMask(targetImage, oldData);
                 if any(any(grayImage))
                     grayCC = bwconncomp(grayImage, 8);
                     grayStats = regionprops(grayCC, 'Centroid', 'Circularity');
                     grayCenter = grayStats.Centroid;
-                    %         fprintf(fileID, '%s', "Gray mask generated");
-                    %         fprintf(fileID, '\n');
-                else
-                    %         fprintf(fileID, '%s', "No gray mask generated for frame " + num2str(f));
-                    %         fprintf(fileID, '\n');
                 end
                 
                 %% Create a mask based on edges
-                %     fprintf(fileID, '%s', "Generating edge mask");
-                %     fprintf(fileID, '\n');
-                edgeImage = bubbleAnalysis.edgeMask(targetImage, oldData, fileID);
+                edgeImage = bubbleAnalysis.edgeMask(targetImage, oldData);
                 if any(any(edgeImage))
                     edgeCC = bwconncomp(edgeImage, 8);
                     edgeStats = regionprops(edgeCC, 'Centroid', 'Circularity');
                     edgeCenter = edgeStats.Centroid;
-                    %         fprintf(fileID, '%s', "Edge mask generated");
-                    %         fprintf(fileID, '\n');
-                else
-                    %         fprintf(fileID, '%s', "No edge mask generated for frame " + num2str(f));
-                    %         fprintf(fileID, '\n');
                 end
                 
                 %% Decide which mask/combination of masks to use
@@ -122,7 +80,7 @@ classdef bubbleAnalysis
                         %present
                     elseif cellfun(@numel, grayCC.PixelIdxList) < cellfun(@numel, edgeCC.PixelIdxList) && bubbleAnalysis.areCloseInLocation(grayImage, edgeImage)
                         if ~any(any(grayImage & edgeImage))
-                            finalImage = bubbleAnalysis.isolateObject(logical(grayImage + edgeImage), targetImage, fileID);
+                            finalImage = bubbleAnalysis.isolateObject(logical(grayImage + edgeImage), targetImage);
                         else
                             finalImage = grayImage & edgeImage;
                         end
@@ -132,9 +90,9 @@ classdef bubbleAnalysis
                         %use the combination of the two masks.
                     elseif cellfun(@numel, grayCC.PixelIdxList) > cellfun(@numel, edgeCC.PixelIdxList) && sqrt((grayCenter(1) - edgeCenter(1)).^2 + (grayCenter(2) - edgeCenter(2)).^2) < 10
                         if abs ( grayStats.Circularity - edgeStats.Circularity ) > 0.15 && grayStats.Circularity > edgeStats.Circularity
-                            finalImage = bubbleAnalysis.maskLogic(grayImage, edgeImage, targetImage, oldData, fileID);
+                            finalImage = bubbleAnalysis.maskLogic(grayImage, edgeImage, targetImage, oldData);
                         elseif abs( grayStats.Circularity - edgeStats.Circularity) > 0.15 && grayStats.Circularity < edgeStats.Circularity
-                            finalImage = bubbleAnalysis.maskLogic(edgeImage, grayImage, targetImage, oldData, fileID);
+                            finalImage = bubbleAnalysis.maskLogic(edgeImage, grayImage, targetImage, oldData);
                         elseif abs ( grayStats.Circularity - edgeStats.Circularity ) <= 0.15
                             finalImage = grayImage + edgeImage;
                         end
@@ -153,13 +111,11 @@ classdef bubbleAnalysis
                 
                 %If there is more than one object, attempt to isolate the correct object
                 if finalCC.NumObjects > 1
-                    outputMask(:, :, f) = logical(bubbleAnalysis.isolateObject(finalImage, targetImage), oldData, fileID);
+                    outputMask(:, :, f) = logical(bubbleAnalysis.isolateObject(finalImage, targetImage), oldData);
                 else
                     outputMask(:, :, f) = logical(finalImage);
                 end
-                %     fprintf(fileID, '%s', "Final mask assigned for frame " + num2str(f));
-                %     fprintf(fileID, '\n');
-                
+
                 %Update the oldData values as long as the mask isn't empty
                 if any(any(finalImage))
                     finalCC = bwconncomp(finalImage, 8);
@@ -173,11 +129,10 @@ classdef bubbleAnalysis
             end
             %Close waitbar
             close(wtBr);
-            % fclose(fileID);
         end
         
         %Create a mask based on color
-        function grayImg = colorMask(targetImage, oldData, fileID)
+        function grayImg = colorMask(targetImage, oldData)
             %A function to create a mask for the bubble based on pixel intensity values
             
             %Calculate the gray threshold for the image and binarize it based on that, Flip black and white, Get rid of any white pixels connected to the border, Fill any holes in the image
@@ -188,16 +143,14 @@ classdef bubbleAnalysis
             CC = bwconncomp(grayImg, 8);
             %If there is still more than one object, attempt to isolate the most likley
             %object
-            % fprintf(fileID, '%s', "Number of objects before isolation: " + num2str(CC.NumObjects));
-            % fprintf(fileID, '\n');
             if CC.NumObjects > 1
-                grayImg = bubbleAnalysis.isolateObject(grayImg, targetImage, oldData, fileID);
+                grayImg = bubbleAnalysis.isolateObject(grayImg, targetImage, oldData);
             end
             grayImg = imfill(grayImg, 'holes');
         end
         
         %Create a mask based on edges
-        function edgeImage = edgeMask(targetImage, oldData, fileID)
+        function edgeImage = edgeMask(targetImage, oldData)
             %A function to create a binary mask of the bubble based on edge detection
             [~, threshold] = edge(targetImage, 'Sobel');
             edgeImage = imfill(imclearborder(imcomplement(imdilate(edge(targetImage, 'Sobel', threshold), [strel('line', 3, 90) strel('line', 3, 0)]))), 'holes');
@@ -206,10 +159,8 @@ classdef bubbleAnalysis
             %Refresh the connected components list
             CC = bwconncomp(edgeImage, 8);
             %If there is still more than one object, attempt to isolate the the object
-            % fprintf(fileID, '%s', "Number of objects before isolation: " + num2str(CC.NumObjects));
-            % fprintf(fileID, '\n');
             if CC.NumObjects > 1
-                edgeImage = bubbleAnalysis.isolateObject(edgeImage, targetImage, oldData, fileID);
+                edgeImage = bubbleAnalysis.isolateObject(edgeImage, targetImage, oldData);
             end
         end
         
@@ -244,7 +195,7 @@ classdef bubbleAnalysis
         end
         
         %Isolate the most likely object to be the bubble in the image
-        function mask = isolateObject(mask, targetImage, oldData, fileID)
+        function mask = isolateObject(mask, targetImage, oldData)
             
             % A function to isolate one object in a binary mask most likely considered to be the bubble based on various characteristics
             CC = bwconncomp(mask, 8);
@@ -260,8 +211,6 @@ classdef bubbleAnalysis
             else
                 [~, maxSize] = min(abs(sizes - oldData.Size));
             end
-            % fprintf(fileID, '%s', "Size index: " + num2str(maxSize));
-            % fprintf(fileID, '\n');
             
             %Find the obejct closest to the center of the frame, but not exactly in the center
             distances = zeros(1, CC.NumObjects);
@@ -271,9 +220,7 @@ classdef bubbleAnalysis
                 distances(i) = sqrt((center(1) - oldCenter(1)).^2 + (center(2) - oldCenter(2)).^2);
             end
             [~, minDist] = min(distances(distances ~= 0));
-            % fprintf(fileID, '%s', "Closest object index: " + num2str(minDist));
-            % fprintf(fileID, '\n');
-            
+
             %Find the object with the lowest pixel average
             averages = zeros(1, CC.NumObjects);
             for i = 1:CC.NumObjects
@@ -281,14 +228,11 @@ classdef bubbleAnalysis
             end
             averages(averages == 0) = 100;
             [~, lowestAvg] = min(averages);
-            % fprintf(fileID, '%s', "Lowest pixel average object index: " + num2str(lowestAvg));
-            % fprintf(fileID, '\n');
             
             %Calculate the significance value for each object
             significance = distances./sizes.*averages;
             [~, minSig] = min(significance);
-            % fprintf(fileID, '%s', "Most significant object index: " + num2str(minSig));
-            % fprintf(fileID, '\n');
+
             %Decide which object to keep
             if isequaln(maxSize, minDist, lowestAvg, minSig)
                 objIdx = minSig;                            %Ideal case
@@ -301,8 +245,6 @@ classdef bubbleAnalysis
             elseif isequaln(maxSize, lowestAvg, minSig)
                 objIdx = maxSize;                           %If the closest object is misleading
             else
-                %     fprintf(fileID, '%s', "Resorting to fallback: Object Circularity");
-                %     fprintf(fileID, '\n');
                 circularities = [stats.Circularity];
                 interestVector = [maxSize, minDist, lowestAvg, minSig];
                 newCircularities = zeros(size(circularities));
@@ -316,8 +258,6 @@ classdef bubbleAnalysis
                 end
                 [~, objIdx] = min(mostCircular);
             end
-            % fprintf(fileID, '%s', "Final object index: " + num2str(objIdx));
-            % fprintf(fileID, '\n');
             
             %Get rid of the other objects
             for j = 1:CC.NumObjects
@@ -330,18 +270,17 @@ classdef bubbleAnalysis
         end
         
         %Advanced mask comparision logic that targets mask circularity
-        function finalImage = maskLogic(higherCircularityMask, ...
-                lowerCircularityMask, targetImage, oldData, fileID)
+        function finalImage = maskLogic(higherCircularityMask, lowerCircularityMask, targetImage, oldData)
             hCMStats = regionprops(higherCircularityMask, 'Circularity');
             finalStatsEither = regionprops(logical(higherCircularityMask + lowerCircularityMask), 'Circularity');
             finalCCEither = bwconncomp(logical(higherCircularityMask + lowerCircularityMask), 8);
             finalStatsBoth = regionprops(logical(higherCircularityMask & lowerCircularityMask), 'Circularity');
             finalCCBoth = bwconncomp(logical(higherCircularityMask & lowerCircularityMask), 8);
             if finalCCEither.NumObjects > 1
-                finalStatsEither = regionprops(bubbleAnalysis.isolateObject(logical(higherCircularityMask + lowerCircularityMask), targetImage, oldData, fileID), 'Circularity');
+                finalStatsEither = regionprops(bubbleAnalysis.isolateObject(logical(higherCircularityMask + lowerCircularityMask), targetImage, oldData), 'Circularity');
             end
             if finalCCBoth.NumObjects == 1
-                finalImage = bubbleAnalysis.isolateObject(logical(higherCircularityMask + lowerCircularityMask), targetImage, oldData, fileID);
+                finalImage = bubbleAnalysis.isolateObject(logical(higherCircularityMask + lowerCircularityMask), targetImage, oldData);
                 finalStatsEither = regionprops(finalImage, 'Circularity');
                 if finalStatsEither.Circularity > hCMStats.Circularity
                     finalImage = higherCircularityMask + lowerCircularityMask;
@@ -363,12 +302,8 @@ classdef bubbleAnalysis
         %to use
         function finalMask = compareMasks(forwardMask, reverseMask)
             
-            %             fileID = logging.generateDiaryFile("MaskComparisionLog");
-            
             %% Preliminary size check
             if size(forwardMask) ~= size(reverseMask)
-                %                 fprintf(fileID, '%s', "Unequal mask sizes. Check input variables");
-                %                 fprintf(fileID, '\n');
                 error("Unequal mask sizes. Check input variables");
             end
             
@@ -378,10 +313,6 @@ classdef bubbleAnalysis
             
             %% Compare both masks for the same frame
             for i = 1:numFrames
-                %                 fprintf(fileID, '%s', '------------------------------');
-                %                 fprintf(fileID, '\n');
-                %                 fprintf(fileID, '%s', "Comparing masks for frame: " + num2str(i));
-                %                 fprintf(fileID, '\n');
                 
                 %% Index the forward mask
                 forwardTargetMask = forwardMask(:, :, i);
@@ -392,38 +323,22 @@ classdef bubbleAnalysis
                 %% Mask comparision logic
                 if ~any(any(forwardTargetMask))
                     finalMask(:, :, i) = reverseTargetMask;         %If the forward mask is empty use the reverse mask
-                    %                     fprintf(fileID, '%s', 'Forward mask empty. Using reverse mask');
-                    %                     fprintf(fileID, '\n');
                 elseif ~any(any(reverseTargetMask))
                     finalMask(:, :, i) = forwardTargetMask;         %If the reverse mask is empty use the forward mask
-                    %                     fprintf(fileID, '%s', 'Reverse mask empty. Using forward mask');
-                    %                     fprintf(fileID, '\n');
                 elseif any(any(forwardTargetMask)) && any(any(reverseTargetMask))
                     sameSize = bubbleAnalysis.areCloseInSize(forwardTargetMask, reverseTargetMask);
                     sameLoc = bubbleAnalysis.areCloseInLocation(forwardTargetMask, reverseTargetMask);
                     if sameSize && sameLoc
                         finalMask(:, :, i) = logical(forwardTargetMask + reverseTargetMask);
-                        %                         fprintf(fileID, '%s', 'Using logical combination of both masks');
-                        %                         fprintf(fileID, '\n');
                     elseif ~sameSize && sameLoc
                         finalMask(:, :, i) = bubbleAnalysis.largerMask(forwardTargetMask, reverseTargetMask);
-                        %                         fprintf(fileID, '%s', 'Using the larger mask');
-                        %                         fprintf(fileID, '\n');
                     elseif sameSize && ~sameLoc
                         finalMask(:, :, i) = bubbleAnalysis.closerToCenterMask(forwardTargetMask, reverseTargetMask);
-                        %                         fprintf(fileID, '%s', 'Using the mask closer to the center');
-                        %                         fprintf(fileID, '\n');
                     elseif ~sameSize && ~sameLoc
                         finalMask(:, :, i) = bubbleAnalysis.moreCircularMask(forwardTargetMask, reverseTargetMask);
-                        %                         fprintf(fileID, '%s', 'Using the more circular mask');
-                        %                         fprintf(fileID, '\n');
                     end
-                else
-                    %                     fprintf(fileID, '%s', 'Both masks empty');
-                    %                     fprintf(fileID, '\n');
                 end
             end
-            %             fclose(fileID);
         end
         
         %Determine if the objects in the mask are close in size
@@ -434,7 +349,14 @@ classdef bubbleAnalysis
             maskOneSize = cellfun(@numel, maskOneCC.PixelIdxList);
             maskTwoSize = cellfun(@numel, maskTwoCC.PixelIdxList);
             
-            if abs( maskOneSize - maskTwoSize) < 75
+            %Calculate one percent of the size of the smaller mask
+            if bubbleAnalysis.largerMask(maskOne, maskTwo) == maskOne
+                constraint = 0.1*maskTwoSize;   %If the first mask is bigger the constraint is one percent of the second mask         
+            else
+                constraint = 0.1*maskTwoSize;   %If the second mask is bigger then the constaint is one percent of the fist mask
+            end
+            
+            if abs( maskOneSize - maskTwoSize) < constraint
                 result = 1;
             else
                 result = 0;
@@ -514,17 +436,10 @@ classdef bubbleAnalysis
         function maskInformation = bubbleTrack(app, mask, arcLength, orientation, doFit, numberTerms, adaptiveTerms, ignoreFrames, style)
             % A function to generate data about each mask
             
-            %% Set up logging
-            fileID = logging.generateDiaryFile("BubbleAnalysisLog");
-            
             %% Get number of frames
             [~, ~, depth] = size(mask);
-            % fprintf(fileID, '%s', "Number of frames: " + num2str(depth));
-            % fprintf(fileID, '\n');
             
             %% Define the struct
-            % fprintf(fileID, '%s', "Generating struct with fields: Centroid, TrackingPoints, AverageRadius, SurfaceArea, Volume, FourierPoints, FourierFitX, FourierFitY, xData, yData, Area, Perimeter, PerimeterPoints");
-            % fprintf(fileID, '\n');
             maskInformation = struct('Centroid', cell(depth, 1), 'TrackingPoints', cell(depth, 1), 'AverageRadius', cell(depth, 1), ...
                 'SurfaceArea', cell(depth, 1), 'Volume', cell(depth, 1), 'FourierPoints', cell(depth, 1),...
                 'perimFit', cell(depth, 1), 'perimEq', cell(depth, 1), 'Area', cell(depth, 1), 'Perimeter', cell(depth, 1), ...
@@ -575,7 +490,7 @@ classdef bubbleAnalysis
                     
                     %Get the tracking points
                     wtBr.Message = standardMsg + ": Generaing tracking points";
-                    [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], 50, fileID);
+                    [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], 50);
                     maskInformation(d).TrackingPoints = [xVals, yVals];
                     
                     %Calculate the perimeter velocity as long as we are not
@@ -624,14 +539,13 @@ classdef bubbleAnalysis
                         %Get the points for the fourier fit
                         wtBr.Message = standardMsg + ": Generaing Fourier Fit points";
                         [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d).Centroid], ...
-                            floor( maskInformation(d).Perimeter./arcLength), fileID);
+                            floor( maskInformation(d).Perimeter./arcLength));
                         maskInformation(d).FourierPoints = [xVals, yVals];
 
                         %Actually do the fourier fit and get the coefficients for the
                         %equation
                         wtBr.Message = standardMsg + ": Fitting " + style + " Fourier Series";
-                        [perimFit, perimEq] = bubbleAnalysis.fourierFit(xVals, yVals, arcLength, numberTerms, adaptiveTerms, fileID, style, ...
-                            maskInformation(d).Centroid);
+                        [perimFit, perimEq] = bubbleAnalysis.fourierFit(xVals, yVals, numberTerms, adaptiveTerms, style, maskInformation(d).Centroid);
                         maskInformation(d).perimFit = perimFit;
                         maskInformation(d).perimEq = perimEq;
                     end
@@ -639,14 +553,10 @@ classdef bubbleAnalysis
             end
             %% Close waitbar and the diary
             close(wtBr);
-            %fclose(fileID);
         end
         
         %Generate the evenly angularly spaced tracking points
-        function [xVals, yVals] = angularPerimeter(targetMask, center, noTC, fileID)
-            % fprintf(fileID, '%s', "Generating " + num2str(noTC) + " periemter points");
-            % fprintf(fileID, '\n');
-            tic;
+        function [xVals, yVals] = angularPerimeter(targetMask, center, noTC)
             %Get the perimeter of the mask
             targetPerim = bwmorph(bwperim(targetMask), 'thin', Inf);
             [row, col] = size(targetMask);
@@ -663,7 +573,7 @@ classdef bubbleAnalysis
             yVals = zeros(size(rad));
             [rowRad, ~] = size(rad);
             %% Find the x and y coordinates in the radian matrix that correspond to an angle of interest
-            parfor i = 1:rowRad
+            for i = 1:rowRad
                 %Get the direction to look in
                 lookDirection = rad(i);
                 
@@ -674,14 +584,21 @@ classdef bubbleAnalysis
                 %Find the value of the elements bounding the desired angle
                 upperBound = min(min(workingRadian(workingRadian > 0)));
                 lowerBound = max(max(workingRadian(workingRadian < 0)));
+                if isempty(upperBound)
+                    upperBound = min(min(workingRadian));
+                end
                 if isempty(lowerBound)
                     lowerBound = max(max(workingRadian));
                 end
                 
                 %Get the indices of the elements if more than one element is found,
                 %take the farther of the two
-                [upperRow, upperCol] = find(abs(workingRadian - upperBound) < 0.0001);
-                [lowerRow, lowerCol] = find(abs(workingRadian - lowerBound) < 0.0001);
+                try 
+                    [upperRow, upperCol] = find(abs(workingRadian - upperBound) < 0.0001);
+                    [lowerRow, lowerCol] = find(abs(workingRadian - lowerBound) < 0.0001);
+                catch ME
+                    pause;
+                end
                 
                 [upperRowSize, ~] = size(upperRow);
                 [lowerRowSize, ~] = size(lowerRow);
@@ -724,13 +641,10 @@ classdef bubbleAnalysis
                 xVals(i) = weightedRadius.*cos(lookDirection) + center(1);
                 yVals(i) = weightedRadius.*sin(lookDirection) + center(2);
             end
-            toc;
-            % fprintf(fileID, '%s', "Perimeter point generation complete");
-            % fprintf(fileID, '\n');
         end
         
         %Fit a fourier function to the x and y points on the mask
-        function [perimFit, perimEq] = fourierFit(xPoints, yPoints, ~, maxTerms, adaptiveTerms, fileID, style, centroid)
+        function [perimFit, perimEq] = fourierFit(xPoints, yPoints, maxTerms, adaptiveTerms, style, centroid)
             % Calculate optimal number of terms based on Nyquil (Nyquist) sampling
             numberTerms = bubbleAnalysis.calcNumTerms(xPoints, adaptiveTerms, maxTerms);
             if numberTerms == 0
