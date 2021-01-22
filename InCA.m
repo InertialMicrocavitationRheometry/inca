@@ -292,6 +292,7 @@ classdef InCA < matlab.apps.AppBase
         % Code that executes after component creation
         function startupFcn(app)
             app.currentFrame = 1;
+            scroll(app.OverviewTab, 'top');
             checkVersion(app);
             figureSizeChange(app, 0);
         end
@@ -843,15 +844,13 @@ classdef InCA < matlab.apps.AppBase
         function createComponents(app)
             
             %Set up 
-            if ~isdeployed
-                addpath('main');
-                addpath('icons');
-            end
+            addpath('main');
+            addpath('icons');
             buttonsize = 50;
 
             %Create UIFigure and hide until all components are created
             app.UIFigure = uifigure('Visible', 'off', 'Position', [0, 0, 1800, 800], 'WindowState', 'normal', ...
-                'AutoResizeChildren', 'off', 'Name', 'InCA', 'Icon', 'Icon.png', 'Scrollable', 'on', 'Color', [0 0 0]);
+                'AutoResizeChildren', 'off', 'Name', 'InCA', 'Scrollable', 'on', 'Color', [0 0 0]);
             app.UIFigure.SizeChangedFcn = createCallbackFcn(app, @figureSizeChange, true);
             app.UIFigure.CloseRequestFcn = createCallbackFcn(app, @closeRequested, true);
             
