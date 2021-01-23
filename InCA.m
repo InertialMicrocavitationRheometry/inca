@@ -124,8 +124,9 @@ classdef InCA < matlab.apps.AppBase
         
         function checkVersion(app)
             try
+                weboptions.TimeOut = 10;
                 newestVersion = str2double(string(webread('https://raw.githubusercontent.com/estradalab/inca/master/version.txt')));
-                if newestVersion > 15
+                if newestVersion > 16
                     uialert(app.UIFigure, 'A newer version of InCA is available. An update is recommended.', 'Newer version detected', 'Icon', 'warning');
                 end
             catch me
@@ -146,6 +147,8 @@ classdef InCA < matlab.apps.AppBase
             MaskOverlayPreviewPanel = uipanel('Parent', app.UIFigure, 'BorderType', 'line', 'Position', [50, 50, parentPos(3) - 100, parentPos(4) - 100], ...
                 'BackgroundColor', [0.1 0.1 0.1], 'Scrollable', 'on', 'AutoResizeChildren', 'off');
             parentPos = MaskOverlayPreviewPanel.Position;
+            parentPos(3) = parentPos(3).*0.99;
+            parentPos(4) = parentPos(4).*0.99;
             
             %Create a panel within the mask preview panel to house the thumbnails
             ScrollPanel = uipanel('Parent', MaskOverlayPreviewPanel, 'BorderType', 'none', 'Position', [1 1, parentPos(3)/5, parentPos(4) - 5],...
@@ -214,14 +217,28 @@ classdef InCA < matlab.apps.AppBase
             %Scroll to the top of the panel when done and show the first frame in the
             %main viewer
             scroll(ScrollPanel, 'top');
-            imshow(labeloverlay(frames(:, :, 1), mask(:, :, 1)), 'Parent', mainAxes);
+            
+            imshow(frames(:, :, 1), 'Parent', mainAxes);
+            hold(mainAxes, 'on');
+            if ~app.IFFToggle.UserData
+                startboundaries = cell2mat(bwboundaries(mask(:, :, 1)));
+                plot(mainAxes, startboundaries(:, 2), startboundaries(:, 1), '-b', 'LineWidth', 2);
+            end
+            hold(mainAxes, 'off');
+
             frameInView = 1;
             
             %% Image Clicked Function
             function imageClicked(src, ~)
                 frameNo = str2double(src.Tag);
                 frameInView = frameNo;
-                imshow(labeloverlay(frames(:, :, frameNo), mask(:, :, frameNo)), 'Parent', mainAxes);
+                imshow(frames(:, :, frameInView), 'Parent', mainAxes);
+                hold(mainAxes, 'on');
+                if any(any(mask(:, :, frameInView)))
+                    clickboundaries = cell2mat(bwboundaries(mask(:, :, frameInView)));
+                    plot(mainAxes, clickboundaries(:, 2), clickboundaries(:, 1), '-b', 'LineWidth', 2);
+                end
+                hold(mainAxes, 'off');
             end
             
             %% Close Button Function
@@ -233,10 +250,18 @@ classdef InCA < matlab.apps.AppBase
             function nextClicked(~, ~, topLim)
                 if frameInView == topLim
                     frameInView = 1;
-                    imshow(labeloverlay(frames(:, :, frameInView), mask(:, :, frameInView)), 'Parent', mainAxes);
+                    imshow(frames(:, :, frameInView), 'Parent', mainAxes);
+                    hold(mainAxes, 'on');
+                    nextboundaries = cell2mat(bwboundaries(mask(:, :, frameInView)));
+                    plot(mainAxes, nextboundaries(:, 2), nextboundaries(:, 1), '-b', 'LineWidth', 2);
+                    hold(mainAxes, 'off');
                 else
                     frameInView = frameInView + 1;
-                    imshow(labeloverlay(frames(:, :, frameInView), mask(:, :, frameInView)), 'Parent', mainAxes);
+                    imshow(frames(:, :, frameInView), 'Parent', mainAxes);
+                    hold(mainAxes, 'on');
+                    nextboundaries = cell2mat(bwboundaries(mask(:, :, frameInView)));
+                    plot(mainAxes, nextboundaries(:, 2), nextboundaries(:, 1), '-b', 'LineWidth', 2);
+                    hold(mainAxes, 'off');
                 end
             end
             
@@ -244,10 +269,18 @@ classdef InCA < matlab.apps.AppBase
             function previousClicked(~, ~)
                 if frameInView == 1
                     frameInView = app.numFrames;
-                    imshow(labeloverlay(frames(:, :, frameInView), mask(:, :, frameInView)), 'Parent', mainAxes);
+                    imshow(frames(:, :, frameInView), 'Parent', mainAxes);
+                    hold(mainAxes, 'on');
+                    previousboundaries = cell2mat(bwboundaries(mask(:, :, frameInView)));
+                    plot(mainAxes, previousboundaries(:, 2), previousboundaries(:, 1), '-b', 'LineWidth', 2);
+                    hold(mainAxes, 'off');
                 else
                     frameInView = frameInView - 1;
-                    imshow(labeloverlay(frames(:, :, frameInView), mask(:, :, frameInView)), 'Parent', mainAxes);
+                    imshow(frames(:, :, frameInView), 'Parent', mainAxes);
+                    hold(mainAxes, 'on');
+                    previousboundaries = cell2mat(bwboundaries(mask(:, :, frameInView)));
+                    plot(mainAxes, previousboundaries(:, 2), previousboundaries(:, 1), '-b', 'LineWidth', 2);
+                    hold(mainAxes, 'off');
                 end
             end
             
@@ -319,7 +352,13 @@ classdef InCA < matlab.apps.AppBase
                 cla(app.MainPlot);
                 cla(app.EvolutionPlot);
                 cla(app.RadiusPlot);
+                yyaxis(app.TwoDimensionalPlot, 'left');
                 cla(app.TwoDimensionalPlot);
+                yyaxis(app.TwoDimensionalPlot, 'right');
+                cla(app.TwoDimensionalPlot);
+                yyaxis(app.ThreeDimensionalPlot, 'left');
+                cla(app.ThreeDimensionalPlot);
+                yyaxis(app.ThreeDimensionalPlot, 'right');
                 cla(app.ThreeDimensionalPlot);
                 cla(app.CentroidPlot);
                 cla(app.VelocityPlot);
@@ -340,13 +379,8 @@ classdef InCA < matlab.apps.AppBase
         function figureSizeChange(app, ~)
             try 
                 f = uiprogressdlg(app.UIFigure, 'Message', 'Please wait...', 'Indeterminate', 'on');
+                pause(0.5);
                 position = app.UIFigure.Position;
-                if position(3) < 1800
-                    position(3) = 1800;
-                end
-                if position(4) < 800
-                    position(4) = 800;
-                end
                 
                 %Resize top level containers
                 app.Toolstrip.Position = [0, position(4) - 55, position(3), 55];
@@ -846,10 +880,11 @@ classdef InCA < matlab.apps.AppBase
             %Set up 
             addpath('main');
             addpath('icons');
+            addpath('fonts');
             buttonsize = 50;
 
             %Create UIFigure and hide until all components are created
-            app.UIFigure = uifigure('Visible', 'off', 'Position', [0, 0, 1800, 800], 'WindowState', 'normal', ...
+            app.UIFigure = uifigure('Visible', 'off', 'Position', [1, 41, 1920, 1017], 'WindowState', 'normal', ...
                 'AutoResizeChildren', 'off', 'Name', 'InCA', 'Scrollable', 'on', 'Color', [0 0 0]);
             app.UIFigure.SizeChangedFcn = createCallbackFcn(app, @figureSizeChange, true);
             app.UIFigure.CloseRequestFcn = createCallbackFcn(app, @closeRequested, true);

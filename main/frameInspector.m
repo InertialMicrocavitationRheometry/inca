@@ -58,7 +58,7 @@ classdef frameInspector < matlab.apps.AppBase
             
             % Create InCAFrameInspectorUIFigure and hide until all components are created
             app.InCAFrameInspectorUIFigure = uifigure('Visible', 'off', 'AutoResizeChildren', 'off', 'Color', [0 0 0], 'WindowState', 'maximized', ...
-                'Name', 'InCA Frame Inspector', 'Icon', 'logo.png');
+                'Name', 'InCA Frame Inspector');
             app.InCAFrameInspectorUIFigure.SizeChangedFcn = createCallbackFcn(app, @InCAFrameInspectorUIFigureSizeChanged, true);
             position = app.InCAFrameInspectorUIFigure.Position;
             

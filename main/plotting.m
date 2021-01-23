@@ -361,15 +361,22 @@ classdef plotting
         function output = fourierDecomposition(info, targetFrame, numTerms, sortOrder, style)
             switch style
                 case "parametric"
-                    output = cell((numTerms - 1), 2);
                     xFit = info(targetFrame).perimFit{1};
                     yFit = info(targetFrame).perimFit{2};
                     xnames = coeffnames(xFit);
+                    xno = (numcoeffs(xFit) - 1)./2;
                     ynames = coeffnames(yFit);
                     xvals = coeffvalues(xFit);
                     yvals = coeffvalues(yFit);
-                    asphericity = zeros(1, (numTerms - 1));
-                    parfor i = 2:numTerms
+                    yno = (numcoeffs(yFit) - 1)./2;
+                    if numTerms > xno && xno == yno
+                        limit = xno;
+                    else
+                        limit = numTerms;
+                    end
+                    output = cell((limit - 1), 2);
+                    asphericity = zeros(1, (limit - 1));
+                    parfor i = 2:limit
                         targetCoeffX = "a" + num2str(i);
                         targetCoeffY = "b" + num2str(i);
                         
@@ -380,7 +387,7 @@ classdef plotting
                     end
                     switch sortOrder
                         case "ascending"
-                            for j = 2:numTerms
+                            for j = 2:limit
                                 
                                 [~, cmapIdx] = min(asphericity);    %Get the index of the term with the smallest asphericity
                                 output{j - 1, 2} = cmapIdx + 1;     %Assign it to the second column in the output cell array (will be used for colormaping)
@@ -398,7 +405,7 @@ classdef plotting
                                 asphericity(cmapIdx) = NaN;     %Replace the lowest valued term with NaN
                             end
                         case "descending"
-                            for j = 2:numTerms
+                            for j = 2:limit
                                 
                                 [~, cmapIdx] = max(asphericity);    %Get the index of the term with the largest asphericity
                                 output{j - 1, 2} = cmapIdx + 1;     %Assign it to the second column in the output cell array (will be used for colormaping)
@@ -417,21 +424,26 @@ classdef plotting
                             end
                     end
                 case "polar (standard)"
-                    output = cell(numTerms, 2);
                     fit = info(targetFrame).perimFit;
                     fitcoeffs = coeffnames(fit);
                     fitvals = coeffvalues(fit);
-                    asphericity = zeros(1, numTerms);
-                    for i = 1:numTerms
+                    
+                    if numTerms > ((numcoeffs(fit) - 1)/2)
+                        limit = ((numcoeffs(fit) - 1)/2);
+                    else
+                        limit = numTerms;
+                    end
+                    asphericity = zeros(1, limit);
+                    output = cell(limit, 2);
+                    for i = 1:limit
                         targetCoeffX = "a" + num2str(i);
                         targetCoeffY = "b" + num2str(i);
                         
                         xCoeffVal = fitvals(fitcoeffs == targetCoeffX);
                         yCoeffVal = fitvals(fitcoeffs == targetCoeffY);
-                        
                         asphericity(i) = (xCoeffVal + yCoeffVal)./fit.r;
                     end
-                    for j = 1:numTerms
+                    for j = 1:limit
                         [~, cmapIdx] = max(asphericity);                %Get the index of the term with the largest asphericity
                         output{j, 2} = cmapIdx;                         %Assign it to the second column in the output cell array (will be used for colormaping)
                         t = transpose(linspace(0, 2*pi, 1000));         %Set up the input vector
@@ -448,20 +460,25 @@ classdef plotting
                         
                         asphericity(cmapIdx) = NaN;     %Replace the highest valued term with NaN
                     end
-                case "polar (phase shift)"
-                    output = cell(numTerms, 2);
+                case "polar (phase shift)"  
                     fit = info(targetFrame).perimFit;
                     fitcoeffs = coeffnames(fit);
                     fitvals = coeffvalues(fit);
-                    asphericity = zeros(1, numTerms);
-                    for i = 1:numTerms
+                    if numTerms > ((numcoeffs(fit) - 1)/2)
+                        limit = ((numcoeffs(fit) - 1)/2);
+                    else
+                        limit = numTerms;
+                    end
+                    output = cell(limit, 2);
+                    asphericity = zeros(1, limit);
+                    for i = 1:limit
                         targetCoeffX = "a" + num2str(i);
                         
                         xCoeffVal = fitvals(fitcoeffs == targetCoeffX);
                         
                         asphericity(i) = xCoeffVal./fit.a0;
                     end
-                    for j = 1:numTerms
+                    for j = 1:limit
                         [~, cmapIdx] = max(asphericity);                %Get the index of the term with the largest asphericity
                         output{j, 2} = cmapIdx;                         %Assign it to the second column in the output cell array (will be used for colormaping)
                         t = transpose(linspace(0, 2*pi, 1000));         %Set up the input vector
@@ -491,41 +508,41 @@ classdef plotting
             end
             if max(vals) > row
                 for i = 1:row
-                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 60], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
+                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 70], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
                         "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], "Color", [0 0 0]);
                     axishandle.Title.String = "";
                     dataPoints = [points{i, 1}];
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2} - 1, :), "DisplayName", "Term " + num2str(points{i, 2}));
+                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2} - 1, :), "DisplayName", "Term " + num2str(points{i, 2}), 'LineWidth', 2);
                     legend(axishandle, "Color", [1 1 1]);
                 end
-                axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 60], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
+                axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 70], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
                     "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], ...
                     "Color", [0 0 0]);
                 axishandle.Title.String = "";
                 hold(axishandle, 'on');
                 for j = 1:row
                     dataPoints = [points{j, 1}];
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{j, 2} - 1, :), "DisplayName", "Term " + num2str(points{j, 2}));
+                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{j, 2} - 1, :), "DisplayName", "Term " + num2str(points{j, 2}), 'LineWidth', 2);
                     legend(axishandle, "Color", [1 1 1]);
                 end
                 hold(axishandle, 'off');
             else
                 for i = 1:row
-                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 60], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
+                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 70], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
                         "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], "Color", [0 0 0]);
                     axishandle.Title.String = "";
                     dataPoints = [points{i, 1}];
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2}, :), "DisplayName", "Term " + num2str(points{i, 2}));
+                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2}, :), "DisplayName", "Term " + num2str(points{i, 2}), 'LineWidth', 2);
                     legend(axishandle, "Color", [1 1 1]);
                 end
-                axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 60], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
+                axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 70], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
                     "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], ...
                     "Color", [0 0 0]);
                 axishandle.Title.String = "";
                 hold(axishandle, 'on');
                 for j = 1:row
                     dataPoints = [points{j, 1}];
-                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{j, 2}, :), "DisplayName", "Term " + num2str(points{j, 2}));
+                    plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{j, 2}, :), "DisplayName", "Term " + num2str(points{j, 2}), 'LineWidth', 2);
                     legend(axishandle, "Color", [1 1 1]);
                 end
                 hold(axishandle, 'off');
