@@ -19,6 +19,22 @@ classdef incaio
                 	img = rgb2hsv(img);                 %Convert to HSV
                     img = img(:, :, 3);                 %Extract the value matrix
                 end
+                spec = whos('img');
+                class = string(spec.class);
+                switch class
+                    case "uint8"
+                        img = double(img)./(2.^8 - 1);
+                    case "uint16"
+                        img = double(img)./(2.^16 - 1);
+                    case "uint32"
+                        img = double(img)./(2.^32 - 1);
+                    case "uint64"
+                        img = double(img)./(2.^64 - 1);
+                    case "double"
+                        img = img;
+                    otherwise 
+                        img = double(img)./max(img, [], 'all');
+                end
                 frames(:, :, i) = img;              %Store the frame in the cell array
             end
         end
@@ -27,7 +43,7 @@ classdef incaio
         function [app, fullPath] = readFromFile(app)
             %% Load in the Data Table
             [file, path] = uigetfile('*.mat');
-            if file == 0 && path == 0
+            if all(file == 0) && all(path == 0)
                 fullPath = '';
                 return;
             end
@@ -36,6 +52,7 @@ classdef incaio
             %% Read in the data to the app variables if they exist in the current workspace
             if exist('frames', 'var') == 1
                 app.frames = frames;
+                [~, ~, app.numFrames] = size(frames);
             end
             if exist('masks', 'var') == 1
                 app.mask = masks;
@@ -46,316 +63,201 @@ classdef incaio
             if exist('ignoreFrames', 'var') == 1
                 app.ignoreFrames = ignoreFrames;
             end
-            if exist('BubbleRadius', 'var') == 1
-                app.radius = BubbleRadius;
+            if exist('BubblePlotSet', 'var') == 1
+                app.plotSet = BubblePlotSet;
             end
-            if exist('BubbleArea', 'var') == 1
-                app.area = BubbleArea;
-            end
-            if exist('BubblePerimeter', 'var') == 1
-                app.perimeter = BubblePerimeter;
-            end
-            if exist('BubbleSurfaceArea', 'var') == 1
-                app.surfaceArea = BubbleSurfaceArea;
-            end
-            if exist('BubbleCentroid', 'var') == 1
-                app.centroid = BubbleCentroid;
-            end
-            if exist('BubbleVolume', 'var') == 1
-                app.volume = BubbleVolume;
-            end
-            if exist('BubbleVelocity', 'var') == 1
-                app.velocity = BubbleVelocity;
-            end
-            if exist('numFrames', 'var') == 1
-                app.numFrames = numFrames;
-            end
-            if exist('alternatePlotSet', 'var') == 1
-                app.convertedPlotSet = alternatePlotSet;
+            if exist('InCASettings', 'var') == 1
+                incaio.setSettings(InCASettings, app);
             end
         end
         
         %Write analyzed data to a file
         function savePath = writeToFile(app)
             %% Read in and import into local variables the data
-            frames = app.frames;
-            masks = app.mask;
-            infoStruct = app.maskInformation;
-            ignoreFrames = app.ignoreFrames;
-            BubbleRadius = app.radius;
-            BubbleArea = app.area;
-            BubblePerimeter = app.perimeter;
-            BubbleSurfaceArea = app.surfaceArea;
-            BubbleCentroid = app.centroid;
-            BubbleVolume = app.volume;
-            BubbleVelocity = app.velocity;
-            numFrames = app.numFrames;
-            alternatePlotSet = app.convertedPlotSet;
+            frames = app.frames;                            %Raw frames
+            masks = app.mask;                               %Binary masks
+            infoStruct = app.maskInformation;               %Analysis Results
+            ignoreFrames = app.ignoreFrames;                %Frames to Ignore
+            BubblePlotSet = app.plotSet;                    %Plotting Data
+            InCASettings = incaio.compileSettings(app);     %User Specified Settings
             %% Write the table to the specified file
             [file, path] = uiputfile('*.mat');
-            if file == 0 && path == 0
+            if all(file == 0) && all(path == 0)
                 savePath = '';
                 return;
+            else
+                savePath = append(path, file);
+                save(savePath, 'frames', 'masks', 'infoStruct', 'ignoreFrames', 'BubblePlotSet', 'InCASettings', '-v7.3');
             end
-            savePath = append(path, file);
-            save(savePath, 'frames', 'masks', 'infoStruct', 'ignoreFrames', 'BubbleRadius', 'BubbleArea', 'BubblePerimeter', ...
-                'BubbleSurfaceArea', 'BubbleCentroid', 'BubbleVolume', 'BubbleVelocity', 'numFrames', 'alternatePlotSet', '-v7.3');
         end
         
-        %Write analyzed data to an excel spreadsheet
-        function exportToExcel(app, ignoreFrames)
-            %% Get file path and name
-            [file, path] = uiputfile('.xlsx');
-            figure(app.UIFigure);
-            fullFilePath = append(path, file);
-            %% Set up the cell matrix
-            coeffNums = zeros(1, app.numFrames);
-            for i = 1:app.numFrames
-                if isempty(find(ignoreFrames == i, 1))
-                    coeffNums(i) = numcoeffs(app.maskInformation(i).FourierFitX);
+        %Compile current user-specified settings
+        function settings = compileSettings(app)
+            
+            %Detection Settings
+            settings.multiview = app.MultiviewToggle.UserData;
+            settings.iff = app.IFFToggle.UserData;
+            settings.ic = app.ICToggle.UserData;
+            settings.rt = app.RTToggle.UserData;
+            settings.vl = app.VLToggle.UserData;
+            settings.vl_bs = app.BSRadioButton.Value;
+            settings.vl_ga = app.GARadioButton.Value;
+            settings.cstyle = app.CStyle.Value;
+            settings.cval = app.CVal.Value;
+            settings.autocolor = app.AutoColorToggle.UserData;
+            settings.colorthresh = app.ColorThresholdField.Value;
+            settings.estyle = app.EStyle.Value;
+            settings.eval = app.EVal.Value;
+            settings.autoedge = app.AutoEdgeToggle.UserData;
+            settings.edgethresh = app.EdgeThresholdField.Value;
+            
+            %Analysis Settings
+            settings.mpx = app.MPXField.Value;
+            settings.fps = app.FPSField.Value;
+            settings.tp = app.TPField.Value;
+            settings.rotaxis = app.RotationAxis.ButtonGroup.SelectedObject;
+            settings.ff = app.FourierFitToggle.UserData;
+            settings.ft = app.FitType.ButtonGroup.SelectedObject;
+            settings.minarc = app.MinArcLengthField.Value;
+            settings.at = app.AdaptiveTermsToggle.UserData;
+            settings.mt = app.MaxTermsField.Value;
+            settings.toi = app.TermsofInterestField.Value;
+            settings.metric_terms = app.MetricTermsField.Value;
+            
+        end
+        
+        %Set user-specified settings
+        function setSettings(settings, app)
+            
+            %Detection settings
+            if settings.multiview
+                app.MultiviewToggle.UserData = 1;
+                app.MultiviewToggle.ImageSource = 'toggle_on_detection.svg';
+            else
+                app.MultiviewToggle.UserData = 0;
+                app.MultiviewToggle.ImageSource = 'toggle_off.svg';
+            end
+            
+            if settings.iff 
+                app.IFFToggle.UserData = 1;
+                app.IFFToggle.ImageSource = 'toggle_on_detection.svg';
+            else
+                app.IFFToggle.UserData = 0;
+                app.IFFToggle.ImageSource = 'toggle_off.svg';
+            end
+            
+            if settings.ic 
+                app.ICToggle.UserData = 1;
+                app.ICToggle.ImageSource = 'toggle_on_detection.svg';
+            else
+                app.ICToggle.UserData = 0;
+                app.ICToggle.ImageSource = 'toggle_off.svg';
+            end
+            
+            if settings.rt
+                app.RTToggle.UserData = 1;
+                app.RTToggle.ImageSource = 'toggle_on_detection.svg';
+            else
+                app.RTToggle.UserData = 0;
+                app.RTToggle.ImageSource = 'toggle_off.svg';
+            end
+            
+            if settings.vl
+                app.VLToggle.UserData = 1;
+                app.VLToggle.ImageSource = 'toggle_on_detection.svg';
+                app.GARadioButton.Enable = 'on';
+                app.BSRadioButton.Enable = 'on';
+                
+                if settings.vl_bs
+                    app.BSRadioButton.Value = 1;
                 else
-                    coeffNums(i) = NaN;
+                    app.GARadioButton.Value = 1;
                 end
+                
+                if app.BSRadioButton.Value
+                    app.BSField.Enable = 'on';
+                end
+            else
+                app.VLToggle.UserData = 0;
+                app.VLToggle.ImageSource = 'toggle_off.svg';
+                app.GARadioButton.Enable = 'off';
+                app.BSRadioButton.Enable = 'off';
+                app.BSField.Enable = 'off';
             end
-            maxCoeffs = max(coeffNums);
-            numColumns = 6 + (2*maxCoeffs);
-            data = cell(app.numFrames + 1, numColumns);
-            %Write in the first row
-            data{1, 1} = 'Centroid';
-            data{1, 2} = 'Average Radius';
-            data{1, 3} = 'Area';
-            data{1, 4} = 'Perimeter';
-            data{1, 5} = 'Surface Area';
-            data{1, 6} = 'Volume';
-            for j = 1:maxCoeffs
-                data{1, 5 + (2*j)} = "a" + num2str(j - 1);
-                data{1, 6 + (2*j)} = "b" + num2str(j - 1);
+            
+            app.CStyle.Value = settings.cstyle;
+            app.CVal.Value = settings.cval;
+            app.ColorThresholdField.Value = settings.colorthresh;
+            app.EStyle.Value = settings.estyle;
+            app.EVal.Value = settings.eval;
+            app.EdgeThresholdField.Value = settings.edgethresh;
+            
+            if settings.autocolor 
+                app.AutoColorToggle.UserData = 1;
+                app.AutoColorToggle.ImageSource = 'toggle_on_detection.svg';
+            else
+                app.AutoColorToggle.UserData = 0;
+                app.AutoColorToggle.ImageSource = 'toggle_off.svg';
             end
-            %Write in a row for each frame
-            for k = 1:app.numFrames
-                if isempty(find(ignoreFrames == k, 1))
-                    data{1 + k, 1} = num2str(app.maskInformation(k).Centroid(1)) + ", " + num2str(app.maskInformation(k).Centroid(2));
-                    data{1 + k, 2} = app.maskInformation(k).AverageRadius;
-                    data{1 + k, 3} = app.maskInformation(k).Area;
-                    data{1 + k, 4} = app.maskInformation(k).Perimeter;
-                    data{1 + k, 5} = app.maskInformation(k).SurfaceArea;
-                    data{1 + k, 6} = app.maskInformation(k).Volume;
-                    
-                    xnames = coeffnames(app.maskInformation(k).FourierFitX);
-                    xvals = coeffvalues(app.maskInformation(k).FourierFitX);
-                    
-                    ynames = coeffnames(app.maskInformation(k).FourierFitY);
-                    yvals = coeffvalues(app.maskInformation(k).FourierFitY);
-                    
-                    for l = 1:numcoeffs(app.maskInformation(k).FourierFitX)
-                        targetCoeffX = "a" + num2str(l - 1);
-                        targetCoeffY = "b" + num2str(l - 1);
+            
+            if settings.autoedge
+                app.AutoEdgeToggle.UserData = 1;
+                app.AutoEdgeToggle.ImageSource = 'toggle_on_detection.svg';
+                app.EdgeThresholdField.Enable = 'off';
+            else
+                app.AutoEdgeToggle.UserData = 0;
+                app.AutoEdgeToggle.ImageSource = 'toggle_off.svg';
+                app.EdgeThresholdField.Enable = 'on';
+            end
+            
+            % Analysis Settings
+            app.MPXField.Value = settings.mpx;
+            app.FPSField.Value = settings.fps;
+            app.TPField.Value = settings.tp;
+            try 
+                app.RotationAxis.ButtonGroup.SelectedObject = settings.rotaxis;
+                app.FitType.ButtonGroup.SelectedObject = settings.ft;
+            catch me
+                %app.LogExceptions(me);
+            end
+            app.MinArcLengthField.Value = settings.minarc;
+            app.MaxTermsField.Value = settings.mt;
+            app.TermsofInterestField.Value = settings.toi;
+            app.MetricTermsField.Value = settings.metric_terms;
+            
+            if settings.ff
+                app.FourierFitToggle.UserData = 1;
+                app.FourierFitToggle.ImageSource = 'toggle_on_analysis.svg';
+                app.AdaptiveTermsToggle.Enable = 'on';
+                app.FitType.PolarSButton.Enable = 'on';
+                app.FitType.PolarPButton.Enable = 'on';
+                app.FitType.ParametricButton.Enable = 'on';
+                app.MinArcLengthField.Enable = 'on';
+                app.MaxTermsField.Enable = 'on';
+                app.TermsofInterestField.Enable = 'on';
+                app.MetricTermsField.Enable = 'on';
+            else
+                app.FourierFitToggle.UserData = 0;
+                app.FourierFitToggle.ImageSource = 'toggle_off.svg';
+                app.AdaptiveTermsToggle.Enable = 'off';
+                app.FitType.PolarSButton.Enable = 'off';
+                app.FitType.PolarPButton.Enable = 'off';
+                app.FitType.ParametricButton.Enable = 'off';
+                app.MinArcLengthField.Enable = 'off';
+                app.MaxTermsField.Enable = 'off';
+                app.TermsofInterestField.Enable = 'off';
+                app.MetricTermsField.Enable = 'off';
+            end
+            
+            if settings.at
+                app.AdaptiveTermsToggle.UserData = 1;
+                app.AdaptiveTermsToggle.ImageSource = 'toggle_on_analysis.svg';
+            else
+                app.AdaptiveTermsToggle.UserData = 0;
+                app.AdaptiveTermsToggle.ImageSource = 'toggle_off.svg';
+            end
                         
-                        xCoeffVal = xvals(xnames == targetCoeffX);
-                        yCoeffVal = yvals(ynames == targetCoeffY);
-                        data{1 + k, 5 + (2*l)} = xCoeffVal;
-                        data{1 + k, 6 + (2*l)} = yCoeffVal;
-                    end
-                else
-                    for m = 1:numColumns
-                        data{1 + k, m} = 'NaN';
-                    end
-                end
-            end
-            %% Write the cell matrix
-            writecell(data, fullFilePath);
-        end
-        
-        %Configure InCA data for IMR
-        function data = configureDataForIMR(frames, mask, numFrames, ignoreFrames, maskInformation, convertedPlotSet, numExportTerms, style)
-            % A function to configure InCA data for export to IMR
-            % data - an output struct with the fields:
-            %     .RoFT - a n x 1 column vector that contains the Fourier Fit radius for
-            %     each frame, where n is the number of frames
-            %     .t - a n x 1 column vector that contains the timestamp for each
-            %     frame, where n is the number of frames
-            %     .FTs - a table that contains the first k fourier
-            %     term amplitudes, where k is the number of terms to
-            %     export
-            %     .regionprops - a n x 1 struct that contains various
-            %     region props data about each frame/mask
-            
-            %% Extract the radius of each frame and put it in a vector
-            radius = zeros(numFrames, 1);
-            switch style
-                case "parametric"
-                    for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
-                            xVal = maskInformation(i).perimFit{1}.a1;               %Get the x component of the radius
-                            yVal = maskInformation(i).perimFit{2}.b1;               %Get the y component of the radius
-                            radius(i) = sqrt(xVal^2 + yVal^2);                      %Calculate and store the radius
-                        else
-                            radius(i) = NaN;
-                        end
-                    end
-                case "polar (standard)"
-                    for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
-                            radius(i) = maskInformation(i).perimFit.r;
-                        else
-                            radius(i) = NaN;
-                        end
-                    end
-                case "polar (phase shift)"
-                    for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
-                            radius(i) = maskInformation(i).perimFit.a0;
-                        else
-                            radius(i) = NaN;
-                        end
-                    end
-            end
-            
-            %% Extract the time stamp for each frame and put it in a vector
-            timestamp = convertedPlotSet.TimeVector;
-            
-            %% Extract the Fourier Fit Amplitudes for each frame
-            switch style
-
-                case "parametric"
-                    FourierAmps = cell(numFrames + 1, 2*numExportTerms + 2);  % Initialize cell array
-                    %Insert the top row column identifier
-                    for j = 0:numExportTerms
-                        FourierAmps{1, (2*j + 1)} = "a" + num2str(j);
-                        FourierAmps{1, (2*j + 2)} = "b" + num2str(j);
-                    end
-                    for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
-                            xFit = maskInformation(i).perimFit{1};          % Extract the xfit
-                            yFit = maskInformation(i).perimFit{2};          % Extract the y fit
-                            
-                            xvals = coeffvalues(xFit);                      % Extract coefficient values
-                            yvals = coeffvalues(yFit);                      % Extract coefficient values
-                            
-                            xterms = string(coeffnames(xFit));              % Extract coefficient names
-                            yterms = string(coeffnames(yFit));              % Extract coefficient names
-                            
-                            %Insert the coefficients
-                            for k = 0:numExportTerms
-                                xtarg = "a" + num2str(k);
-                                ytarg = "b" + num2str(k);
-                                FourierAmps{i + 1, (2*k + 1)} = xvals(xterms == xtarg);
-                                FourierAmps{i + 1, (2*k + 2)} = yvals(yterms == ytarg);
-                            end
-                        else
-                            for m = 1:(2*numExportTerms + 2)
-                                FourierAmps{i + 1, :} = NaN(1, 2*numExportTerms + 2);
-                            end
-                        end
-                    end
-                    C = FourierAmps(2:end, :);
-                    FourierTable = cell2table(C);
-                    varnames = cell(1, (2*numExportTerms + 2));
-                    for n = 1:length(varnames)
-                        varnames{n} = char(FourierAmps{1, n});
-                    end
-                    FourierTable.Properties.VariableNames = varnames;
-                case "polar (standard)"
-                    FourierAmps = cell(numFrames + 1, 2*numExportTerms + 1);  % Initialize cell array
-                    %Insert top row
-                    FourierAmps{1, 1} = "r";
-                    for j = 1:numExportTerms
-                        FourierAmps{1, (2*j)} = "a" + num2str(j);
-                        FourierAmps{1, (2*j + 1)} = "b" + num2str(j);
-                    end
-                    for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
-                            rFit = maskInformation(i).perimFit;                 % Extract the fit
-                            
-                            rnames = string(coeffnames(rFit));                  % Extract fit coeffs
-                            rvals = coeffvalues(rFit);                          % Extract coeff vals
-
-                            %Insert the coefficients
-                            FourierAmps{i + 1, 1} = rFit.r;
-                            for k = 1:numExportTerms
-                                atarg = "a" + num2str(k);
-                                btarg = "b" + num2str(k);
-                                FourierAmps{i + 1, 2*k} = rvals(rnames == atarg);
-                                FourierAmps{i + 1, (2*k + 1)} = rvals(rnames == btarg);
-                            end
-                        else
-                            for m = 1:(2*numExportTerms + 1)
-                                FourierAmps{i + 1, m} = NaN;
-                            end
-                        end
-                    end
-                    C = FourierAmps(2:end, :);
-                    FourierTable = cell2table(C);
-                    varnames = cell(1, (2*numExportTerms + 1));
-                    for n = 1:length(varnames)
-                        varnames{n} = char(FourierAmps{1, n});
-                    end
-                    FourierTable.Properties.VariableNames = varnames;
-                case "polar (phase shift)"
-                    FourierAmps = cell(numFrames + 1, 2*numExportTerms + 1);  % Initialize cell array
-                    %Insert top row
-                    FourierAmps{1, 1} = "a0";
-                    for j = 1:numExportTerms
-                        FourierAmps{1, (2*j)} = "a" + num2str(j);
-                        FourierAmps{1, (2*j + 1)} = "phi" + num2str(j);
-                    end
-                    for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
-                            rFit = maskInformation(i).perimFit;                 % Extract the fit
-                            
-                            rnames = string(coeffnames(rFit));                  % Extract fit coeffs
-                            rvals = coeffvalues(rFit);                          % Extract coeff vals
-                            
-                            %Insert the coefficients
-                            FourierAmps{i + 1, 1} = rFit.a0;
-                            for k = 1:numExportTerms
-                                atarg = "a" + num2str(k);
-                                phitarg = "phi" + num2str(k);
-                                FourierAmps{i + 1, 2*k} = rvals(rnames == atarg);
-                                FourierAmps{i + 1, (2*k + 1)} = rvals(rnames == phitarg);
-                            end
-                        else
-                            for m = 1:(2*numExportTerms + 1)
-                                FourierAmps{i + 1, m} = NaN;
-                            end
-                        end
-                    end
-                    C = FourierAmps(2:end, :);
-                    FourierTable = cell2table(C);
-                    varnames = cell(1, (2*numExportTerms + 1));
-                    for n = 1:length(varnames)
-                        varnames{n} = char(FourierAmps{1, n});
-                    end
-                    FourierTable.Properties.VariableNames = varnames;
-            end
-            
-            %% Get regionprops data for each frame
-            imageAnalysis = struct('Centroid', cell(numFrames, 1), 'Image', cell(numFrames, 1), 'Orientation', cell(numFrames, 1), ...
-                'Perimeter', cell(numFrames, 1), 'PixelIdxList', cell(numFrames, 1), 'PixelList', cell(numFrames, 1), ...
-                'WeightedCentroid', cell(numFrames, 1));
-            for i = 1:numFrames
-                if isempty(find(ignoreFrames == i, 1))
-                    %Compute and compile the region props results
-                    output= regionprops(mask(:, :, i), 'Centroid', 'Image', 'Orientation', 'Perimeter', 'PixelIdxList', 'PixelList');
-                    stats = regionprops(mask(:, :, i), frames(:, :, i), 'WeightedCentroid');
-                    output.WeightedCentroid = stats.WeightedCentroid;
-                    
-                    %Assign the values to the output struct in the correct location
-                    imageAnalysis(i).Centroid = output.Centroid;
-                    imageAnalysis(i).Image = output.Image;
-                    imageAnalysis(i).Orientation = output.Orientation;
-                    imageAnalysis(i).Perimeter = output.Perimeter;
-                    imageAnalysis(i).PixelIdxList = output.PixelIdxList;
-                    imageAnalysis(i).PixelList = output.PixelList;
-                    imageAnalysis(i).WeightedCentroid = output.WeightedCentroid;
-                end
-            end
-            
-            %% Assign to final output struct
-            data.RoFT = radius;
-            data.t = timestamp;
-            data.FTs = FourierTable;
-            data.regionprops = imageAnalysis;
+                
             
         end
     end

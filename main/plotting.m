@@ -1,91 +1,138 @@
 classdef plotting
-    methods (Static)
-        
-        %Generates the converted plot set
-        function convertedPlotSet = convertUnits(app)
-            
-            %Convert frames to seconds
-            frameInterval = 1/app.FPSField.Value;
-            convertedPlotSet.TimeVector = 0:frameInterval:(app.numFrames - 1)*frameInterval;
-            
-            %Convert the basic analysis things to microns from pixels
-            convertedPlotSet.AverageRadius = app.radius.*app.MicronPxField.Value;
-            convertedPlotSet.Area = app.area.*(app.MicronPxField.Value).^2;
-            convertedPlotSet.Perimeter = app.perimeter.*app.MicronPxField.Value;
-            convertedPlotSet.SurfaceArea = app.surfaceArea.*(app.MicronPxField.Value).^2;
-            convertedPlotSet.Volume = app.volume.*(app.MicronPxField.Value).^3;
-            convertedPlotSet.Centroid = app.centroid.*app.MicronPxField.Value;
-            
-        end
-        
+    methods (Static)        
         %Generates the data for the main overview and centroid plots
-        function [radius, area, perimeter, surfaceArea, volume, centroid, velocity] = generatePlotData(app)
+        function plotSet = generatePlotData(app)
             
             info = app.maskInformation;
             if isempty(info)
                 return;
             end
-            numFrames = app.numFrames;
+            [~, col] = size(info);
             
-            %Set up the output variables
-            radius = zeros(numFrames, 1);
-            area = zeros(numFrames, 1);
-            perimeter = zeros(numFrames, 1);
-            surfaceArea = zeros(numFrames, 1);
-            volume = zeros(numFrames, 1);
-            velocity = zeros(numFrames, 6);
-            centroid = zeros(numFrames, 2);
-            velocity(:, 1) = 0.5:(numFrames - 0.5);
-            for i = 1:numFrames
-                
-                if isempty(info(i))
-                    continue;
-                end
-                
-                if ~isempty(info(i).AverageRadius)
-                    radius(i) = info(i).AverageRadius;
-                else 
-                    radius(i) = NaN;
-                end
-                
-                if ~isempty(info(i).Area)
-                    area(i) = info(i).Area;
-                else
-                    area(i) = NaN;
-                end
-                
-                if ~isempty(info(i).Perimeter)
-                    perimeter(i) = info(i).Perimeter;
-                else
-                    perimeter(i) = NaN;
-                end
-                
-                if ~isempty(info(i).SurfaceArea)
-                    surfaceArea(i) = info(i).SurfaceArea;
-                else 
-                    surfaceArea(i) = NaN;
-                end
-                
-                if ~isempty(info(i).Volume)
-                    volume(i) = info(i).Volume;
-                else 
-                    volume(i) = NaN;
-                end
-                
-                if ~isempty(info(i).Centroid)
-                    centroid(i, :) = info(i).Centroid;
-                else
-                    centroid(i) = [NaN, NaN];
-                end
-                
-                if ~isempty(info(i).PerimVelocity)
-                    if ~isnan(info(i).PerimVelocity)
-                        velocity(i, 2:end) = info(i).PerimVelocity;
-                    else
-                        velocity(i, 2:end) = [NaN, NaN, NaN, NaN, NaN];
+            plotSet = struct('radius', zeros(col, app.numFrames), 'perimeter', zeros(col, app.numFrames), 'area', zeros(col, app.numFrames), 'surfaceArea', zeros(col, app.numFrames), ...
+                'volume', zeros(col, app.numFrames), 'centroid', zeros(app.numFrames, 2, col), 'velocity', zeros(app.numFrames, 6, col), 'orientation', zeros(col, app.numFrames), ...
+                'fitradius', zeros(col, app.numFrames), 'fitarea', zeros(col, app.numFrames), 'fitperim', zeros(col, app.numFrames), 'fitsa', zeros(1, app.numFrames), ...
+                'fitvol', zeros(1, app.numFrames));
+            
+            plotSet.time = 0:(1/app.FPSField.Value):(app.numFrames - 1).*(1/app.FPSField.Value);
+            
+            for i = 1:app.numFrames
+                for j = 1:col
+                    if isempty(info(i, j))
+                        continue;
                     end
+                    
+                    %Converted Radius
+                    if ~isempty(info(i, j).AverageRadius)
+                        plotSet.radius(j, i) = info(i, j).AverageRadius.*app.MPXField.Value;
+                    else
+                        plotSet.radius(j, i) = NaN;
+                    end
+                    
+                    %Converted Area
+                    if ~isempty(info(i, j).Area)
+                        plotSet.area(j, i) = info(i, j).Area.*(app.MPXField.Value).^2;
+                    else
+                        plotSet.area(j, i) = NaN;
+                    end
+                    
+                    %Converted Perimeter
+                    if ~isempty(info(i, j).Perimeter)
+                        plotSet.perimeter(j, i) = info(i, j).Perimeter.*app.MPXField.Value;
+                    else
+                        plotSet.perimeter(j, i) = NaN;
+                    end
+                    
+                    %Converted Surface Area
+                    if ~isempty(info(i, j).SurfaceArea)
+                        plotSet.surfaceArea(j, i) = info(i, j).SurfaceArea*(app.MPXField.Value).^2;
+                    else
+                        plotSet.surfaceArea(j, i) = NaN;
+                    end
+                    
+                    %Converted Volume
+                    if ~isempty(info(i, j).Volume)
+                        plotSet.volume(j, i) = info(i, j).Volume*(app.MPXField.Value).^3;
+                    else
+                        plotSet.volume(j, i) = NaN;
+                    end
+                    
+                    %Converted Centroid
+                    if ~isempty(info(i, j).Centroid)
+                        plotSet.centroid(i, :, j) = info(i, j).Centroid*app.MPXField.Value;
+                    else
+                        plotSet.centroid(i, :, j) = [NaN, NaN];
+                    end
+                    
+                    %Converted Perimeter Velocity
+                    plotSet.velocity(:, 1, j) = plotting.genVelocityX(plotSet.time);
+                    if ~isempty(info(i, j).PerimVelocity)
+                        if ~isnan(info(i, j).PerimVelocity)
+                            plotSet.velocity(i, 2:6, j) = info(i, j).PerimVelocity*app.FPSField.Value*app.MPXField.Value;
+                        else
+                            plotSet.velocity(i, :, j) = [NaN, NaN, NaN, NaN, NaN, NaN];
+                        end
+                    end
+                    
+                    %Converted Orientation
+                    if ~isempty(info(i, j).Orientation)
+                        if ~isnan(info(i, j).Orientation)
+                            plotSet.orientation(j, i) = info(i, j).Orientation;
+                        else
+                            plotSet.orientation(j, i) = NaN;
+                        end
+                    end
+                    
+                    %Converted Fit Radius
+                    if ~isempty(info(i, j).FitRadius)
+                        if ~isnan(info(i, j).FitRadius)
+                            plotSet.fitradius(j, i) = info(i, j).FitRadius*app.MPXField.Value;
+                        else
+                            plotSet.fitradius(j, i) = NaN;
+                        end
+                    end
+                    
+                    %Converted Fit Area
+                    if ~isempty(info(i, j).FitArea)
+                        if ~isnan(info(i, j).FitArea)
+                            plotSet.fitarea(j, i) = info(i, j).FitArea*(app.MPXField.Value)^2;
+                        else
+                            plotSet.fitarea(j, i) = NaN;
+                        end
+                    end
+                    
+                    %Converted Fit Perimeter
+                    if ~isempty(info(i, j).FitPerim)
+                        if ~isnan(info(i, j).FitPerim)
+                            plotSet.fitperim(j, i) = info(i, j).FitPerim*app.MPXField.Value;
+                        else
+                            plotSet.fitperim(j, i) = NaN;
+                        end
+                    end
+                    
+                    %Converted Fit Surface Area
+                    if j == 1
+                        if ~isempty(info(i).FitSA)
+                            if ~isnan(info(i).FitSA)
+                                plotSet.fitSA(i) = info(i).FitSA.*(app.MPXField.Value)^2;
+                            else
+                                plotSet.fitSA(i) = NaN;
+                            end
+                        end
+                        
+                        %Converted Fit Volume
+                        if ~isempty(info(i).FitVol)
+                            if ~isnan(info(i).FitVol)
+                                plotSet.fitvol(i) = info(i).FitVol.*(app.MPXField.Value)^3;
+                            else
+                                plotSet.fitvol(i) = NaN;
+                            end
+                        end
+                    end
+                                       
                 end
             end
+            
         end
         
         %Generates data for a normalized radius plot
@@ -234,126 +281,47 @@ classdef plotting
             end
         end
         
-        %Changes axes titles to frame/px or micron/second
-        function changeAxesTitles(app, titleType)
-            switch titleType
-                case 'pixels'
-                    %Update the average radius plot labels
-                    app.RadiusPlot.XLabel.String = "FRAME";
-                    app.RadiusPlot.Title.String = "AVERAGE RADIUS (PX/FRAME)";
-                    
-                    %Update the area and perimeter plot labels
-                    app.TwoDimensionalPlot.XLabel.String = "FRAME";
-                    app.TwoDimensionalPlot.Title.String = "AREA AND PERIMETER (PX/FRAME)";
-                    
-                    %Update the surface area and volume labels
-                    app.ThreeDimensionalPlot.XLabel.String = "FRAME";
-                    app.ThreeDimensionalPlot.Title.String = "SURFACE AREA AND VOLUME (PX/FRAME)";
-                    
-                    %Update the asphericity plot
-                    app.AsphericityPlot.XLabel.String = "FRAME";
-                    
-                    %Update the velocity plot
-                    app.VelocityPlot.XLabel.String = "FRAME";
-                    app.VelocityPlot.Title.String = "PERIMETER VELOCITY (PX/FRAME)";
-                case 'microns'
-                    app.RadiusPlot.XLabel.String = "SECONDS";
-                    app.RadiusPlot.Title.String = "AVERAGE RADIUS (MICRON/S)";
-                    
-                    %Update the area and perimeter plot labels
-                    app.TwoDimensionalPlot.XLabel.String = "SECONDS";
-                    app.TwoDimensionalPlot.Title.String = "AREA AND PERIMETER (MICRON/S)";
-                    
-                    %Update the surface area and volume labels
-                    app.ThreeDimensionalPlot.XLabel.String = "SECONDS";
-                    app.ThreeDimensionalPlot.Title.String = "SURFACE AREA AND VOLUME (MICRON/S)";
-                    
-                    %Update the asphericity plot
-                    app.AsphericityPlot.XLabel.String = "SECONDS";
-                    
-                    %Update the velocity plot
-                    app.VelocityPlot.XLabel.String = "SECONDS";
-                    app.VelocityPlot.Title.String = "PERIMETER VELOCITY (MICRON/S)";
-            end
-        end
-        
         %Plots the Fourier Asphericity
         function plotFourier(app)
             yyaxis(app.AsphericityPlot, "left");
             cla(app.AsphericityPlot);
+            hold(app.AsphericityPlot, 'on');
             yyaxis(app.AsphericityPlot, "right");
             cla(app.AsphericityPlot);
-            app.AsphericityPlot.XLim = [1, app.numFrames];
+            hold(app.AsphericityPlot, 'on');
+            app.AsphericityPlot.XLim = [0, app.plotSet.time(end)];
             if app.FourierFitToggle.UserData
                 %Get the color map set up
                 cmap = viridis(app.TermsofInterestField.Value);
-                
-                %Plot the data points
-                points = plotting.fourierFitPlot(app.maskInformation, app.TermsofInterestField.Value, app.numFrames, app.ignoreFrames, lower(string(app.FitType.Value)));
-                
-                yyaxis(app.AsphericityPlot, 'left');
-                
-                plot(app.AsphericityPlot, 1:app.numFrames, points(:, 1),"Color", cmap(1, :), "LineStyle","-", "Marker", "none", 'LineWidth', 1.5);
-                
-                app.AsphericityPlot.YColor = cmap(end - 1, :);
-                
-                hold(app.AsphericityPlot, 'on');
-                [~, col] = size(points);
-                for d = 2:col
-                    plot(app.AsphericityPlot, 1:app.numFrames, points(:, d),"Color", cmap(d, :), "LineStyle","-", "Marker", "none", 'LineWidth', 1.5);
-                end
-                hold(app.AsphericityPlot, 'off');
-                
-                normalizedRadius = plotting.noramlizedRadiusPlot(app.maskInformation, app.numFrames, app.ignoreFrames, lower(string(app.FitType.Value)));
-                
-                yyaxis(app.AsphericityPlot, 'right');
-                ylabel(app.AsphericityPlot, "R/Rmax");
-                app.AsphericityPlot.YColor = [1, 1, 1];
-                
-                r = plot(app.AsphericityPlot, 1:app.numFrames, normalizedRadius, "LineStyle", "-", "Marker", "none", "Color", [1, 1, 1], 'LineWidth', 1.5);
-                
-                legend(app.AsphericityPlot, r, "R/max(R)", "TextColor", [1, 1 ,1]);
-                
-            end
-        end
-        
-        %Plots the Fourier Asphericity in alternate axes
-        function plotConvertedFourier(app)
-            yyaxis(app.AsphericityPlot, "left");
-            cla(app.AsphericityPlot);
-            yyaxis(app.AsphericityPlot, "right");
-            cla(app.AsphericityPlot);
-            app.AsphericityPlot.XLim = [app.convertedPlotSet.TimeVector(1), app.convertedPlotSet.TimeVector(end)];
-            if app.FourierFitToggle.UserData
-                %Get the color map set up
-                cmap = viridis(app.TermsofInterestField.Value - 1);
-                
-                %Plot the data points
-                points = plotting.fourierFitPlot(app.maskInformation, app.TermsofInterestField.Value, app.numFrames, app.ignoreFrames);
-                
-                yyaxis(app.AsphericityPlot, 'left');
-                
-                plot(app.AsphericityPlot, app.convertedPlotSet.TimeVector, points(:, 1),"Color", cmap(1, :), "LineStyle","-", "Marker", "none");
-                
-                app.AsphericityPlot.YColor = cmap(end - 1, :);
-                
-                hold(app.AsphericityPlot, 'on');
-                
-                for d = 2:(app.TermstoPlotEditField.Value - 1)
-                    plot(app.AsphericityPlot, app.convertedPlotSet.TimeVector, points(:, d),"Color", cmap(d, :), "LineStyle","-", "Marker", "none");
+                plotorder = {'-', ':'};
+                [~, views] = size(app.maskInformation);
+                for i = 1:views
+                    %Plot the data points
+                    points = plotting.fourierFitPlot(app.maskInformation(:, i), app.TermsofInterestField.Value, app.numFrames, app.ignoreFrames, ...
+                        lower(string(app.FitType.ButtonGroup.SelectedObject.Text)));
                     
+                    yyaxis(app.AsphericityPlot, 'left');
+                    app.AsphericityPlot.YColor = cmap(end - 1, :);
+                    
+                    [~, col] = size(points);
+                    for d = 1:col
+                        plot(app.AsphericityPlot, app.plotSet.time, points(:, d),"Color", cmap(d, :), "LineStyle",plotorder{i}, "Marker", "none", 'LineWidth', 1.5);
+                    end
+                    
+                    normalizedRadius = plotting.noramlizedRadiusPlot(app.maskInformation(:, i), app.numFrames, app.ignoreFrames, ...
+                        lower(string(app.FitType.ButtonGroup.SelectedObject.Text)));
+                    
+                    yyaxis(app.AsphericityPlot, 'right');
+                    ylabel(app.AsphericityPlot, "R/Rmax");
+                    app.AsphericityPlot.YColor = [1, 1, 1];
+                    
+                    r = plot(app.AsphericityPlot, app.plotSet.time, normalizedRadius, "LineStyle", plotorder{i}, "Marker", "none", "Color", [1, 1, 1], 'LineWidth', 1.5);
                 end
+                legend(app.AsphericityPlot, r, "R/max(R)", "TextColor", [1, 1 ,1]);
+                yyaxis(app.AsphericityPlot, 'left');
                 hold(app.AsphericityPlot, 'off');
-                
-                normalizedRadius = plotting.noramlizedRadiusPlot(app.maskInformation, app.numFrames, app.ignoreFrames);
-                
                 yyaxis(app.AsphericityPlot, 'right');
-                ylabel(app.AsphericityPlot, "R/Rmax");
-                app.AsphericityPlot.YColor = [0, 0, 0];
-                
-                r = plot(app.AsphericityPlot, app.convertedPlotSet.TimeVector, normalizedRadius, "LineStyle", "-", "Marker", "none", "Color", [1, 1, 1]);
-                
-                legend(app.AsphericityPlot, r, "R/max(R)", "TextColor", [1, 1, 1]);
+                hold(app.AsphericityPlot, 'off');
             end
         end
         
@@ -499,23 +467,24 @@ classdef plotting
         end
         
         %Plots the Fourier Decomposition
-        function plotFourierDecomp(app, points)
+        function plotFourierDecomp(~, points)
             [row, ~] = size(points);
             cmap = viridis(row);
-            panelPos = app.DecomposedPlotsPanel.Position;
+            DecompFig = uifigure('WindowState', 'maximized', 'Scrollable', 'on');
+            panelPos = DecompFig.Position;
             for h = 1:row
                 vals(h) = points{h, 2};
             end
             if max(vals) > row
                 for i = 1:row
-                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 70], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
+                    axishandle = uiaxes(DecompFig, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 70], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
                         "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], "Color", [0 0 0]);
                     axishandle.Title.String = "";
                     dataPoints = [points{i, 1}];
                     plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2} - 1, :), "DisplayName", "Term " + num2str(points{i, 2}), 'LineWidth', 2);
                     legend(axishandle, "Color", [1 1 1]);
                 end
-                axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 70], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
+                axishandle = uiaxes(DecompFig, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 70], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
                     "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], ...
                     "Color", [0 0 0]);
                 axishandle.Title.String = "";
@@ -528,14 +497,14 @@ classdef plotting
                 hold(axishandle, 'off');
             else
                 for i = 1:row
-                    axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 70], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
+                    axishandle = uiaxes(DecompFig, "Position", [(10 + (i - 1)*(panelPos(3) - 20)), 25, panelPos(3) - 20, panelPos(4) - 70], "DataAspectRatio", [1, 1, 1],"PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582], ...
                         "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], "Color", [0 0 0]);
                     axishandle.Title.String = "";
                     dataPoints = [points{i, 1}];
                     plot(axishandle, dataPoints(:,1), dataPoints(:, 2), "Color", cmap(points{i, 2}, :), "DisplayName", "Term " + num2str(points{i, 2}), 'LineWidth', 2);
                     legend(axishandle, "Color", [1 1 1]);
                 end
-                axishandle = uiaxes(app.DecomposedPlotsPanel, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 70], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
+                axishandle = uiaxes(DecompFig, "Position", [(10 + (row)*(panelPos(3) - 20)), 25, (panelPos(3) - 20), panelPos(4) - 70], "DataAspectRatio", [1, 1, 1], "PlotBoxAspectRatio", [1,0.8062157221206582,0.8062157221206582],...
                     "BackgroundColor", [0 0 0], "XColor", [1 1 1], "YColor", [1 1 1], "ZColor", [1 1 1], ...
                     "Color", [0 0 0]);
                 axishandle.Title.String = "";
@@ -549,79 +518,131 @@ classdef plotting
             end
         end
         
-        %Plot the Data in the Overview and Centroid Tabs
-        function plotData(radius, area, perimeter, surfaceArea, volume, centroid, ...
-                radiusHandle, twoDHandle, threeDHandle, centerHandle, numFrames, currentFrame)
+        %Plot the data from the mask analysis
+        function plotData(plotset, radiusHandle, twoDHandle, threeDHandle, centerHandle, orientationHandle, numFrames)
             line = 1.5;
-            if ~isempty(radius)
-                %Radius Plot
-                radiusHandle.XLim = [1, numFrames];
-                plot(radiusHandle, 1:numFrames, radius , '-w', currentFrame, radius(currentFrame), '*g', 'LineWidth', line);
-                
-                %Area and Perimeter Plot
-                twoDHandle.XLim = [1, numFrames];
-                yyaxis(twoDHandle, 'left');
-                plot(twoDHandle, 1:numFrames, area, currentFrame, area(currentFrame), '*g', 'LineWidth', line);
-                yyaxis(twoDHandle, 'right');
-                plot(twoDHandle, 1:numFrames, perimeter, currentFrame, perimeter(currentFrame), '*g', 'LineWidth', line);
-                
-                %Surface Area and Volume Plots
-                threeDHandle.XLim = [1, numFrames];
-                yyaxis(threeDHandle, 'left');
-                plot(threeDHandle, 1:numFrames, surfaceArea, currentFrame, surfaceArea(currentFrame), '*g', 'LineWidth', line);
-                yyaxis(threeDHandle, 'right');
-                plot(threeDHandle, 1:numFrames, volume, currentFrame, volume(currentFrame), '*g', 'LineWidth', line);
-                
-                %Centroid Plot
-                gradient = zeros(1, 3, numFrames);
-                gradient(1, 1, :) = linspace(178/255, 33/255, numFrames);
-                gradient(1, 2, :) = linspace(24/255, 102/255, numFrames);
-                gradient(1, 3, :) = linspace(43/255, 172/255, numFrames);
-                plot(centerHandle, centroid(1, 1), centroid(1, 2), '--*', "Color", gradient(:, :, 1));
-                hold(centerHandle, 'on');
-                for d = 2:numFrames
-                    plot(centerHandle, centroid(d, 1), centroid(d, 2), '--*', 'Color', gradient(:, :, d));
-                end                
-                hold(centerHandle, 'off');
+            plotorder = {'-', ':', '--'};
+            markerorder = {'o', 's', '^'};
+            
+            hold(radiusHandle, 'on');
+            
+            yyaxis(twoDHandle, 'left');
+            hold(twoDHandle, 'on');
+            yyaxis(twoDHandle, 'right');
+            hold(twoDHandle, 'on');
+            
+            yyaxis(threeDHandle, 'left');
+            hold(threeDHandle, 'on');
+            yyaxis(threeDHandle, 'right');
+            hold(threeDHandle, 'on');
+            
+            if ~isempty(plotset.radius)
+                [row, ~] = size(plotset.radius);
+                for i = 1:row
+                    %Radius Plot
+                    radiusHandle.XLim = [plotset.time(1), plotset.time(end)];
+                    plot(radiusHandle, plotset.time, plotset.radius(i, :) , '-w', 'LineWidth', line, 'LineStyle', plotorder{i});
+                    
+                    %Area and Perimeter Plot
+                    twoDHandle.XLim = [plotset.time(1), plotset.time(end)];
+                    yyaxis(twoDHandle, 'left');
+                    plot(twoDHandle, plotset.time, plotset.area(i, :), 'LineWidth', line, 'LineStyle', plotorder{i});
+                    yyaxis(twoDHandle, 'right');
+                    plot(twoDHandle, plotset.time, plotset.perimeter(i, :), 'LineWidth', line, 'LineStyle', plotorder{i});
+                    
+                    %Surface Area and Volume Plots
+                    threeDHandle.XLim = [plotset.time(1), plotset.time(end)];
+                    yyaxis(threeDHandle, 'left');
+                    plot(threeDHandle, plotset.time, plotset.surfaceArea(i, :), 'LineWidth', line, 'LineStyle', plotorder{i});
+                    yyaxis(threeDHandle, 'right');
+                    plot(threeDHandle, plotset.time, plotset.volume(i, :), 'LineWidth', line, 'LineStyle', plotorder{i});
+                    
+                    %Set up blue-red time gradient
+                    gradient = zeros(1, 3, numFrames);
+                    gradient(1, 1, :) = linspace(178/255, 33/255, numFrames);
+                    gradient(1, 2, :) = linspace(24/255, 102/255, numFrames);
+                    gradient(1, 3, :) = linspace(43/255, 172/255, numFrames);
+                    
+                    %Centroid Plot
+                    hold(centerHandle, 'on');
+                    for d = 1:numFrames
+                        plot(centerHandle, plotset.centroid(d, 1, i), plotset.centroid(d, 2, i), 'Marker', markerorder{i}, 'Color', gradient(:, :, d));
+                    end
+                    
+                    hold(centerHandle, 'off');
+                    
+                    %Orientation Plot
+                    hold(orientationHandle, 'on');
+                    for d = 1:numFrames
+                        polarplot(orientationHandle, plotset.orientation(i, d), i, 'Marker', markerorder{i}, "Color", gradient(:, :, d));
+                    end
+                    
+                    orientationHandle.Color = [0.1 0.1 0.1];
+                    orientationHandle.GridColor = [0.95 0.95 0.95];
+                    orientationHandle.ThetaColor = [0.95 0.95 0.95];
+                    orientationHandle.RColor = [0.95 0.95 0.95];
+                    title(orientationHandle, "MAJOR AXIS ORIENTATION", 'Color', [0.95 0.95 0.95]);
+                    
+                    hold(orientationHandle, 'off');
+                end
             end
+            
+            hold(radiusHandle, 'off');
+            
+            yyaxis(twoDHandle, 'left');
+            hold(twoDHandle, 'off');
+            yyaxis(twoDHandle, 'right');
+            hold(twoDHandle, 'off');
+            
+            yyaxis(threeDHandle, 'left');
+            hold(threeDHandle, 'off');
+            yyaxis(threeDHandle, 'right');
+            hold(threeDHandle, 'off');
         end
         
-        %Plot the Data in the Overview and Centroid Tabs in the alternate
-        %axes
-        function plotConvertedData(plotSet, radiusHandle, twoDHandle, threeDHandle, centerHandle, currentFrame, numFrames)
+        %Plot the Data from the fourier fit
+        function plotFourierData(plotset, radiusHandle, twoDHandle)
+            line = 1.5;
             
-            if ~isempty(plotSet.AverageRadius)
-                %Radius Plot
-                radiusHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
-                plot(radiusHandle, plotSet.TimeVector, plotSet.AverageRadius , '-w', ...
-                    plotSet.TimeVector(currentFrame), plotSet.AverageRadius(currentFrame), '*g');
-                
-                %Area and Perimeter Plot
-                twoDHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
-                yyaxis(twoDHandle, 'left');
-                plot(twoDHandle, plotSet.TimeVector, plotSet.Area, plotSet.TimeVector(currentFrame), plotSet.Area(currentFrame) ,'*g');
-                yyaxis(twoDHandle, 'right');
-                plot(twoDHandle, plotSet.TimeVector, plotSet.Perimeter, plotSet.TimeVector(currentFrame), plotSet.Perimeter(currentFrame), '*g');
-                
-                %Surface Area and Volume Plots
-                threeDHandle.XLim = [plotSet.TimeVector(1), plotSet.TimeVector(end)];
-                yyaxis(threeDHandle, 'left');
-                plot(threeDHandle, plotSet.TimeVector, plotSet.SurfaceArea, plotSet.TimeVector(currentFrame), plotSet.SurfaceArea(currentFrame), '*g');
-                yyaxis(threeDHandle, 'right');
-                plot(threeDHandle, plotSet.TimeVector, plotSet.Volume, plotSet.TimeVector(currentFrame), plotSet.Volume(currentFrame), '*g');
-
-                %Centroid Plot
-                gradient = zeros(1, 3, numFrames);
-                gradient(1, 1, :) = linspace(178/255, 33/255, numFrames);
-                gradient(1, 2, :) = linspace(24/255, 102/255, numFrames);
-                gradient(1, 3, :) = linspace(43/255, 172/255, numFrames);
-                plot(centerHandle, plotSet.Centroid(1, 1), plotSet.Centroid(1, 2), '--*', "Color", gradient(:, :, 1));
-                hold(centerHandle, 'on');
-                for d = 2:numFrames
-                    plot(centerHandle, plotSet.Centroid(d, 1), plotSet.Centroid(d, 2), '--*', 'Color', gradient(:, :, d));
+            hold(radiusHandle, 'on');
+            
+            yyaxis(twoDHandle, 'left');
+            hold(twoDHandle, 'on');
+            yyaxis(twoDHandle, 'right');
+            hold(twoDHandle, 'on');
+            
+            if ~isempty(plotset.radius)
+                [views, ~] = size(plotset.fitradius);
+                plotorder = {'-', ':', '--'};
+                for i = 1:views
+                    %Radius Plot
+                    radiusHandle.XLim = [plotset.time(1), plotset.time(end)];
+                    plot(radiusHandle, plotset.time, plotset.fitradius(i, :), 'Color', 'w', 'LineWidth', line, 'LineStyle', plotorder{i});
+                    
+                    %Area and Perimeter Plot
+                    twoDHandle.XLim = [plotset.time(1), plotset.time(end)];
+                    yyaxis(twoDHandle, 'left');
+                    plot(twoDHandle, plotset.time, plotset.fitarea(i, :), 'LineWidth', line, 'LineStyle', plotorder{i});
+                    yyaxis(twoDHandle, 'right');
+                    plot(twoDHandle, plotset.time, plotset.fitperim(i, :), 'LineWidth', line, 'LineStyle', plotorder{i});
+                    
+%                     %Surface Area and Volume
+%                     threeDHandle.XLim = [plotset.time(1), plotset.time(end)];
+%                     yyaxis(threeDHandle, 'left');
+%                     plot(threeDHandle, plotset.time, plotset.fitSA, 'LineWidth', line);
+%                     yyaxis(threeDHandle, 'right');
+%                     plot(threeDHandle, plotset.time, plotset.fitvol, 'LineWidth', line);
                 end
-                hold(centerHandle, 'off');
             end
+            
+                        
+            hold(radiusHandle, 'off');
+            
+            yyaxis(twoDHandle, 'left');
+            hold(twoDHandle, 'off');
+            yyaxis(twoDHandle, 'right');
+            hold(twoDHandle, 'off');
+            
         end
         
         %Display the current frame and the overlays in the main viewer
@@ -637,33 +658,31 @@ classdef plotting
                         imshow(app.frames(:, :, app.currentFrame), 'Parent', app.MainPlot);
                         hold(app.MainPlot, 'on');
                         
-                        for i = 1:2
-                            if i == 1
-                                perimeterPoints = app.maskInformation(app.currentFrame).PerimeterPoints;
-                                center = app.maskInformation(app.currentFrame).Centroid;
-                                tracking = app.maskInformation(app.currentFrame).TrackingPoints;
-                                plot(app.MainPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'r', ...
-                                    center(1), center(2), 'b*',...
-                                    tracking(:, 1), tracking(:, 2), 'y*', 'LineWidth', 1.5, 'MarkerSize', 5);
-                            elseif i == 2
-                                if app.FourierFitToggle.UserData
-                                    fourier = app.maskInformation(app.currentFrame).FourierPoints;
-                                    plot(app.MainPlot, fourier(:, 1), fourier(:, 2), 'c.', "DisplayName", "Fourier Fit Points", 'MarkerSize', 5, 'LineWidth', 2);
-                                    fit = app.maskInformation(app.currentFrame).perimEq;
-                                    if iscell(fit)
-                                        xFunc = fit{1};
-                                        yFunc = fit{2};
-                                        xData = xFunc(linspace(1, length(fourier(:, 1)), numcoeffs(app.maskInformation(app.currentFrame).perimFit{1}).*25));
-                                        yData = yFunc(linspace(1, length(fourier(:, 2)), numcoeffs(app.maskInformation(app.currentFrame).perimFit{2}).*25));
-                                    else
-                                        rFunc = fit;
-                                        rData = rFunc(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame).perimFit)./2.*25));
-                                        [xraw, yraw] = pol2cart(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame).perimFit)./2.*25), rData);
-                                        xData = xraw + app.maskInformation(app.currentFrame).Centroid(1);
-                                        yData = yraw + app.maskInformation(app.currentFrame).Centroid(2);
-                                    end
-                                    plot(app.MainPlot, xData, yData, '-g', 'DisplayName', 'FourierFit', 'LineWidth', 1);
+                        [~, views] = size(app.maskInformation);
+                        for i = 1:views
+                            perimeterPoints = app.maskInformation(app.currentFrame, i).PerimeterPoints;
+                            center = app.maskInformation(app.currentFrame, i).Centroid;
+                            tracking = app.maskInformation(app.currentFrame, i).TrackingPoints;
+                            plot(app.MainPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'r', ...
+                                center(1), center(2), 'b*',...
+                                tracking(:, 1), tracking(:, 2), 'y*', 'LineWidth', 1.5, 'MarkerSize', 3);
+                            if app.FourierFitToggle.UserData
+                                fourier = app.maskInformation(app.currentFrame, i).FourierPoints;
+                                plot(app.MainPlot, fourier(:, 1), fourier(:, 2), 'c.', "DisplayName", "Fourier Fit Points", 'MarkerSize', 5, 'LineWidth', 2);
+                                fit = app.maskInformation(app.currentFrame, i).perimEq;
+                                if iscell(fit)
+                                    xFunc = fit{1};
+                                    yFunc = fit{2};
+                                    xData = xFunc(linspace(1, length(fourier(:, 1)), numcoeffs(app.maskInformation(app.currentFrame, i).perimFit{1}).*25));
+                                    yData = yFunc(linspace(1, length(fourier(:, 2)), numcoeffs(app.maskInformation(app.currentFrame, i).perimFit{2}).*25));
+                                else
+                                    rFunc = fit;
+                                    rData = rFunc(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame, i).perimFit)./2.*25));
+                                    [xraw, yraw] = pol2cart(linspace(0, 2*pi, numcoeffs(app.maskInformation(app.currentFrame, i).perimFit)./2.*25), rData);
+                                    xData = xraw + app.maskInformation(app.currentFrame, i).Centroid(1);
+                                    yData = yraw + app.maskInformation(app.currentFrame, i).Centroid(2);
                                 end
+                                plot(app.MainPlot, xData, yData, '-g', 'DisplayName', 'FourierFit', 'LineWidth', 1);
                             end
                         end
                         
@@ -676,46 +695,66 @@ classdef plotting
         %Display the perimeter evolution overlay
         function dispEvolution(app)
             if ~isempty(app.maskInformation)
-                [~, ~, depth] = size(app.mask);
+                info = app.maskInformation;
+                [~, views] = size(info);
+                [~, ~, depth, ~] = size(app.mask);
                 gradient = zeros(1, 3, depth);
-                gradient(1, 1, :) = linspace(178/255, 33/255, app.numFrames);
-                gradient(1, 2, :) = linspace(24/255, 102/255, app.numFrames);
-                gradient(1, 3, :) = linspace(43/255, 172/255, app.numFrames);
-                perimeterPoints = app.maskInformation(1).PerimeterPoints;
-                if ~isnan(perimeterPoints)
-                    plot(app.EvolutionPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'Color', gradient(:, :, 1));
-                end
-                hold(app.EvolutionPlot, 'on');
-                for d = 2:depth
-                    if isempty(find(app.ignoreFrames == d, 1))
-                        perimeterPoints = app.maskInformation(d).PerimeterPoints;
-                        plot(app.EvolutionPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'Color', gradient(:, :, d));
+                gradient(1, 1, :) = linspace(178/255, 33/255, depth);
+                gradient(1, 2, :) = linspace(24/255, 102/255, depth);
+                gradient(1, 3, :) = linspace(43/255, 172/255, depth);
+                
+                for i = 1:views
+                    
+                    perimeterPoints = info(1, i).PerimeterPoints;
+                    if ~isnan(perimeterPoints)
+                        plot(app.EvolutionPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'Color', gradient(:, :, 1));
                     end
+                    hold(app.EvolutionPlot, 'on');
+                    for d = 2:depth
+                        if isempty(find(app.ignoreFrames == d, 1))
+                            perimeterPoints = app.maskInformation(d, i).PerimeterPoints;
+                            plot(app.EvolutionPlot, perimeterPoints(:, 1), perimeterPoints(:, 2), 'Color', gradient(:, :, d));
+                        end
+                    end
+                    hold(app.EvolutionPlot, 'off');
+                    
                 end
-                hold(app.EvolutionPlot, 'off');
             end
+        end
+        
+        function timeOut = genVelocityX(time)
+            frames = length(time);
+            timeOut = (0.5:(frames - 0.5)).*time(2);
         end
         
         %Display the velocities of various points of the bubble perimeter
         function plotVelocity(velocityPlot, velocityData)
-            velocityPlot.XLim = [1, length(velocityData(:, 1))];
-            %Plot the average velocity
-            plot(velocityPlot, velocityData(:, 1), velocityData(:, 2), '-w', 'LineWidth', 1.5);
+            velocityPlot.XLim = [velocityData(1, 1) velocityData(end, 1)];
+            
+            plotorder = {'-', ':'};
+            [~, ~, views] = size(velocityData);
             hold(velocityPlot, 'on');
             
-            %Plot the top velocity 
-            plot(velocityPlot, velocityData(:, 1), velocityData(:, 3), 'Color', [0, 73, 255]./255, 'LineWidth', 1.5);
+            for i = 1:views
+                
+                %Plot the average velocity
+                plot(velocityPlot, velocityData(:, 1, i), velocityData(:, 2, i), 'w', 'LineWidth', 1.5);
+                
+                %Plot the top velocity
+                plot(velocityPlot, velocityData(:, 1, i), velocityData(:, 3, i), 'Color', [0, 73, 255]./255, 'LineWidth', 1.5, 'LineStyle', plotorder{i});
+                
+                %Plot the bottom velocity
+                plot(velocityPlot, velocityData(:, 1, i), velocityData(:, 4, i), 'Color', [255, 183, 0]./255, 'LineWidth', 1.5, 'LineStyle', plotorder{i});
+                
+                %Plot the left velocity
+                plot(velocityPlot, velocityData(:, 1, i), velocityData(:, 5, i), 'Color', [183, 0, 255]./255, 'LineWidth', 1.5, 'LineStyle', plotorder{i});
+                
+                %Plot the right velocity
+                plot(velocityPlot, velocityData(:, 1, i), velocityData(:, 6, i), 'Color', [255, 0, 72]./255, 'LineWidth', 1.5, 'LineStyle', plotorder{i});
+                
+                legend(velocityPlot, "Average", "Top Extrema", "Bottom Extrema", "Left Extrema", "Right Extrema", 'Location', 'northeast', 'TextColor', [1 1 1]);
+            end
             
-            %Plot the bottom velocity
-            plot(velocityPlot, velocityData(:, 1), velocityData(:, 4), 'Color', [255, 183, 0]./255, 'LineWidth', 1.5);
-            
-            %Plot the left velocity
-            plot(velocityPlot, velocityData(:, 1), velocityData(:, 5), 'Color', [183, 0, 255]./255, 'LineWidth', 1.5);
-            
-            %Plot the right velocity
-            plot(velocityPlot, velocityData(:, 1), velocityData(:, 6), 'Color', [255, 0, 72]./255, 'LineWidth', 1.5);
-            
-            legend(velocityPlot, "Average", "Top Extrema", "Bottom Extrema", "Left Extrema", "Right Extrema", 'Location', 'northeast', 'TextColor', [1 1 1]);
             hold(velocityPlot, 'off');
         end
 
