@@ -154,37 +154,47 @@ classdef bubbleAnalysis
                         if doFit
                             %Get the points for the fourier fit
                             wtBr.Message = standardMsg + ": Generaing Fourier Fit points";
-                            [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d, v).Centroid], ...
-                                floor( maskInformation(d, v).Perimeter./arcLength));
-                            maskInformation(d, v).FourierPoints = [xVals, yVals];
-                            
-                            %Actually do the fourier fit and get the coefficients for the
-                            %equation
-                            wtBr.Message = standardMsg + ": Fitting " + style + " 2D Fourier Series";
-                            [perimFit, perimEq] = bubbleAnalysis.fourierFit(xVals, yVals, numberTerms, adaptiveTerms, style, maskInformation(d, v).Centroid);
-                            maskInformation(d, v).perimFit = perimFit;
-                            maskInformation(d, v).perimEq = perimEq;
-                            
-                            wtBr.Message = standardMsg + ": Calculating 2D fit metrics";
-                            switch style
-                                case "parametric"
-                                    maskInformation(d, v).FitRadius = sqrt( perimFit.a1^2 + perimFit.b1^2 );
-                                case "polar (standard)"
-                                    syms x
-                                    str = func2str(bubbleAnalysis.genFitEq(perimFit, "polar (standard)", app.MetricTermsField.Value));
-                                    symEq = str2sym(str(5:end));
-                                    maskInformation(d, v).FitRadius = perimFit.r;
-                                    maskInformation(d, v).FitArea = int(0.5*(symEq^2), x, 0, 2*pi);
-                                    maskInformation(d, v).FitPerim = int(sqrt( symEq^2 + diff(symEq, x)^2 ), x, 0, 2*pi);
-                                case "polar (phase shift)"
-                                    syms x
-                                    str = func2str(bubbleAnalysis.genFitEq(perimFit, "polar (phase shift)", app.MetricTermsField.Value));
-                                    symEq = str2sym(str(5:end));
-                                    maskInformation(d, v).FitRadius = perimFit.a0;
-                                    maskInformation(d, v).FitArea = int(0.5*(symEq^2), x, 0, 2*pi);
-                                    maskInformation(d, v).FitPerim = int(sqrt( symEq^2 + diff(symEq, x)^2 ), x, 0, 2*pi);
-                            end
-                            
+                            numPoints = floor( maskInformation(d, v).Perimeter./arcLength);
+                            if numPoints < 16
+                                maskInformation(d, v).FourierPoints = [NaN, NaN];
+                                maskInformation(d, v).perimFit = NaN;
+                                maskInformation(d, v).perimEq = NaN;
+                                maskInformation(d, v).FitRadius = NaN;
+                                maskInformation(d, v).FitArea = NaN;
+                                maskInformation(d, v).FitPerim = NaN;
+                                continue;
+                            else
+                                [xVals, yVals] = bubbleAnalysis.angularPerimeter(targetMask, [maskInformation(d, v).Centroid], ...
+                                    numPoints);
+                                maskInformation(d, v).FourierPoints = [xVals, yVals];
+                                
+                                %Actually do the fourier fit and get the coefficients for the
+                                %equation
+                                wtBr.Message = standardMsg + ": Fitting " + style + " 2D Fourier Series";
+                                [perimFit, perimEq] = bubbleAnalysis.fourierFit(xVals, yVals, numberTerms, adaptiveTerms, style, maskInformation(d, v).Centroid);
+                                maskInformation(d, v).perimFit = perimFit;
+                                maskInformation(d, v).perimEq = perimEq;
+                                
+                                wtBr.Message = standardMsg + ": Calculating 2D fit metrics";
+                                switch style
+                                    case "parametric"
+                                        maskInformation(d, v).FitRadius = sqrt( perimFit.a1^2 + perimFit.b1^2 );
+                                    case "polar (standard)"
+                                        syms x
+                                        str = func2str(bubbleAnalysis.genFitEq(perimFit, "polar (standard)", app.MetricTermsField.Value));
+                                        symEq = str2sym(str(5:end));
+                                        maskInformation(d, v).FitRadius = perimFit.r;
+                                        maskInformation(d, v).FitArea = int(0.5*(symEq^2), x, 0, 2*pi);
+                                        maskInformation(d, v).FitPerim = int(sqrt( symEq^2 + diff(symEq, x)^2 ), x, 0, 2*pi);
+                                    case "polar (phase shift)"
+                                        syms x
+                                        str = func2str(bubbleAnalysis.genFitEq(perimFit, "polar (phase shift)", app.MetricTermsField.Value));
+                                        symEq = str2sym(str(5:end));
+                                        maskInformation(d, v).FitRadius = perimFit.a0;
+                                        maskInformation(d, v).FitArea = int(0.5*(symEq^2), x, 0, 2*pi);
+                                        maskInformation(d, v).FitPerim = int(sqrt( symEq^2 + diff(symEq, x)^2 ), x, 0, 2*pi);
+                                end
+                            end                                                       
                         end
                     end
                 end

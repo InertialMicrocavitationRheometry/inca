@@ -3,7 +3,7 @@ classdef InCA < matlab.apps.AppBase
     % Properties that correspond to app components
     properties (Access = public)
         UIFigure
-        Version = 21;
+        Version = 22;
         TabGroup
         HomeTab
         DetectionTab
@@ -1005,7 +1005,7 @@ classdef InCA < matlab.apps.AppBase
         function AcceptClicked(app, ~)
             app.ignoreFrames = app.ignoreFrames(app.ignoreFrames ~= app.workingFrame);
             frameofInterest = findobj(app.Scrollpane, 'Tag', num2str(app.workingFrame));
-            if any(any(app.mask(:, :, app.workingFrame)))
+            if any(any(app.mask(:, :, app.workingFrame, 1)))
                 if ~app.MultiviewToggle.UserData
                     frameofInterest.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), app.mask(:, :, app.workingFrame));
                     app.CalibrationFrame.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), app.mask(:, :, app.workingFrame));
@@ -1493,7 +1493,7 @@ classdef InCA < matlab.apps.AppBase
             app.MPXLabel = uilabel(app.SettingsPanel, 'Text', 'MICRON/PIXEL:', 'FontName', 'Arial', 'FontColor', [0.95 0.95 0.95], 'FontSize', 14, ...
                 'HorizontalAlignment', 'left', 'Tooltip', 'Ratio of Microns to Pixels');
             app.MPXField = uieditfield('numeric', 'Parent', app.SettingsPanel, 'FontName', 'Arial','FontSize', 14, 'BackgroundColor', [0.15 0.15 0.15], ...
-                'FontColor', [0.95 0.95 0.95], 'Limits', [1 Inf], 'Value', 1, 'Tooltip', 'Ratio of Microns to Pixels');
+                'FontColor', [0.95 0.95 0.95], 'Limits', [0 Inf], 'Value', 1, 'Tooltip', 'Ratio of Microns to Pixels');
             
             %FPS Input
             app.FPSLabel = uilabel(app.SettingsPanel, 'Text', 'VIDEO FPS:', 'FontName', 'Arial', 'FontColor', [0.95 0.95 0.95], 'FontSize', 14,'HorizontalAlignment', 'left' ,...

@@ -65,9 +65,9 @@ the green play/run button found at the top of the MATLAB Editor tab.
 - [ ] Integrate Spherical Harmonics 
 - [ ] Integrate multi-viewpoint 3D point clouds
 - [x] Multiview Detection Algorithm Set Up
-- [ ] Troubleshoot faulty multiview edge detection algorithm(s)
+- [x] Troubleshoot faulty multiview edge detection algorithm(s)
 - [ ] Better display multi-viewpoint centroid coordinates
-- [ ] Revamp Radial Velocity
+- [x] Revamp Radial Velocity
 - [ ] Add Radial Acceleration
 - [ ] Easy updater
 - [ ] Support for various screen resolutions

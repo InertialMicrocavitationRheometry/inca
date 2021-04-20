@@ -141,7 +141,7 @@ classdef plotting
             switch style
                 case "parametric"
                     for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
+                        if isempty(find(ignoreFrames == i, 1)) && ~isnumeric(info(i).perimFit{1})
                             xFit = info(i).perimFit{1};
                             yFit = info(i).perimFit{2};
                             rawRadius(i) = sqrt(xFit.a1^2 + yFit.b1^2);
@@ -152,7 +152,7 @@ classdef plotting
                     normalizedRadius = rawRadius./max(rawRadius);
                 case "polar (standard)"
                     for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
+                        if isempty(find(ignoreFrames == i, 1)) && ~isnumeric(info(i).perimFit)
                             rawRadius(i) = info(i).perimFit.r;
                         else
                             rawRadius(i) = NaN;
@@ -161,7 +161,7 @@ classdef plotting
                     normalizedRadius = rawRadius./max(rawRadius);
                 case "polar (phase shift)"
                     for i = 1:numFrames
-                        if isempty(find(ignoreFrames == i, 1))
+                        if isempty(find(ignoreFrames == i, 1)) && ~isumeric(info(i).perimFit)
                             rawRadius(i) = info(i).perimFit.a0;
                         else
                             rawRadius(i) = NaN;
@@ -181,6 +181,11 @@ classdef plotting
                             
                             xFit = maskInformation(i).perimFit{1};
                             yFit = maskInformation(i).perimFit{2};
+                            
+                            if isnumeric(xFit)
+                                output(:, :) = NaN;
+                                return;
+                            end
                             
                             xnames = coeffnames(xFit);
                             xno = numcoeffs(xFit) - 1;
@@ -218,6 +223,11 @@ classdef plotting
                         if isempty(find(ignoreFrames == i, 1))
                             perimFit = maskInformation(i).perimFit;
                             
+                            if isnumeric(perimFit)
+                                output(:, :) = NaN;
+                                return;
+                            end
+                            
                             names = coeffnames(perimFit);
                             nocoeff = (numcoeffs(perimFit) - 1)./2;
                             vals = coeffvalues(perimFit);
@@ -253,6 +263,11 @@ classdef plotting
                     for i = 1:numFrames
                         if isempty(find(ignoreFrames == i, 1))
                             perimFit = maskInformation(i).perimFit;
+                            
+                            if isnumeric(perimFit)
+                                output(:, :) = NaN;
+                                return;
+                            end
                             
                             names = coeffnames(perimFit);
                             nocoeffs = (numcoeffs(perimFit) - 1)./2;
