@@ -25,7 +25,10 @@ classdef bubbleDetection
                 case "background subtraction"
                     % Substract the gray level of the refrence frame from
                     % all of the other frames (recommended)
-                    refinedFrames = abs(bsxfun(@minus,frames,frames(:,:, refFrame))); 
+                    refinedFrames = zeros(size(frames));
+                    for i = 1:numFrames
+                        refinedFrames(:, :, i) = abs( frames(:, :, i) - refFrame );
+                    end
                 case "gray-level normalization"
                     % Calculate the average gray level of each frame and
                     % average it, multiply each frame by a calculated
@@ -211,7 +214,15 @@ classdef bubbleDetection
         end
         
         function outputMask = mixMasks(maskone, masktwo, value)
-            outputMask = imbinarize(maskone.*(100 - value) + masktwo.*value);
+           
+            if ~any(any(maskone))                                   % If maskone is empty, use masktwo
+                outputMask = masktwo;
+            elseif ~any(any(masktwo))                               % If masktwo is empty, use maskone
+                outputMask = maskone;
+            elseif any(any(maskone)) && any(any(masktwo))           % Mix the masks if neither are empty
+                outputMask = imbinarize(maskone.*(100 - value) + masktwo.*value);
+            end
+            
         end
         
         function outputMask = runDetection(frames, gt, edgethresh, maskmix, iff, cstyle, cval, estyle, eval, figure, autocolor, autoedge, flip)
@@ -335,13 +346,13 @@ classdef bubbleDetection
             
         end
         
-        function edgeImg = multiEdge(img, ~, estyle, eval, views)
+        function edgeImg = multiEdge(img, et, estyle, eval, views)
             
             %Preprocess the frame
             img = bubbleDetection.preprocessFrames(img, estyle, eval);
             
             %Create the initial mask based on edges
-            edgeImg = imclearborder(imfill(edge(img, 'Canny'), 'holes'));
+            edgeImg = imclearborder(imfill(bwmorph(edge(img, 'Sobel', et), 'bridge'), 'holes'));
             
             %Remove ridiculously large and small objects from the image
             edgeImg = bubbleDetection.removeOutliers(edgeImg);

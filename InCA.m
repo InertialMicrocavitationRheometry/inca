@@ -3,7 +3,7 @@ classdef InCA < matlab.apps.AppBase
     % Properties that correspond to app components
     properties (Access = public)
         UIFigure
-        Version = 20;
+        Version = 21;
         TabGroup
         HomeTab
         DetectionTab
@@ -38,12 +38,12 @@ classdef InCA < matlab.apps.AppBase
         EdgeThresholdField              %Done       %The edge equivalent for ColorThresholdField
         AutoEdgeToggle                  %Done       %The edge equivalent for AutoColorToggle
         AutoEdgeLabel                   %Done       %The edge equivalent for AutoColorLabel
-        EStyle                          %Done
-        EStyleLabel                     %Done
-        EValLabel                       %Done
-        EVal                            %Done
-        EdgeMask                        %Done
-        MixerLabel                      %Done
+        EStyle                          %Done       %The Drop down that determines the style of preprocessing to be used on images for edge-based mask generation
+        EStyleLabel                     %Done       %The label accompanyying the above component
+        EValLabel                       %Done       %The label accompanying the below component
+        EVal                            %Done       %The uieditfield component containing the intesnity of the preprocessing filter
+        EdgeMask                        %Done       %The uiimage component that houses the resulting overlay from edge-based mask generation
+        MixerLabel                      %Done 
         MixerSlider                     %Done
         FinalMaskViewer                 %Done
         NextFrameDetectionButton        %Done
@@ -323,14 +323,6 @@ classdef InCA < matlab.apps.AppBase
             src = findobj(app.Scrollpane, 'Tag', num2str(app.workingFrame));
             
             app.CalibrationFrame.ImageSource = src.ImageSource;
-            calImg = app.frames(:, :, app.workingFrame);
-            if app.AutoColorToggle.UserData || app.ColorThresholdField.Value == 0
-                app.ColorThresholdField.Value = graythresh(calImg);
-            end
-            if app.AutoEdgeToggle.UserData || app.EdgeThresholdField.Value == 0
-                [~, thresh] = edge(calImg, 'Sobel');
-                app.EdgeThresholdField.Value = thresh;
-            end
             
             if ~any(any(app.mask(:, :, app.workingFrame)))
                 mat = zeros([size(app.frames(:, :, app.workingFrame)), 3]);
@@ -355,6 +347,11 @@ classdef InCA < matlab.apps.AppBase
             
             calibrationImage = app.frames(:, :, app.workingFrame);
             
+            if app.VLToggle.UserData
+                calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
+                    app.frames(:, :, app.BSField.Value));
+            end           
+                        
             if app.ICToggle.UserData
                 calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
             end
@@ -362,16 +359,22 @@ classdef InCA < matlab.apps.AppBase
             if app.RTToggle.UserData
                 calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
             end
-            
-            if app.VLToggle.UserData
-                processedFrames = bubbleDetection.normalizeLighting(app.frames, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
-                    app.BSField.Value);
-                calibrationImage = processedFrames(:, :, app.workingFrame);
-            end
+                       
             
             [row, col] = size(calibrationImage);
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
+            
+            if app.AutoColorToggle.UserData || app.ColorThresholdField.Value == 0
+                app.ColorThresholdField.Value = graythresh(calibrationImage);
+            end
+            if app.AutoEdgeToggle.UserData || app.EdgeThresholdField.Value == 0
+                [~, thresh] = edge(calibrationImage, 'Sobel');
+                if isnan(thresh)
+                    thresh = 0;
+                end
+                app.EdgeThresholdField.Value = thresh;
+            end
             
             try
                 if ~app.MultiviewToggle.UserData
@@ -464,7 +467,7 @@ classdef InCA < matlab.apps.AppBase
             pause(0.5);
             imgSize = floor(tabPos(3)/3);
             app.HomeImage.Position = [(tabPos(3)./6 - 5), (tabPos(4)/2 - (imgSize/2)), imgSize, imgSize];
-            app.VersionLabel.Position = [tabPos(3) - 100, 5, 100, 30];
+            app.VersionLabel.Position = [tabPos(3) - 120, 5, 120, 30];
             app.NewButton.Position = [(tabPos(3)/2 + 5), (tabPos(4)/2 + (imgSize/2) - 30), 90, 30];
             app.NewPath.Position = [(tabPos(3)/2 + 100), (tabPos(4)/2 + (imgSize/2) - 30), (tabPos(3)/3 - 90), 30];
             app.OpenButton.Position = [(tabPos(3)/2 + 5), (tabPos(4)/2 + (imgSize/2) - 70), 90, 30];
@@ -728,24 +731,33 @@ classdef InCA < matlab.apps.AppBase
             f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on');
             calibrationImage = app.frames(:, :, app.workingFrame);
             
+            if app.VLToggle.UserData
+                calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
+                    app.frames(:, :, app.BSField.Value));
+            end
+            
             if app.ICToggle.UserData
                 calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
             end
             
             if app.RTToggle.UserData
                 calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
-            end
-            
-            if app.VLToggle.UserData
-                processedFrames = bubbleDetection.normalizeLighting(app.frames, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
-                    app.BSField.Value);
-                calibrationImage = processedFrames(:, :, app.workingFrame);
-            end
-            
+            end      
             
             [row, col] = size(calibrationImage);
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
+            
+            if app.AutoColorToggle.UserData || app.ColorThresholdField.Value == 0
+                app.ColorThresholdField.Value = graythresh(calibrationImage);
+            end
+            if app.AutoEdgeToggle.UserData || app.EdgeThresholdField.Value == 0
+                [~, thresh] = edge(calibrationImage, 'Sobel');
+                if isnan(thresh)
+                    thresh = 0;
+                end
+                app.EdgeThresholdField.Value = thresh;
+            end
             
             try
                 if ~app.AutoColorToggle.UserData
@@ -812,13 +824,18 @@ classdef InCA < matlab.apps.AppBase
             app.ColorMask.ImageSource = colorImgSrc;
             app.EdgeMask.ImageSource = edgeImgSrc;
             
-            imshow(labeloverlay(calibrationImage, finalMask), 'Parent', app.FinalMaskViewer);
+            imshow(labeloverlay(app.frames(:, :, app.workingFrame), finalMask), 'Parent', app.FinalMaskViewer);
             close(f);
         end
         
         function RefineClicked(app, ~)
             f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on', 'Title', 'Please wait', 'Message', 'Refining...');
             calibrationImage = app.frames(:, :, app.workingFrame);
+            
+            if app.VLToggle.UserData
+                calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
+                    app.frames(:, :, app.BSField.Value));
+            end
             
             if app.ICToggle.UserData
                 calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
@@ -827,13 +844,7 @@ classdef InCA < matlab.apps.AppBase
             if app.RTToggle.UserData
                 calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
             end
-            
-            if app.VLToggle.UserData
-                processedFrames = bubbleDetection.normalizeLighting(app.frames, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
-                    app.BSField.Value);
-                calibrationImage = processedFrames(:, :, app.workingFrame);
-            end
-            
+                        
             [row, col] = size(calibrationImage);
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
@@ -899,7 +910,7 @@ classdef InCA < matlab.apps.AppBase
                 app.ColorMask.ImageSource = colorImgSrc;
                 app.EdgeMask.ImageSource = edgeImgSrc;
                 
-                imshow(labeloverlay(calibrationImage, finalMask), 'Parent', app.FinalMaskViewer);
+                imshow(labeloverlay(app.frames(:, :, app.workingFrame), finalMask), 'Parent', app.FinalMaskViewer);
             catch ME
                 uialert(app.UIFigure, ME.message, append('Mask Preview Error: ', ME.identifier), 'Icon', 'error');
                 LogExceptions(app, ME);
@@ -914,9 +925,9 @@ classdef InCA < matlab.apps.AppBase
             end
             
             src = findobj(app.Scrollpane, 'Tag', num2str(app.workingFrame));
-            src.ImageSource = labeloverlay(calibrationImage, finalMask);
+            src.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), finalMask);
             app.ignoreFrames = app.ignoreFrames(app.ignoreFrames ~= app.workingFrame);
-            app.CalibrationFrame.ImageSource = labeloverlay(calibrationImage, finalMask);
+            app.CalibrationFrame.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), finalMask);
             close(f);
         end
         
@@ -942,7 +953,7 @@ classdef InCA < matlab.apps.AppBase
                 %Normalize lighting if desired
                 if app.VLToggle.UserData
                     framesNew = bubbleDetection.normalizeLighting(framesNew, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
-                        app.BSField.Value);
+                        app.frames(:, :, app.BSField.Value));
                 end
                 
                 if app.IFFToggle.UserData
@@ -1366,7 +1377,7 @@ classdef InCA < matlab.apps.AppBase
             app.NLButtonGroup = uibuttongroup(app.DetectionTab, 'FontName', 'Arial', 'BorderType', 'none', 'BackgroundColor', [0.1 0.1 0.1], ...
                 'ForegroundColor', [0.95 0.95 0.95], 'AutoResizeChildren', 'off', 'Tooltip', 'Type of frame lighting normalization', ...
                 'SelectionChangedFcn', {@NLSelChanged, app});
-            app.BSRadioButton = uiradiobutton(app.NLButtonGroup, 'Text', 'BACKGROUND SUBSTRACTION', 'FontName', 'Arial', 'FontSize', 14, 'FontColor', ...
+            app.BSRadioButton = uiradiobutton(app.NLButtonGroup, 'Text', 'BACKGROUND SUBTRACTION', 'FontName', 'Arial', 'FontSize', 14, 'FontColor', ...
                 [0.95 0.95 0.95], 'Value', 1, 'Enable', 'off', 'Tooltip', ...
                 "Use a reference frame to substract the background from the remaining video frames");
             app.GARadioButton = uiradiobutton(app.NLButtonGroup, 'Text', 'GRAY-LEVEL NORMALIZATION', 'FontName', 'Arial', 'FontSize', 14, 'FontColor', ...
