@@ -3,7 +3,7 @@ classdef InCA < matlab.apps.AppBase
     % Properties that correspond to app components
     properties (Access = public)
         UIFigure
-        Version = 22;
+        Version = 23;
         TabGroup
         HomeTab
         DetectionTab
@@ -158,7 +158,8 @@ classdef InCA < matlab.apps.AppBase
         
         function checkVersion(app)
             try
-                newestVersion = str2double(string(webread('https://raw.githubusercontent.com/estradalab/inca/master/version.txt')));
+                options = weboptions('Timeout', Inf);
+                newestVersion = str2double(string(webread('https://raw.githubusercontent.com/estradalab/inca/master/version.txt', options)));
                 if newestVersion > app.Version
                     uialert(app.UIFigure, 'A newer version of InCA is available. An update is recommended.', 'Newer version detected', 'Icon', 'warning');
                 elseif newestVersion < app.Version
@@ -231,18 +232,22 @@ classdef InCA < matlab.apps.AppBase
         end
         
         function populateScrollpane(app)
-            f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on');
-            delete(app.Scrollpane.Children);
-            UpdateLogs(app, 'Populating Detection Scrollpane...');
-            panelPos = app.Scrollpane.Position;
-            [row, col] = size(app.frames(:, :, 1));
-            imgHeight = row./col.*(panelPos(3) - 20);
+            
+            f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on');         %Progress bar
+            delete(app.Scrollpane.Children);                                %Clear the scrollpane
+            UpdateLogs(app, 'Populating Detection Scrollpane...');          %Update logs
+            panelPos = app.Scrollpane.Position;                             %Get the current scrollpane position
+            [row, col] = size(app.frames(:, :, 1));                         %Calculate the image size
+            imgHeight = row./col.*(panelPos(3) - 20);                       %Calculate uiimage height
+            
             for i = 1:app.numFrames
                 
                 index = (app.numFrames + 1) - i;
-                
-                %Check if a mask exists for a frame
+                                
                 if ~app.MultiviewToggle.UserData
+                %Single view point code 
+                
+                    %Check if a mask exists for a frame
                     if ~any(any(app.mask(:, :, index)))
                         img = zeros([size(app.frames(:, :, index)), 3]);
                         img(:, :, 3) = app.frames(:, :, index);
@@ -262,14 +267,20 @@ classdef InCA < matlab.apps.AppBase
                             [5, (10 + (i - 1)*(imgHeight + 10)), panelPos(3) - 20, imgHeight], "ImageClickedFcn", {@imgClicked, app},'Tooltip', ...
                             "This frame will be ignored during bubble analysis", 'Tag', num2str(index));
                     end
-                else
                     
+                else
+                % Multiview point code 
+                
+                    %Check if a mask exists for the frame 
                     if ~any(any(app.mask(:, :, index, 1)))
                         img = zeros([size(app.frames(:, :, index)), 3]);
                         img(:, :, 3) = app.frames(:, :, index);
                         scrollpaneImage = hsv2rgb(img);
                     else
-                        scrollpaneImage = labeloverlay(app.frames(:, :, index), (app.mask(:, :, index, 1) + app.mask(:, :, index, 2)));
+                        left = app.mask(:, :, index, 1);
+                        right = app.mask(:, :, index, 2);
+                        right(right == 1) = 2;
+                        scrollpaneImage = labeloverlay(app.frames(:, :, index), left + right, 'Colormap', [0 0 1; 0 1 0; 0 1 1]);
                     end
                     
                     %Populate the uiimage component with the frame/mask
@@ -287,14 +298,14 @@ classdef InCA < matlab.apps.AppBase
                 end
             end
             
+            %Callback for what happens if an image is clicked
             function imgClicked(src, ~, app)
-                app.workingFrame = str2double(src.Tag);
-                SetCalibrationFrame(app)
+                app.workingFrame = str2double(src.Tag);         %Set the working frame
+                SetCalibrationFrame(app)                        %Execute calibration set-up code
             end
             
-            UpdateLogs(app, 'Population complete');
-            pause(0.5);
-            close(f);
+            UpdateLogs(app, 'Population complete');             %Update logs
+            close(f);                                           %Close progress bar
         end
         
         function UpdateLogs(app, newText)
@@ -318,24 +329,35 @@ classdef InCA < matlab.apps.AppBase
         end
         
         function SetCalibrationFrame(app)
-            g = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on');
+            g = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on');                 %Progress bar
             
-            src = findobj(app.Scrollpane, 'Tag', num2str(app.workingFrame));
+            src = findobj(app.Scrollpane, 'Tag', num2str(app.workingFrame));        %Get the image that was clicked 
             
-            app.CalibrationFrame.ImageSource = src.ImageSource;
+            app.CalibrationFrame.ImageSource = src.ImageSource;                     %Set the calibration image to the image that was clicked in the scollpane
             
             if ~any(any(app.mask(:, :, app.workingFrame)))
+                %If no masks exists, convert the scrollpane/calibration
+                %image into an RGB image for the final mask viewer
                 mat = zeros([size(app.frames(:, :, app.workingFrame)), 3]);
                 mat(:, :, 3) = app.frames(:, :, app.workingFrame);
                 finalViewerImg = hsv2rgb(mat);
             else
                 if isempty(find(app.ignoreFrames == app.workingFrame, 1))
+                    %If the frame is not one to be ignored, then overlay
+                    %the mask onto the image with the default color scheme
                     if ~app.MultiviewToggle.UserData
+                        %Single view point code
                         finalViewerImg = labeloverlay(app.frames(:, :, app.workingFrame), app.mask(:, :, app.workingFrame));
                     else
-                        finalViewerImg = labeloverlay(app.frames(:, :, app.workingFrame), app.mask(:, :, app.workingFrame, 1) + app.mask(:, :, app.workingFrame, 2));
+                        %Multi view point code
+                        left = app.mask(:, :, app.workingFrame, 1);
+                        right = app.mask(:, :, app.workingFrame, 2);
+                        right(right == 1) = 2;
+                        finalViewerImg = labeloverlay(app.frames(:, :, app.workingFrame), left + right, 'Colormap', [0 0 1; 0 1 0; 0 1 1]);
                     end
                 else
+                    %If the mask is being ignored, overlay the image with
+                    %the red colormap
                     if ~app.MultiviewToggle.UserData
                         finalViewerImg = labeloverlay(app.frames(:, :, app.workingFrame), app.mask(:, :, app.workingFrame), 'Colormap', 'autumn');
                     else
@@ -345,29 +367,37 @@ classdef InCA < matlab.apps.AppBase
                 end
             end
             
+            %Get the raw frame that was clicked
             calibrationImage = app.frames(:, :, app.workingFrame);
             
+            %Normalize the lighting if needed
             if app.VLToggle.UserData
                 calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
                     app.frames(:, :, app.BSField.Value));
             end           
-                        
+            
+            %Increase the contrast if needed
             if app.ICToggle.UserData
                 calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
             end
             
+            %Remove the timestamps if needed
             if app.RTToggle.UserData
                 calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
             end
                        
-            
+            %Set the generic old data
             [row, col] = size(calibrationImage);
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
             
+            %Get or set the color threshold 
             if app.AutoColorToggle.UserData || app.ColorThresholdField.Value == 0
                 app.ColorThresholdField.Value = graythresh(calibrationImage);
             end
+            
+            
+            %Get or set the edge threshold 
             if app.AutoEdgeToggle.UserData || app.EdgeThresholdField.Value == 0
                 [~, thresh] = edge(calibrationImage, 'Sobel');
                 if isnan(thresh)
@@ -376,18 +406,18 @@ classdef InCA < matlab.apps.AppBase
                 app.EdgeThresholdField.Value = thresh;
             end
             
+            %Attempt to generate color and edge masks for the frame
             try
                 if ~app.MultiviewToggle.UserData
+                    %Single view point code
                     colorMask = bubbleDetection.colorMask(calibrationImage, oldData, app.ColorThresholdField.Value, lower(string(app.CStyle.Value)), app.CVal.Value, ...
                         ~app.BSRadioButton.Value);
                     edgeMask = bubbleDetection.edgeMask(calibrationImage, oldData, app.EdgeThresholdField.Value, lower(string(app.EStyle.Value)), app.EVal.Value);
-                    finalMask = bubbleDetection.mixMasks(colorMask, edgeMask, app.MixerSlider.Value);
-                    
                 else
+                    %Multi view point code
                     colorMask = bubbleDetection.multiColor(calibrationImage, app.ColorThresholdField.Value, ...
                         lower(string(app.CStyle.Value)), app.CVal.Value, ~app.BSRadioButton.Value, 2);
                     edgeMask = bubbleDetection.multiEdge(calibrationImage, app.EdgeThresholdField.Value, lower(string(app.EStyle.Value)), app.EVal.Value, 2);
-                    finalMask = bubbleDetection.mixMasks(colorMask, edgeMask, app.MixerSlider.Value);
                 end
             catch ME
                 uialert(app.UIFigure, ME.message, append('Calibration Frame Error: ', ME.identifier), 'Icon', 'error');
@@ -410,10 +440,13 @@ classdef InCA < matlab.apps.AppBase
             rlayer(thinColor) = 0;                           %Set the red layer equal to 0 where the mask is true
             glayer(thinColor) = 0;                           %Set the green layer equal to 0 where the mask is true
             blayer(thinColor) = 1;                           %Set the blue layer equal to 1 where the mask is true
-            colorImgSrc(:, :, 1) = rlayer;                   %Recombine the layers
+            
+            %Recombine the layers
+            colorImgSrc(:, :, 1) = rlayer;                   
             colorImgSrc(:, :, 2) = glayer;
             colorImgSrc(:, :, 3) = blayer;
             
+            %See above comments
             edgeImgSrc = rgb;
             rlayer = edgeImgSrc(:, :, 1);
             glayer = edgeImgSrc(:, :, 2);
@@ -426,10 +459,9 @@ classdef InCA < matlab.apps.AppBase
             edgeImgSrc(:, :, 2) = glayer;
             edgeImgSrc(:, :, 3) = blayer;
             
+            %Show the Color and Edge Masks
             app.ColorMask.ImageSource = colorImgSrc;
             app.EdgeMask.ImageSource = edgeImgSrc;
-            
-            imshow(labeloverlay(calibrationImage, finalMask), 'Parent', app.FinalMaskViewer);
             
             imshow(finalViewerImg ,'Parent', app.FinalMaskViewer);
             app.UpdateLogs("Calibration frame set to: " + num2str(app.workingFrame));
@@ -478,7 +510,7 @@ classdef InCA < matlab.apps.AppBase
             %Detection Tab Resizing
             tabPos = app.DetectionTab.Position;
             buttonWidth = ((2*tabPos(3)./5) - 15)./3;
-            app.Scrollpane.Position = [1, 1, tabPos(3)./5, tabPos(4)];
+            app.Scrollpane.Position = [1, 1, tabPos(3)./5, 992];
             
             app.ResetDetectionButton.Position = [(tabPos(3)./5) + 5, 10, buttonWidth, 30];
             app.ViewResultButton.Position = [(tabPos(3)./5) + 10 + buttonWidth, 10, buttonWidth, 30];
@@ -644,6 +676,7 @@ classdef InCA < matlab.apps.AppBase
             UpdateLogs(app, 'Resize Complete');
             drawnow;
             close(f);
+            
         end
         
         function NewClicked(app, ~)
@@ -728,142 +761,50 @@ classdef InCA < matlab.apps.AppBase
         end
         
         function ViewResultClicked(app, ~)
-            f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on');
-            calibrationImage = app.frames(:, :, app.workingFrame);
-            
-            if app.VLToggle.UserData
-                calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
-                    app.frames(:, :, app.BSField.Value));
-            end
-            
-            if app.ICToggle.UserData
-                calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
-            end
-            
-            if app.RTToggle.UserData
-                calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
-            end      
-            
-            [row, col] = size(calibrationImage);
-            oldData.Center = [col./2, row./2];
-            oldData.Size = 0;
-            
-            if app.AutoColorToggle.UserData || app.ColorThresholdField.Value == 0
-                app.ColorThresholdField.Value = graythresh(calibrationImage);
-            end
-            if app.AutoEdgeToggle.UserData || app.EdgeThresholdField.Value == 0
-                [~, thresh] = edge(calibrationImage, 'Sobel');
-                if isnan(thresh)
-                    thresh = 0;
-                end
-                app.EdgeThresholdField.Value = thresh;
-            end
-            
-            try
-                if ~app.AutoColorToggle.UserData
-                    gt = app.ColorThresholdField.Value;
-                else
-                    gt = graythresh(calibrationImage);
-                end
-                
-                if ~app.AutoEdgeToggle.UserData
-                    et = app.EdgeThresholdField.Value;
-                else
-                    [~, et] = edge(calibrationImage, 'Sobel');
-                end
-                
-                flip = ~app.BSRadioButton.Value && ~app.VLToggle.UserData;
-                    
-                if ~app.MultiviewToggle.UserData
-                    colorMask = bubbleDetection.colorMask(calibrationImage, oldData, gt, lower(string(app.CStyle.Value)), app.CVal.Value, ...
-                        flip);
-                    edgeMask = bubbleDetection.edgeMask(calibrationImage, oldData, et, lower(string(app.EStyle.Value)), app.EVal.Value);
-                    finalMask = bubbleDetection.mixMasks(colorMask, edgeMask, app.MixerSlider.Value);                                       
-                else                   
-                    colorMask = bubbleDetection.multiColor(calibrationImage, gt, lower(string(app.CStyle.Value)), app.CVal.Value, ...
-                        flip, 2);
-                    edgeMask = bubbleDetection.multiEdge(calibrationImage, et, lower(string(app.EStyle.Value)), app.EVal.Value, 2);
-                    finalMask = bubbleDetection.mixMasks(colorMask, edgeMask, app.MixerSlider.Value);
-                    
-                end
-            catch ME
-                uialert(app.UIFigure, ME.message, append('Mask Preview Error: ', ME.identifier), 'Icon', 'error');
-                LogExceptions(app, ME);
-            end                       
-            %Create an rgb matrix representing the calibration
-            %image
-            [row, col] = size(calibrationImage);
-            hsv = zeros(row, col, 3);
-            hsv(:, :, 3) = calibrationImage;
-            rgb = hsv2rgb(hsv);
-            
-            colorImgSrc = rgb;                               %Create a copy for the color mask image
-            rlayer = colorImgSrc(:, :, 1);                   %Separate out the red layer
-            glayer = colorImgSrc(:, :, 2);                   %Separate out the green layer
-            blayer = colorImgSrc(:, :, 3);                   %Separate out the blue layer
-            thinColor = bwmorph(colorMask, 'remove');        %Thin the mask to a one pixel thick outline
-            rlayer(thinColor) = 0;                           %Set the red layer equal to 0 where the mask is true
-            glayer(thinColor) = 0;                           %Set the green layer equal to 0 where the mask is true
-            blayer(thinColor) = 1;                           %Set the blue layer equal to 1 where the mask is true
-            colorImgSrc(:, :, 1) = rlayer;                   %Recombine the layers
-            colorImgSrc(:, :, 2) = glayer;
-            colorImgSrc(:, :, 3) = blayer;
-            
-            edgeImgSrc = rgb;
-            rlayer = edgeImgSrc(:, :, 1);
-            glayer = edgeImgSrc(:, :, 2);
-            blayer = edgeImgSrc(:, :, 3);
-            thinEdge = bwmorph(edgeMask, 'remove');
-            rlayer(thinEdge) = 0;
-            glayer(thinEdge) = 0;
-            blayer(thinEdge) = 1;
-            edgeImgSrc(:, :, 1) = rlayer;
-            edgeImgSrc(:, :, 2) = glayer;
-            edgeImgSrc(:, :, 3) = blayer;
-            
-            app.ColorMask.ImageSource = colorImgSrc;
-            app.EdgeMask.ImageSource = edgeImgSrc;
-            
-            imshow(labeloverlay(app.frames(:, :, app.workingFrame), finalMask), 'Parent', app.FinalMaskViewer);
-            close(f);
-        end
-        
-        function RefineClicked(app, ~)
             f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on', 'Title', 'Please wait', 'Message', 'Refining...');
             calibrationImage = app.frames(:, :, app.workingFrame);
             
+            %Normalize the lighting if needed
             if app.VLToggle.UserData
                 calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
                     app.frames(:, :, app.BSField.Value));
             end
             
+            %Increase the contrast if needed
             if app.ICToggle.UserData
                 calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
             end
             
+            %Remove the timestamps if needed
             if app.RTToggle.UserData
                 calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
             end
-                        
+            
+            %Set generic old data values
             [row, col] = size(calibrationImage);
             oldData.Center = [col./2, row./2];
             oldData.Size = 0;
             
             try
+                %Get or set the color threshold value
                 if ~app.AutoColorToggle.UserData
-                    gt = app.ColorThresholdField.Value;
+                    gt = app.ColorThresholdField.Value;    
                 else
                     gt = graythresh(calibrationImage);
                 end
                 
+                %Get or set the edge threshold value
                 if ~app.AutoEdgeToggle.UserData
                     et = app.EdgeThresholdField.Value;
                 else
                     [~, et] = edge(calibrationImage, 'Sobel');
                 end
                 
+                %Determine if the image needs to be flipped during color
+                %masking
                 flip = ~app.BSRadioButton.Value && ~app.VLToggle.UserData;
                 
+                %Create and mix the color and edge masks
                 if ~app.MultiviewToggle.UserData
                     colorMask = bubbleDetection.colorMask(calibrationImage, oldData, gt, lower(string(app.CStyle.Value)), app.CVal.Value, ...
                         flip);
@@ -907,38 +848,166 @@ classdef InCA < matlab.apps.AppBase
                 edgeImgSrc(:, :, 2) = glayer;
                 edgeImgSrc(:, :, 3) = blayer;
                 
+                %Set the image for the preview images
                 app.ColorMask.ImageSource = colorImgSrc;
                 app.EdgeMask.ImageSource = edgeImgSrc;
                 
-                imshow(labeloverlay(app.frames(:, :, app.workingFrame), finalMask), 'Parent', app.FinalMaskViewer);
+                %Split the masks if needed
+                if app.MultiviewToggle.UserData
+                    [left, right] = bubbleDetection.separateViews(app.frames(:, :, app.workingFrame), finalMask, 2);
+                    right(right == 1) = 2;
+                    finalMask = left + right;
+                end
+                
+                %Show the mask in the final mask viewer
+                imshow(labeloverlay(app.frames(:, :, app.workingFrame), finalMask, 'Colormap', [0 0 1; 0 1 0; 0 1 1]), 'Parent', app.FinalMaskViewer);
+            catch ME
+                uialert(app.UIFigure, ME.message, append('Mask Preview Error: ', ME.identifier), 'Icon', 'error');
+                LogExceptions(app, ME);
+            end
+            close(f);
+        end
+        
+        function RefineClicked(app, ~)
+            f = uiprogressdlg(app.UIFigure, 'Indeterminate', 'on', 'Title', 'Please wait', 'Message', 'Refining...');
+            calibrationImage = app.frames(:, :, app.workingFrame);
+            
+            %Normalize the lighting if needed
+            if app.VLToggle.UserData
+                calibrationImage = bubbleDetection.normalizeLighting(calibrationImage, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
+                    app.frames(:, :, app.BSField.Value));
+            end
+            
+            %Increase the contrast if needed
+            if app.ICToggle.UserData
+                calibrationImage = bubbleDetection.increaseContrast(calibrationImage);
+            end
+            
+            %Remove the timestamps if needed
+            if app.RTToggle.UserData
+                calibrationImage = bubbleDetection.removeTimeStamps(calibrationImage);
+            end
+            
+            %Set generic old data values
+            [row, col] = size(calibrationImage);
+            oldData.Center = [col./2, row./2];
+            oldData.Size = 0;
+            
+            try
+                %Get or set the color threshold value
+                if ~app.AutoColorToggle.UserData
+                    gt = app.ColorThresholdField.Value;    
+                else
+                    gt = graythresh(calibrationImage);
+                end
+                
+                %Get or set the edge threshold value
+                if ~app.AutoEdgeToggle.UserData
+                    et = app.EdgeThresholdField.Value;
+                else
+                    [~, et] = edge(calibrationImage, 'Sobel');
+                end
+                
+                %Determine if the image needs to be flipped during color
+                %masking
+                flip = ~app.BSRadioButton.Value && ~app.VLToggle.UserData;
+                
+                %Create and mix the color and edge masks
+                if ~app.MultiviewToggle.UserData
+                    colorMask = bubbleDetection.colorMask(calibrationImage, oldData, gt, lower(string(app.CStyle.Value)), app.CVal.Value, ...
+                        flip);
+                    edgeMask = bubbleDetection.edgeMask(calibrationImage, oldData, et, lower(string(app.EStyle.Value)), app.EVal.Value);
+                    finalMask = bubbleDetection.mixMasks(colorMask, edgeMask, app.MixerSlider.Value);
+                else
+                    colorMask = bubbleDetection.multiColor(calibrationImage, gt, lower(string(app.CStyle.Value)), app.CVal.Value, ...
+                        flip, 2);
+                    edgeMask = bubbleDetection.multiEdge(calibrationImage, et, lower(string(app.EStyle.Value)), app.EVal.Value, 2);
+                    finalMask = bubbleDetection.mixMasks(colorMask, edgeMask, app.MixerSlider.Value);
+                end
+                
+                %Create an rgb matrix representing the calibration
+                %image
+                [row, col] = size(calibrationImage);
+                hsv = zeros(row, col, 3);
+                hsv(:, :, 3) = calibrationImage;
+                rgb = hsv2rgb(hsv);
+                
+                colorImgSrc = rgb;                               %Create a copy for the color mask image
+                rlayer = colorImgSrc(:, :, 1);                   %Separate out the red layer
+                glayer = colorImgSrc(:, :, 2);                   %Separate out the green layer
+                blayer = colorImgSrc(:, :, 3);                   %Separate out the blue layer
+                thinColor = bwmorph(colorMask, 'remove');        %Thin the mask to a one pixel thick outline
+                rlayer(thinColor) = 0;                           %Set the red layer equal to 0 where the mask is true
+                glayer(thinColor) = 0;                           %Set the green layer equal to 0 where the mask is true
+                blayer(thinColor) = 1;                           %Set the blue layer equal to 1 where the mask is true
+                colorImgSrc(:, :, 1) = rlayer;                   %Recombine the layers
+                colorImgSrc(:, :, 2) = glayer;
+                colorImgSrc(:, :, 3) = blayer;
+                
+                edgeImgSrc = rgb;
+                rlayer = edgeImgSrc(:, :, 1);
+                glayer = edgeImgSrc(:, :, 2);
+                blayer = edgeImgSrc(:, :, 3);
+                thinEdge = bwmorph(edgeMask, 'remove');
+                rlayer(thinEdge) = 0;
+                glayer(thinEdge) = 0;
+                blayer(thinEdge) = 1;
+                edgeImgSrc(:, :, 1) = rlayer;
+                edgeImgSrc(:, :, 2) = glayer;
+                edgeImgSrc(:, :, 3) = blayer;
+                
+                %Set the image for the preview images
+                app.ColorMask.ImageSource = colorImgSrc;
+                app.EdgeMask.ImageSource = edgeImgSrc;
+                
+                %Assign the final masks to the output array
+                if app.MultiviewToggle.UserData
+                    [left, right] = bubbleDetection.separateViews(app.frames(:, :, app.workingFrame), finalMask, 2);
+                    app.mask(:, :, app.workingFrame, 1) = left;
+                    app.mask(:, :, app.workingFrame, 2) = right;
+                    right(right == 1) = 2;
+                    finalMask = left + right;
+                else
+                    app.mask(:, :, app.workingFrame) = finalMask;
+                end
+                
+                %Show the mask in the final mask viewer
+                imshow(labeloverlay(app.frames(:, :, app.workingFrame), finalMask, 'Colormap', [0 0 1; 0 1 0; 0 1 1]), 'Parent', app.FinalMaskViewer);
             catch ME
                 uialert(app.UIFigure, ME.message, append('Mask Preview Error: ', ME.identifier), 'Icon', 'error');
                 LogExceptions(app, ME);
             end
             
-            if app.MultiviewToggle.UserData
-                [left, right] = bubbleDetection.separateViews(finalMask, 2);
-                app.mask(:, :, app.workingFrame, 1) = left;
-                app.mask(:, :, app.workingFrame, 2) = right;
-            else
-                app.mask(:, :, app.workingFrame) = finalMask;
-            end
-            
+            %Update the scrollpane image
             src = findobj(app.Scrollpane, 'Tag', num2str(app.workingFrame));
-            src.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), finalMask);
+            src.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), finalMask, 'Colormap', [0 0 1; 0 1 0; 0 1 1]);
+            
+            %Remove the current frame from the ignore frames list (if its
+            %there)
             app.ignoreFrames = app.ignoreFrames(app.ignoreFrames ~= app.workingFrame);
-            app.CalibrationFrame.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), finalMask);
+            
+            %Update the calibration image
+            app.CalibrationFrame.ImageSource = labeloverlay(app.frames(:, :, app.workingFrame), finalMask, 'Colormap', [0 0 1; 0 1 0; 0 1 1]);
             close(f);
         end
         
         function RunDetection(app, ~)
             try
+                %Enable final mask viewer buttons
                 app.NextFrameDetectionButton.Enable = 'on';
                 app.PreviousFrameDetectionButton.Enable = 'on';
                 app.AcceptFrameButton.Enable = 'on';
                 app.RejectFrameButton.Enable = 'on';
                 
+                %Copy the original frames into a new variable in case they
+                %need to be preprocessed
                 framesNew = app.frames;
+                
+                %Normalize lighting if desired
+                if app.VLToggle.UserData
+                    framesNew = bubbleDetection.normalizeLighting(framesNew, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
+                        app.frames(:, :, app.BSField.Value));
+                end
                 
                 %Increase the contrast if desired
                 if app.ICToggle.UserData
@@ -948,36 +1017,40 @@ classdef InCA < matlab.apps.AppBase
                 %Remove Embeded Timestamps if any
                 if app.RTToggle.UserData
                     framesNew = bubbleDetection.removeTimeStamps(framesNew);
-                end
+                end               
                 
-                %Normalize lighting if desired
-                if app.VLToggle.UserData
-                    framesNew = bubbleDetection.normalizeLighting(framesNew, lower(string(app.NLButtonGroup.SelectedObject.Text)), app.IFFToggle.UserData, ...
-                        app.frames(:, :, app.BSField.Value));
-                end
                 
+                %If the first frame should be ignored, add it to the array
+                %of frames to ignore
                 if app.IFFToggle.UserData
                     app.ignoreFrames(end + 1) = 1;
                 end
                 
+                %Determine if the mask needs to be flipped during color
+                %masking
                 flip = ~app.BSRadioButton.Value && ~app.VLToggle.UserData;
                 
                 %Run Detection on the Preprocessed Frames
                 if ~app.MultiviewToggle.UserData
+                    %Mask generation for single viewpoint videos
                     app.mask = bubbleDetection.runDetection(framesNew, app.ColorThresholdField.Value, app.EdgeThresholdField.Value, app.MixerSlider.Value, ...
                         app.IFFToggle.UserData, lower(string(app.CStyle.Value)), app.CVal.Value, lower(string(app.EStyle.Value)), app.EVal.Value, app.UIFigure, ...
                         app.AutoColorToggle.UserData, app.AutoEdgeToggle.UserData, flip);
                 else
+                    %Mask generation for multi viewpoint videos 
                     app.mask = bubbleDetection.multiDetect(framesNew, app.ColorThresholdField.Value, app.EdgeThresholdField.Value, app.MixerSlider.Value, ...
                         app.IFFToggle.UserData, lower(string(app.CStyle.Value)), app.CVal.Value, lower(string(app.EStyle.Value)), app.EVal.Value, app.UIFigure, ...
-                        app.AutoColorToggle.UserData, app.AutoEdgeToggle.UserData, flip, 2, app.ignoreFrames);
+                        app.AutoColorToggle.UserData, app.AutoEdgeToggle.UserData, flip, 2, app.ignoreFrames, app.frames);
                 end
+                
+                %Attempt to repopulate the scrollpane with the new masks
                 try
                     populateScrollpane(app);
                 catch ME
                     uialert(app.UIFigure, ME.message, append('Mask Preview Error: ', ME.identifier), 'Icon', 'error');
                     LogExceptions(app, ME);
                 end
+                
             catch ME
                 uialert(app.UIFigure, ME.message, append('Mask Detection Error: ', ME.identifier), 'Icon', 'error');
                 LogExceptions(app, ME);

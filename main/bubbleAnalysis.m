@@ -71,6 +71,7 @@ classdef bubbleAnalysis
                         maskInformation(d).SurfPoints = NaN;
                         maskInformation(d).surfFit = NaN;
                         maskInformation(d).surfEq = NaN;
+                        app.ignoreFrames(end + 1) = d;
                         continue;
                     else
                         %Get the mask

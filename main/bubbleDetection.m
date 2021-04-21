@@ -88,11 +88,11 @@ classdef bubbleDetection
                 end
             end
             %Get rid of ridiculously big objects (bigger than half the image size)
-            for h = 1:CC.NumObjects
-                if objectSize(h) > (row.*col/2)
-                    mask(CC.PixelIdxList{h}) = 0;
-                end
-            end
+%             for h = 1:CC.NumObjects
+%                 if objectSize(h) > (row.*col/2)
+%                     mask(CC.PixelIdxList{h}) = 0;
+%                 end
+%             end
             %Get rid of objects far away from the center (objects that have a centroid
             %more than 200 pixels away from the center
             for j = 1:CC.NumObjects
@@ -281,40 +281,138 @@ classdef bubbleDetection
             close(wtBr);
         end
         
-        function [left, right] = separateViews(img, views, style)
-            CC = bwconncomp(img);
+        function [left, right] = separateViews(img, mask, views)
+            
+            %Calculate the number of objects in the mask
+            CC = bwconncomp(mask);
+            
+            %If the number of objects in the mask matches the number of
+            %views
             if CC.NumObjects == views
-                stats = regionprops(CC, 'Centroid', 'PixelIdxList');
-                centroid(1, :) = stats(1).Centroid;
-                centroid(2, :) = stats(2).Centroid;
+                stats = regionprops(CC, 'Centroid', 'PixelIdxList');        %Calculate the centroids of the objects
+                centroid(1, :) = stats(1).Centroid;                         %Assign the centroid value
+                centroid(2, :) = stats(2).Centroid;                         %Assign the centroid value
+                
+                %Assign the left most object in the mask to the left mask
+                %and the right most object in the masks to the right mask
                 if centroid(1, 1) < centroid(2, 1)
-                    left = zeros(size(img));
-                    right = zeros(size(img));
+                    left = zeros(size(mask));
+                    right = zeros(size(mask));
                     left(stats(1).PixelIdxList) = 1;
                     right(stats(2).PixelIdxList) = 1;
                 elseif centroid(1, 1) > centroid(2, 1)
-                    left = zeros(size(img));
-                    right = zeros(size(img));
+                    left = zeros(size(mask));
+                    right = zeros(size(mask));
                     right(stats(1).PixelIdxList) = 1;
                     left(stats(2).PixelIdxList) = 1;
                 end
+            
+            %If the number of objects in the mask is less than the number
+            %of views (most likely overlap)
             elseif CC.NumObjects < views
-                if any(any(img))
-                    switch style
-                        case 'color'
-                            left = zeros(size(img));
-                            right = zeros(size(img));
-                        case 'edge'
-                            left = zeros(size(img));
-                            right = zeros(size(img));
+                
+                %Check if the mask is nonempty
+                if any(any(mask))
+                    
+                    %Create a temporary image with just the bubbles
+                    temp = zeros(size(img));    
+                    temp(mask) = img(mask);
+                    temp(~mask) = NaN;
+                    
+                    %Find overlapping regions (dark regions shared between
+                    %the bubbles)
+                    overlap = bwmorph(imclearborder(imcomplement(imbinarize(temp, graythresh(temp)))), 'clean');
+                    
+                    %If more than one overlapping region exists, find the
+                    %biggest one
+                    CCoverlap = bwconncomp(overlap, 8);
+                    if CCoverlap.NumObjects > 1                        
+                        %Tabulate the object sizes
+                        sizes = cellfun(@numel, CCoverlap.PixelIdxList);
+                        [~, biggest] = max(sizes);
+                        for i = 1:CCoverlap.NumObjects
+                            if i == biggest 
+                                continue;
+                            else
+                                overlap(CCoverlap.PixelIdxList{i}) = 0;
+                            end
+                        end
                     end
+                                        
+                    %Subtract the overlapping regions from the image mask
+                    mask(overlap) = 0;
+                    
+                    %Recompute the number of objects in the image mask
+                    CC = bwconncomp(mask);
+                    if CC.NumObjects == views
+                        %If the number of objects equals the number of
+                        %views, split the mask (recusive function) add the
+                        %overlap regions and return the final masks
+                        [leftSplit, rightSplit] = bubbleDetection.separateViews(img, mask, views);
+                        left = leftSplit + overlap;
+                        right = rightSplit + overlap;
+                    elseif CC.NumObjects > views
+                        %If the number of objects is greater than the
+                        %number of views return empty masks (we shouldn't
+                        %get to this point
+                        left = zeros(size(mask));
+                        right = zeros(size(mask));
+                    elseif CC.NumObjects < views
+                        if any(any(overlap))
+                            %If an overlap region exists, find the centroid
+                            %and split the image according the the centroid
+                            %of the overlapping region
+                            stats = regionprops(overlap, 'Centroid');
+                            try 
+                                center = round(stats.Centroid);
+                            catch ME
+                                pause(0.5);
+                            end
+                            
+                            %Initialize the left and right split masks
+                            leftSplit = zeros(size(mask));
+                            rightSplit = zeros(size(mask));
+                            
+                            %Split the original mask into left and right
+                            %halves
+                            leftSplit(:, 1:center(1)) = mask(:, 1:center(1));
+                            rightSplit(:, (center(1) + 1):end) = mask(:, (center(1)+1):end);
+                            
+                            %Add the overlapping region to both masks and
+                            %assign to the output variables
+                            left = leftSplit + overlap;
+                            right = rightSplit + overlap;
+                        else 
+                            %Find the edges of the bubble
+                            tempMask = edge(img, 'Canny');
+                            dilatedMask = imdilate(imdilate(mask, strel('line', 10, 0)), strel('line', 10, 90));
+                            tempMask(~dilatedMask) = 0;
+                            tempMask = imfill(tempMask, 'holes');
+                            
+                            tempCC = bwconncomp(tempMask);
+                            if tempCC.NumObjects == views
+                                [left, right] = bubbleDetection.separateViews(img, tempMask, 2);
+                            elseif tempCC.NumObjects < views
+                                left = zeros(size(mask));
+                                right = zeros(size(mask));
+                                pause(0.5);
+                            elseif tempCC.NumObjects > views
+                                left = zeros(size(mask));
+                                right = zeros(size(mask));
+                                pause(0.5);
+                            end
+                        end
+                    end
+                    
                 else
-                    left = zeros(size(img));
-                    right = zeros(size(img));
+                    %If the mask is empty teturn empty masks
+                    left = zeros(size(mask));
+                    right = zeros(size(mask));
                 end
             elseif CC.NumObjects > views
-                left = zeros(size(img));
-                right = zeros(size(img));
+                %Return empty masks
+                left = zeros(size(mask));
+                right = zeros(size(mask));
             end
         end
         
@@ -514,13 +612,13 @@ classdef bubbleDetection
             outmask = mask;
         end
 
-        function outputMask = multiDetect(frames, gt, edgethresh, maskmix, iff, cstyle, cval, estyle, eval, figure, autocolor, autoedge, flip, views, ignoreFrames)
+        function outputMask = multiDetect(frames, gt, edgethresh, maskmix, iff, cstyle, cval, estyle, eval, figure, autocolor, autoedge, flip, views, ignoreFrames, originalFrames)
             
             [row, col, depth] = size(frames);
             outputMask = zeros(row, col, depth, views);
             
             wtBr = uiprogressdlg(figure, 'Title', 'Please wait', 'Message', 'Isolating...', 'Cancelable', 'on');
-            
+                       
             for f = (1 + iff):depth
                 if ~isempty(find(ignoreFrames == f, 1))
                     continue;
@@ -533,19 +631,26 @@ classdef bubbleDetection
                     %% Get the frame
                     targetImage = frames(:, :, f);
                     
+                    if ~flip
+                        originalImage = originalFrames(:, :, f);
+                    else
+                        originalImage = targetImage;
+                    end
+                    
                     %% Create a mask based on color
                     if autocolor
                         gt = graythresh(targetImage);
                     end
                     grayImage = bubbleDetection.multiColor(targetImage, gt, cstyle, cval, flip, views);
-                    [leftGray, rightGray] = bubbleDetection.separateViews(grayImage, views, 'color');
+
+                    [leftGray, rightGray] = bubbleDetection.separateViews(originalImage, grayImage, views);
                     
                     %% Create a mask based on edges
                     if autoedge
                         [~, edgethresh] = edge(targetImage, 'Sobel');
                     end
                     edgeImage = bubbleDetection.multiEdge(targetImage, edgethresh, estyle, eval, views);
-                    [leftEdge, rightEdge] = bubbleDetection.separateViews(edgeImage, views, 'edge');
+                    [leftEdge, rightEdge] = bubbleDetection.separateViews(originalImage, edgeImage, views);
                     
                     %% Decide which mask/combination of masks to use
                     leftFinal = bubbleDetection.mixMasks(leftGray, leftEdge, maskmix);
