@@ -3,7 +3,7 @@ classdef InCA < matlab.apps.AppBase
     % Properties that correspond to app components
     properties (Access = public)
         UIFigure
-        Version = 23;
+        Version = 24;
         TabGroup
         HomeTab
         DetectionTab
