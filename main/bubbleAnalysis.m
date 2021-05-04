@@ -156,7 +156,7 @@ classdef bubbleAnalysis
                             %Get the points for the fourier fit
                             wtBr.Message = standardMsg + ": Generaing Fourier Fit points";
                             numPoints = floor( maskInformation(d, v).Perimeter./arcLength);
-                            if numPoints < 16
+                            if numPoints < app.MetricTermsField.Value.*2
                                 maskInformation(d, v).FourierPoints = [NaN, NaN];
                                 maskInformation(d, v).perimFit = NaN;
                                 maskInformation(d, v).perimEq = NaN;

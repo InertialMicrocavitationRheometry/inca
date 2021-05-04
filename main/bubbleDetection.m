@@ -49,13 +49,13 @@ classdef bubbleDetection
         end
         
         function refinedFrames = increaseContrast(frames)
-            refinedFrames = zeros(size(frames));
-            [~, ~, depth] = size(frames);
-            for i = 1:depth
-                minVal = min(min(frames(:,:, i)));
-                maxVal = max(max(frames(:, :,i)));
-                slope = 1./(maxVal - minVal);
-                refinedFrames(:, :, i) = slope.*(frames(:, :, i) - minVal);
+            refinedFrames = zeros(size(frames));                                    %Initialize the output matrix (preallocation)
+            [~, ~, depth] = size(frames);                                           %Calculate the number of frames
+            for i = 1:depth         
+                minVal = min(min(frames(:,:, i)));                                  %Find the minimum value in the frame
+                maxVal = max(max(frames(:, :,i)));                                  %Find the maximum value in the frame
+                slope = 1./(maxVal - minVal);                                       %Find the slope of the line that extends the range
+                refinedFrames(:, :, i) = slope.*(frames(:, :, i) - minVal);         %Calculate the new frame using the slope and y-intercept
             end
         end
         
@@ -179,34 +179,48 @@ classdef bubbleDetection
         
         function grayImg = colorMask(targetImage, oldData, graythresh, style, value, flip)
             %A function to create a mask for the bubble based on pixel intensity values
+            
+            %Preprocess the frame
             targetImage = bubbleDetection.preprocessFrames(targetImage, style, value);
+            
             %Calculate the gray threshold for the image and binarize it based on that, Flip black and white, Get rid of any white pixels connected to the border, Fill any holes in the image
             if flip
                 grayImg = imfill(bwmorph(bwmorph(bwmorph(imclearborder(imcomplement(imbinarize(targetImage, graythresh))), 'clean'), 'diag'), 'bridge'), 'holes');
             else
                 grayImg = imfill(bwmorph(bwmorph(bwmorph(imclearborder(imbinarize(targetImage, graythresh)), 'clean'), 'diag'), 'bridge'), 'holes');
             end
-            %Remove ridiculously small and large objects from the image
+            
+            %Remove outlier objects from the image
             grayImg = bubbleDetection.removeOutliers(grayImg);
+            
             %Refresh the connected components list
             CC = bwconncomp(grayImg, 8);
+            
             %If there is still more than one object, attempt to isolate the most likley
             %object
             if CC.NumObjects > 1
                 grayImg = bubbleDetection.isolateObject(grayImg, targetImage, oldData);
             end
+            
+            %Fill any holes
             grayImg = imfill(grayImg, 'holes');
         end
         
         function edgeImage = edgeMask(targetImage, oldData, edgethresh, style, value)
             %A function to create a binary mask of the bubble based on edge detection
+            
+            %Preprocess the image if needed
             targetImage = bubbleDetection.preprocessFrames(targetImage, style, value);
             
+            %Create the initial binary mask
             edgeImage = imfill(imclearborder(imcomplement(imdilate(edge(targetImage, 'Sobel', edgethresh), [strel('line', 3, 90) strel('line', 3, 0)]))), 'holes');
+            
             %Remove ridiculously large and small objects from the image
             edgeImage = bubbleDetection.removeOutliers(edgeImage);
+            
             %Refresh the connected components list
             CC = bwconncomp(edgeImage, 8);
+            
             %If there is still more than one object, attempt to isolate the the object
             if CC.NumObjects > 1
                 edgeImage = bubbleDetection.isolateObject(edgeImage, targetImage, oldData);
@@ -344,30 +358,36 @@ classdef bubbleDetection
                     
                     %Recompute the number of objects in the image mask
                     CC = bwconncomp(mask);
+                    
                     if CC.NumObjects == views
                         %If the number of objects equals the number of
                         %views, split the mask (recusive function) add the
                         %overlap regions and return the final masks
+                        
                         [leftSplit, rightSplit] = bubbleDetection.separateViews(img, mask, views);
                         left = leftSplit + overlap;
                         right = rightSplit + overlap;
+                        
                     elseif CC.NumObjects > views
                         %If the number of objects is greater than the
                         %number of views return empty masks (we shouldn't
                         %get to this point
+                        
                         left = zeros(size(mask));
                         right = zeros(size(mask));
+                        
                     elseif CC.NumObjects < views
+                        %If the number of objects is less than the number
+                        %of views, the bubbles are most likely either
+                        %overlapping or just barely touching 
+                        
                         if any(any(overlap))
                             %If an overlap region exists, find the centroid
                             %and split the image according the the centroid
                             %of the overlapping region
-                            stats = regionprops(overlap, 'Centroid');
-                            try 
-                                center = round(stats.Centroid);
-                            catch ME
-                                pause(0.5);
-                            end
+                            
+                            stats = regionprops(overlap, 'Centroid', 'Orientation');           %Calculate the centroid
+                            center = round(stats.Centroid);                                             %Assign the centroid to a new variable (easier access)
                             
                             %Initialize the left and right split masks
                             leftSplit = zeros(size(mask));
@@ -382,37 +402,289 @@ classdef bubbleDetection
                             %assign to the output variables
                             left = leftSplit + overlap;
                             right = rightSplit + overlap;
+                            
                         else 
-                            %Find the edges of the bubble
-                            tempMask = edge(img, 'Canny');
+                            %If an overlap region does not exist 
+                            %create a new mask based on the Canny 
+                            %filter for finer edge detection
+                            tempMask = imfill(bwmorph(bwmorph(edge(img, 'Canny'), 'bridge'), 'diag'), 'holes');
+                            tempMask = bubbleDetection.removeOutliers(tempMask);
+                            
+                            %Remove any objects that are not within the
+                            %original mask (with some tolerance)
                             dilatedMask = imdilate(imdilate(mask, strel('line', 10, 0)), strel('line', 10, 90));
                             tempMask(~dilatedMask) = 0;
-                            tempMask = imfill(tempMask, 'holes');
                             
+                            %Find the number of connected objects in the
+                            %new mask
                             tempCC = bwconncomp(tempMask);
+                            
                             if tempCC.NumObjects == views
+                                %If the number of objects in the new mask is
+                                %the same as the number of views,
+                                %recursively call this function to separate
+                                %the views
+                                
                                 [left, right] = bubbleDetection.separateViews(img, tempMask, 2);
+                                
                             elseif tempCC.NumObjects < views
-                                left = zeros(size(mask));
-                                right = zeros(size(mask));
-                                pause(0.5);
+                                %If the number of objects in the new mask
+                                %is less than the number of views, split
+                                %the mask at its thinnest point (as long as
+                                %the number of objects is one)
+                                
+                                if tempCC.NumObjects == 1
+                                    
+                                    boundaries = cell2mat(bwboundaries(tempMask));      %Get the matrix coordinates of the points on the perimeter
+                                    xPoints = boundaries(:, 2);                         %Extract the x coordinates
+                                    yPoints = boundaries(:, 1);                         %Extract the y coordinates
+                                    
+                                    dist = zeros(size(xPoints));                        %Preallocate the vector
+                                    for i = 1:length(xPoints)
+                                        targetVal = xPoints(i);                         %Index the current element in the xPoints vector
+                                        
+                                        yVals = yPoints(xPoints == targetVal);          %Find the values of the y-coordinates that match with that x-value
+                                        
+                                        dist(i) = abs(max(yVals) - min(yVals));         %Find the difference in the y-values and assign to the distance vector
+                                    end
+                                    
+                                    [~, minIdx] = min(dist);                            %Find the indices of the points with the smallest y-value difference
+                                    xMin = xPoints(minIdx);                             %Find the x points corresponding to the points with the smallest y-value difference
+                                    
+                                    if length(xMin) > 2
+                                        %If the number of corresponding x
+                                        %points is greater than two return
+                                        %empty masks (for now)
+                                        left = zeros(size(mask));
+                                        right = zeros(size(mask));
+                                        
+                                    elseif length(xMin) == 2
+                                        %If the number of corresponding x
+                                        %points is equal to two, make sure
+                                        %the x-points are the same
+                                        
+                                        if xMin(1) == xMin(2)
+                                            %If the points are the same,
+                                            %split the original mask at
+                                            %this point
+                                            
+                                            left = zeros(size(mask));
+                                            right = zeros(size(mask));
+                                            left(:, 1:xMin(1)) = mask(:, 1:xMin(1));
+                                            right(:, (xMin(1) + 1):end) = mask(:, (xMin(1)+1):end);
+                                            
+                                        else
+                                            %If the points don't have the
+                                            %same value return empty masks
+                                            %(for now)
+                                            
+                                            imshow(labeloverlay(img, tempMask));
+                                            left = zeros(size(mask));
+                                            right = zeros(size(mask));
+                                        end
+                                        
+                                    else
+                                        
+                                        left = zeros(size(mask));
+                                        right = zeros(size(mask));
+                                        
+                                    end
+                                    
+                                else
+                                    %Return empty masks if the number of
+                                    %objects is greater than one but less
+                                    %than the number of views
+                                    
+                                    imshow(labeloverlay(img, tempMask));
+                                    left = zeros(size(mask));
+                                    right = zeros(size(mask));
+                                    
+                                end
+
+                                
                             elseif tempCC.NumObjects > views
+                                %If the number of objects in the new mask
+                                %is greater than the number of views,
+                                %attempt to isolate the correct objects and
+                                %then recursively call this function to
+                                %separate the views as long as the two
+                                %masks are not identical (so an infinite
+                                %loop doesn't happen). If the two masks are
+                                %identical... idk
+
+                                tempCCC = bwconncomp(tempMask);                                             %Find the number of new connected components
+                                
+                                if tempCCC.NumObjects > 1
+                                    %If the number of new connected
+                                    %components is greater than the number
+                                    %of views attempt to whittle down the
+                                    %number of objects
+                                    tempMask = bubbleDetection.removeOutliers(tempMask);
+                                    tempMask = bubbleDetection.whittleObjects(tempMask, img);       
+                                end
+                                
+                                if ~isequal(tempMask, mask)
+                                    %As long as the old mask and new mask
+                                    %aren't apprioximately equal, recursively call the
+                                    %function to separate the views
+                                    
+                                    tempCCCC = bwconncomp(tempMask);
+                                    if (tempCCCC.NumObjects == CC.NumObjects) && (tempCCCC.NumObjects < views)
+                                        tempSize = numel(tempCCCC.PixelIdxList{1});         %Get the size of the object in the temp mask
+                                        maskSize = numel(CC.PixelIdxList{1});               %Get the size of the object in the orig mask
+                                        
+                                        if abs(1 - tempSize/maskSize) < 0.05
+                                            %If the sizes are within ten
+                                            %percent of each other (~ish)
+                                            %then split the mask down the
+                                            %middle
+                                            
+                                            if tempCCCC.NumObjects == 1
+                                                
+                                                boundaries = cell2mat(bwboundaries(tempMask));      %Get the matrix coordinates of the points on the perimeter
+                                                xPoints = boundaries(:, 2);                         %Extract the x coordinates
+                                                yPoints = boundaries(:, 1);                         %Extract the y coordinates
+                                                
+                                                dist = zeros(size(xPoints));                        %Preallocate the vector
+                                                for i = 1:length(xPoints)
+                                                    targetVal = xPoints(i);                         %Index the current element in the xPoints vector
+                                                    
+                                                    yVals = yPoints(xPoints == targetVal);          %Find the values of the y-coordinates that match with that x-value
+                                                    
+                                                    dist(i) = abs(max(yVals) - min(yVals));         %Find the difference in the y-values and assign to the distance vector
+                                                end
+                                                
+                                                [~, minIdx] = min(dist);                            %Find the indices of the points with the smallest y-value difference
+                                                xMin = xPoints(minIdx);                             %Find the x points corresponding to the points with the smallest y-value difference
+                                                
+                                                if length(xMin) > 2
+                                                    %If the number of corresponding x
+                                                    %points is greater than two return
+                                                    %empty masks (for now)
+                                                    left = zeros(size(mask));
+                                                    right = zeros(size(mask));
+                                                    
+                                                elseif length(xMin) == 2
+                                                    %If the number of corresponding x
+                                                    %points is equal to two, make sure
+                                                    %the x-points are the same
+                                                    
+                                                    if xMin(1) == xMin(2)
+                                                        %If the points are the same,
+                                                        %split the original mask at
+                                                        %this point
+                                                        
+                                                        left = zeros(size(mask));
+                                                        right = zeros(size(mask));
+                                                        left(:, 1:xMin(1)) = mask(:, 1:xMin(1));
+                                                        right(:, (xMin(1) + 1):end) = mask(:, (xMin(1)+1):end);
+                                                        
+                                                    else
+                                                        %If the points don't have the
+                                                        %same value return empty masks
+                                                        %(for now)
+                                                        
+                                                        left = zeros(size(mask));
+                                                        right = zeros(size(mask));
+                                                    end
+                                                    
+                                                elseif length(xMin) == 1
+                                                    %If the number of
+                                                    %corresponding x points
+                                                    %is one split along
+                                                    %centroid
+                                                    
+                                                    tempStats = regionprops(tempMask, 'Centroid');
+                                                    center = round(tempStats.Centroid);
+                                                    [~, width] = size(tempMask);
+                                                    
+                                                    newdist = dist;
+                                                    newdist(xPoints > (center(1) + 0.1*width)) = NaN;
+                                                    newdist(xPoints < (center(1) - 0.1*width)) = NaN;
+                                                    
+                                                    [~, minIdx] = min(newdist);
+                                                    xMin = xPoints(minIdx);
+                                                    
+                                                    
+                                                    left = zeros(size(mask));
+                                                    right = zeros(size(mask));
+                                                    
+                                                    if length(xMin) > 1
+                                                        left(:, 1:xMin(1)) = tempMask(:, 1:xMin(1));
+                                                        right(:, (xMin(1) + 1):end) = mask(:, (xMin(1) + 1):end);
+                                                    elseif length(xMin) == 1
+                                                        left(:, 1:xMin) = tempMask(:, 1:xMin);
+                                                        right(:, (xMin + 1):end) = mask(:, (xMin + 1):end);
+                                                    end
+
+                                                                                                        
+                                                end
+                                                
+                                            else
+                                                %Return empty masks if the number of
+                                                %objects is greater than one but less
+                                                %than the number of views
+                                                
+                                                left = zeros(size(mask));
+                                                right = zeros(size(mask));
+                                                
+                                            end
+                                            
+                                        else
+                                            
+                                            left = zeros(size(mask));
+                                            right = zeros(size(mask));
+                                            
+                                        end
+                                        
+                                    elseif tempCCCC.NumObjects > CC.NumObjects
+                                        
+                                        [left, right] = bubbleDetection.separateViews(img, tempMask, views);
+                                        
+                                    else
+                                        
+                                        left = zeros(size(mask));
+                                        right = zeros(size(mask));
+                                        
+                                    end
+                                else
+                                    
+                                    left = zeros(size(mask));
+                                    right = zeros(size(mask));
+                                    pause(0.5); 
+                                    
+                                end
+                                
+                            else
+                                
                                 left = zeros(size(mask));
                                 right = zeros(size(mask));
-                                pause(0.5);
+                                
                             end
+                                                        
                         end
+                        
+                    else
+                        
+                        left = zeros(size(mask));
+                        right = zeros(size(mask));
+                        
                     end
                     
                 else
-                    %If the mask is empty teturn empty masks
+                    %If the mask is empty return empty masks                    
                     left = zeros(size(mask));
                     right = zeros(size(mask));
+
                 end
+                
             elseif CC.NumObjects > views
-                %Return empty masks
+                %Return empty masks if the number of objects is greater
+                %than the number of views (should not get to this point)
+                
                 left = zeros(size(mask));
                 right = zeros(size(mask));
+                
             end
         end
         
@@ -424,8 +696,14 @@ classdef bubbleDetection
             %Create the initial binary mask
             if flip
                 grayImg = imfill(bwmorph(bwmorph(bwmorph(imclearborder(imcomplement(imbinarize(img, gt))), 'clean'), 'diag'), 'bridge'), 'holes');
+                % Binarize, flip black and white, remove border connected
+                % pixels, remove lone pixles, remove diagonal pixels,
+                % bridge small gaps, fill holes
             else
                 grayImg = imfill(bwmorph(bwmorph(bwmorph(imclearborder(imbinarize(img, gt)), 'clean'), 'diag'), 'bridge'), 'holes');
+                % Binarize, remove border connected
+                % pixels, remove lone pixles, remove diagonal pixels,
+                % bridge small gaps, fill holes
             end
             
             %Remove very small and very large objects
@@ -440,7 +718,8 @@ classdef bubbleDetection
             if CC.NumObjects > views
                 grayImg = bubbleDetection.whittleObjects(grayImg, img);
             end
-            grayImg = imfill(grayImg, 'holes');
+            
+            grayImg = imfill(grayImg, 'holes');                                 %Fill any holes
             
         end
         
@@ -451,6 +730,9 @@ classdef bubbleDetection
             
             %Create the initial mask based on edges
             edgeImg = imclearborder(imfill(bwmorph(edge(img, 'Sobel', et), 'bridge'), 'holes'));
+                %Create the edge mask with a sobel filter and specified
+                %threshold, bridge any small gaps, fill any holes, remove
+                %border connnected pixels
             
             %Remove ridiculously large and small objects from the image
             edgeImg = bubbleDetection.removeOutliers(edgeImg);
@@ -470,28 +752,36 @@ classdef bubbleDetection
             %Constants
             tol = 0.2;
             
+            %If there is only one element in the vector return that element
+            if length(vec) == 1
+                idx1 = 0;
+                idx2 = 1;
+                return;
+            end
+            
             %Find the two elements that are numerically the closest
             %together
-            A = abs(repmat(vec, length(vec), 1) - repmat(vec', 1, length(vec)));
-            A(A == 0) = NaN;
-            B = min(A);
-            C = find(B == min(B));
-            idx1temp = C(1);
-            idx2temp = C(2);
+            A = abs(repmat(vec, length(vec), 1) - repmat(vec', 1, length(vec)));    %Create the difference array
+            A(A == 0) = NaN;                                                        %Set elements = 0 to NaN
+            B = min(A);                                                             %Find the minimum in each column
+            C = find(B == min(B));                                                  %Find indices of the two elements that match the minimum in B
+            idx1temp = C(1);                                                        %Extract the first index
+            idx2temp = C(2);                                                        %Extract the second index
             
             %Check that they meet the tolerance
             tolerance = abs(1 - vec(idx1temp)./vec(idx2temp)); 
+            
             if tolerance > tol
                 %If the two values do not meet the tolerance, find the one
                 %closest to the target value
                 if isnumeric(targ)
-                    [~, idx2] = min(abs(A) - targ);
+                    [~, idx2] = min(abs(vec) - targ);
                     idx1 = 0;
                 elseif targ == 'max'
-                    [~, idx2] = max(A);
+                    [~, idx2] = max(vec);
                     idx1 = 0;
                 elseif targ == 'min'
-                    [~, idx2] = min(A);
+                    [~, idx2] = min(vec);
                     idx1 = 0;
                 end
             elseif tolerance <= tol
@@ -535,39 +825,11 @@ classdef bubbleDetection
             for i = 1:CC.NumObjects
                 averages(i) = mean(targetImage(CC.PixelIdxList{i}), 'all');
             end
-            [val1, avg1temp] = min(averages);
-            averages(averages == val1) = NaN;
-            [~, avg2temp] = min(averages);
-            
-            %Make sure the object with the lower index is first
-            if avg1temp < avg2temp
-                avg1 = avg1temp;
-                avg2 = avg2temp;
-            elseif avg2temp < avg1temp
-                avg1 = avg2temp;
-                avg2 = avg1temp;
-            else 
-                avg1 = 0;
-                avg2 = 0;
-            end
+            [avg1, avg2] = bubbleDetection.compareVector(averages, 'min');
             
             %Calculate the significance values for all objects
             significance = (heights.*averages)./sizes;
-            [val1, sig1temp] = min(significance);
-            significance(significance == val1) = NaN;
-            [~, sig2temp] = min(significance);
-            
-            %Make sure the object with the lower index is first
-            if sig1temp < sig2temp
-                sig1 = sig1temp;
-                sig2 = sig2temp;
-            elseif sig2temp < sig1temp
-                sig1 = sig2temp;
-                sig2 = sig1temp;
-            else 
-                sig1 = 0;
-                sig2 = 0;
-            end
+            [sig1, sig2] = bubbleDetection.compareVector(significance, 'min');
             
             %Decide which object to keep
             if isequaln(size1, height1, avg1, sig1)
@@ -668,7 +930,6 @@ classdef bubbleDetection
             close(wtBr);
             
         end
-        
-        
+                
     end
 end

@@ -578,10 +578,14 @@ classdef plotting
                     gradient(1, 2, :) = linspace(24/255, 102/255, numFrames);
                     gradient(1, 3, :) = linspace(43/255, 172/255, numFrames);
                     
+                    [~, maxR] = max( sqrt(plotset.centroid(:, 1, i).^2 + plotset.centroid(:, 2, i).^2) );
+                    normX = plotset.centroid(maxR, 1, i);
+                    normY = plotset.centroid(maxR, 2, i);
+                    
                     %Centroid Plot
                     hold(centerHandle, 'on');
                     for d = 1:numFrames
-                        plot(centerHandle, plotset.centroid(d, 1, i), plotset.centroid(d, 2, i), 'Marker', markerorder{i}, 'Color', gradient(:, :, d));
+                        plot(centerHandle, plotset.centroid(d, 1, i)./normX, plotset.centroid(d, 2, i)./normY, 'Marker', markerorder{i}, 'Color', gradient(:, :, d));
                     end
                     
                     hold(centerHandle, 'off');
@@ -767,7 +771,7 @@ classdef plotting
                 %Plot the right velocity
                 plot(velocityPlot, velocityData(:, 1, i), velocityData(:, 6, i), 'Color', [255, 0, 72]./255, 'LineWidth', 1.5, 'LineStyle', plotorder{i});
                 
-                legend(velocityPlot, "Average", "Top Extrema", "Bottom Extrema", "Left Extrema", "Right Extrema", 'Location', 'northeast', 'TextColor', [1 1 1]);
+                legend(velocityPlot, "Average", "Top Extrema", "Bottom Extrema", "Left Extrema", "Right Extrema", 'Location', 'best', 'TextColor', [1 1 1]);
             end
             
             hold(velocityPlot, 'off');
